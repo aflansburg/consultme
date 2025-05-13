@@ -6,15 +6,17 @@
 	import { getCharacter } from '$lib/rickandmorty/character';
 	import { PUBLIC_MY_NAME } from '$env/static/public';
 	import GitHubIcon from '$lib/icons/GitHubIcon.svelte';
+	import ClickMeIcon from '$lib/icons/ClickMeIcon.svelte';
 
 	export let data: PageData;
 	let aiResponse = '';
-	let loading = true;
+	let loading = false;
 	let spinnerFrames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
 	let currentSpinnerFrame = 0;
 	let spinnerInterval: ReturnType<typeof setInterval>;
 	const cannedAiErrorResponse = `<span class="text-red-500">Failed to load additional information.`;
 	const myName = PUBLIC_MY_NAME;
+	let showModal = false;
 
 	const genTerminalAboutClass = () => {
 		let classStr = '';
@@ -55,8 +57,8 @@
 	}
 
 	async function fetchRandomCharacter() {
+		aiResponse = ''; // Reset the AI response for the new character
 		await invalidateAll();
-		await fetchCharacterInfo();
 	}
 
 	async function fetchRickSanchez() {
@@ -80,17 +82,33 @@
 		`<span class='relative group inline-block'><span class='text-cyan-700 font-bold'>${name}</span><span class='invisible group-hover:visible absolute -top-20 left-1/2 -translate-x-1/2 px-3 py-2 bg-slate-800 text-white text-sm rounded-md w-[300px] text-center leading-snug'>01100110 01101111 01101111 01100010 01100001 01110010</span></span>`
 	);
 
+	// Add keyboard event handler for modal
+	function handleKeydown(event: KeyboardEvent) {
+		if (event.key === 'Escape' && showModal) {
+			toggleModal();
+		}
+	}
+
 	onMount(() => {
 		spinnerInterval = setInterval(() => {
 			currentSpinnerFrame = (currentSpinnerFrame + 1) % spinnerFrames.length;
 		}, 80);
 
-		fetchCharacterInfo();
+		// Add keyboard event listener
+		window.addEventListener('keydown', handleKeydown);
 
 		return () => {
 			clearInterval(spinnerInterval);
+			window.removeEventListener('keydown', handleKeydown);
 		};
 	});
+
+	function toggleModal() {
+		if (!showModal && !aiResponse) {
+			fetchCharacterInfo();
+		}
+		showModal = !showModal;
+	}
 </script>
 
 <div class="container mx-auto px-4">
@@ -234,19 +252,16 @@
 										</div>
 									{/each}
 								</div>
-								<div class="mt-6">
-									<dt class="mb-2 font-medium text-green-500/80">Additional Info:</dt>
-									<dd class={`leading-relaxed ${genTerminalAboutClass()} pr-2`}>
-										{#if loading}
-											<span>
-												<span class="spinner inline-block"
-													>{spinnerFrames[currentSpinnerFrame]}</span
-												>
-												Fetching additional information...
-											</span>
-										{:else}
-											<span>{@html aiResponse}</span>
-										{/if}
+								<div class="mt-6 flex flex-col items-center">
+									<dt class="mb-2 text-center font-medium text-green-500/80">Additional Info:</dt>
+									<dd class="pr-2 text-center leading-relaxed text-green-400">
+										<button
+											on:click={toggleModal}
+											class="inline-flex items-center gap-2 rounded border border-green-500/30 bg-zinc-800 px-3 py-1.5 text-green-400 transition-all hover:border-green-500/50 hover:bg-zinc-700"
+										>
+											<span class="text-white"><ClickMeIcon /></span>
+											<span>View</span>
+										</button>
 									</dd>
 								</div>
 							</dl>
@@ -257,6 +272,57 @@
 		</div>
 	</div>
 </div>
+
+<!-- Terminal Modal -->
+{#if showModal}
+	<div
+		class="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+		on:click={toggleModal}
+	>
+		<div
+			class="animate-slide-up relative w-full max-w-3xl rounded-lg border-2 border-green-500/50 bg-black/95 p-6 shadow-[0_0_20px_rgba(34,197,94,0.3)]"
+			on:click|stopPropagation
+		>
+			<button
+				on:click={toggleModal}
+				class="absolute top-4 right-4 text-green-500/80 hover:text-green-500"
+				aria-label="Close modal"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<line x1="18" y1="6" x2="6" y2="18"></line>
+					<line x1="6" y1="6" x2="18" y2="18"></line>
+				</svg>
+			</button>
+
+			<h2 class="mb-4 border-b border-green-500/30 pb-2 text-xl font-bold text-green-500/80">
+				Additional Information: {data.character.name}
+			</h2>
+
+			<div
+				class="terminal-text max-h-[70vh] overflow-y-auto pr-2 font-mono leading-relaxed text-green-400"
+			>
+				{#if loading}
+					<span>
+						<span class="spinner inline-block">{spinnerFrames[currentSpinnerFrame]}</span>
+						Fetching additional information...
+					</span>
+				{:else}
+					<span>{@html aiResponse}</span>
+				{/if}
+			</div>
+		</div>
+	</div>
+{/if}
 
 <style>
 	.blink {
@@ -327,5 +393,42 @@
 		to {
 			visibility: hidden;
 		}
+	}
+
+	/* Animation for modal */
+	.animate-fade-in {
+		animation: fadeIn 0.2s ease-out forwards;
+	}
+
+	.animate-slide-up {
+		animation: slideUp 0.3s ease-out forwards;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	@keyframes slideUp {
+		from {
+			transform: translateY(20px);
+			opacity: 0;
+		}
+		to {
+			transform: translateY(0);
+			opacity: 1;
+		}
+	}
+
+	.terminal-text {
+		line-height: 1.6;
+		padding: 1rem;
+		border-radius: 0.25rem;
+		background-color: rgba(0, 0, 0, 0.3);
+		border: 1px solid rgba(34, 197, 94, 0.2);
 	}
 </style>
