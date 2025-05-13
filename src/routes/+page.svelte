@@ -7,10 +7,12 @@
 	import { PUBLIC_MY_NAME } from '$env/static/public';
 	import GitHubIcon from '$lib/icons/GitHubIcon.svelte';
 	import ClickMeIcon from '$lib/icons/ClickMeIcon.svelte';
+	import GreenCheckIcon from '$lib/icons/GreenCheckIcon.svelte';
 
 	export let data: PageData;
 	let aiResponse = '';
 	let loading = false;
+	let fetchStarted = false;
 	let spinnerFrames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
 	let currentSpinnerFrame = 0;
 	let spinnerInterval: ReturnType<typeof setInterval>;
@@ -18,20 +20,9 @@
 	const myName = PUBLIC_MY_NAME;
 	let showModal = false;
 
-	const genTerminalAboutClass = () => {
-		let classStr = '';
-
-		if (loading) {
-			classStr += 'text-green-500';
-		} else {
-			classStr += 'text-neutral-50';
-		}
-
-		return classStr;
-	};
-
 	async function fetchCharacterInfo() {
 		loading = true;
+		fetchStarted = true;
 		aiResponse = '';
 		try {
 			const response = await fetch('/api/character-info', {
@@ -57,7 +48,8 @@
 	}
 
 	async function fetchRandomCharacter() {
-		aiResponse = ''; // Reset the AI response for the new character
+		aiResponse = '';
+		fetchStarted = false;
 		await invalidateAll();
 	}
 
@@ -65,7 +57,8 @@
 		try {
 			const rick = await getCharacter(1);
 			data.character = rick;
-			fetchCharacterInfo();
+			aiResponse = '';
+			fetchStarted = false;
 		} catch (error) {
 			console.error('Failed to fetch Rick Sanchez:', error);
 		}
@@ -104,7 +97,7 @@
 	});
 
 	function toggleModal() {
-		if (!showModal && !aiResponse) {
+		if (!showModal && !fetchStarted) {
 			fetchCharacterInfo();
 		}
 		showModal = !showModal;
@@ -257,9 +250,18 @@
 									<dd class="pr-2 text-center leading-relaxed text-green-400">
 										<button
 											on:click={toggleModal}
+											on:keydown={(e) => e.key === 'Enter' && toggleModal()}
 											class="inline-flex cursor-pointer items-center gap-2 rounded border border-green-500/30 bg-zinc-800 px-3 py-1.5 text-green-400 transition-all hover:border-green-500/50 hover:bg-zinc-700"
 										>
-											<span class="text-white"><ClickMeIcon /></span>
+											{#if fetchStarted && !aiResponse && !showModal}
+												<span class="spinner inline-block text-white"
+													>{spinnerFrames[currentSpinnerFrame]}</span
+												>
+											{:else if aiResponse}
+												<span class="text-white"><GreenCheckIcon /></span>
+											{:else}
+												<span class="text-white"><ClickMeIcon /></span>
+											{/if}
 											<span>View</span>
 										</button>
 									</dd>
@@ -277,15 +279,23 @@
 {#if showModal}
 	<div
 		class="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-		on:click={toggleModal}
 	>
+		<!-- Invisible button that covers the backdrop for keyboard accessibility -->
+		<button
+			class="absolute inset-0 h-full w-full cursor-default bg-transparent"
+			on:click={toggleModal}
+			aria-label="Close modal by clicking backdrop"
+		></button>
+
 		<div
-			class="animate-slide-up relative w-full max-w-3xl rounded-lg border-2 border-green-500/50 bg-black/95 p-6 shadow-[0_0_20px_rgba(34,197,94,0.3)]"
-			on:click|stopPropagation
+			class="animate-slide-up relative z-10 w-full max-w-3xl rounded-lg border-2 border-green-500/50 bg-black/95 p-6 shadow-[0_0_20px_rgba(34,197,94,0.3)]"
+			role="dialog"
+			aria-labelledby="modal-title"
+			aria-modal="true"
 		>
 			<button
 				on:click={toggleModal}
-				class="absolute top-4 right-4 text-green-500/80 hover:text-green-500"
+				class="absolute top-4 right-4 cursor-pointer text-green-500/80 hover:text-green-500 focus:ring-0 focus:ring-transparent focus:ring-offset-0 focus:outline-none"
 				aria-label="Close modal"
 			>
 				<svg
@@ -304,7 +314,10 @@
 				</svg>
 			</button>
 
-			<h2 class="mb-4 border-b border-green-500/30 pb-2 text-xl font-bold text-green-500/80">
+			<h2
+				id="modal-title"
+				class="mb-4 border-b border-green-500/30 pb-2 text-xl font-bold text-green-500/80"
+			>
 				Additional Information: {data.character.name}
 			</h2>
 
@@ -316,6 +329,12 @@
 						<span class="spinner inline-block">{spinnerFrames[currentSpinnerFrame]}</span>
 						Fetching additional information...
 					</span>
+					{#if !aiResponse}
+						<p class="mt-4 text-sm text-green-500/70 italic">
+							You can close this modal and check back later. The information will continue
+							generating in the background.
+						</p>
+					{/if}
 				{:else}
 					<span>{@html aiResponse}</span>
 				{/if}
