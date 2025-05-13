@@ -13,6 +13,7 @@
 	>
 		{PUBLIC_MY_EMAIL}
 	</button>
+	<p>Then you can experience the extreme joy of pasting that into your email client manually.</p>
 	<br />
 	<p>
 		My LinkedIn <span class="font-bold text-cyan-600 italic">(Non-Lunatic edition)</span> is also here

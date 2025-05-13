@@ -24,53 +24,55 @@
 	}
 </script>
 
-<nav
-	class="relative flex items-center justify-between px-4 py-3 {$colorMode === 'dark'
-		? 'border-b border-zinc-700 bg-zinc-900 text-zinc-50'
-		: 'border-b border-zinc-200 bg-white text-zinc-800'} shadow-lg backdrop-blur-sm"
->
-	<div class="absolute -bottom-6 left-4">
-		<img {...avatarProperties} />
-	</div>
-	<div class="ml-[4.5rem] truncate pl-4 text-lg font-bold tracking-wide sm:ml-20 sm:text-xl">
-		<span class="xs:inline hidden">{name}</span>
-		<span class="xs:hidden inline">{firstName}</span>
-	</div>
-	<ul class="flex gap-3 text-sm sm:gap-6 sm:text-base">
-		<li>
-			<a href="/" class="font-medium transition-all hover:text-cyan-500">About</a>
-		</li>
-		<li>
-			<a href="/contact" class="font-medium transition-all hover:text-cyan-500">Contact</a>
-		</li>
-		<li>
-			<a
-				href="https://github.com/aflansburg"
-				target="_blank"
-				rel="noopener noreferrer"
-				class="flex cursor-pointer transition-all hover:text-cyan-500"
-				aria-label="GitHub Profile"
-			>
-				<GitHubIcon />
-			</a>
-		</li>
-		<li>
-			<button
-				class="cursor-pointer transition-all hover:text-cyan-500"
-				aria-label="Toggle theme"
-				onclick={toggleColorMode}><SunIcon /></button
-			>
-		</li>
-	</ul>
-</nav>
+<div class={$colorMode}>
+	<nav
+		class="relative flex items-center justify-between px-4 py-3 {$colorMode === 'dark'
+			? 'border-b border-zinc-700 bg-zinc-900 text-zinc-50'
+			: 'border-b border-zinc-200 bg-white text-zinc-800'} shadow-lg backdrop-blur-sm"
+	>
+		<div class="absolute -bottom-6 left-4">
+			<img {...avatarProperties} />
+		</div>
+		<div class="ml-[4.5rem] truncate pl-4 text-lg font-bold tracking-wide sm:ml-20 sm:text-xl">
+			<span class="xs:inline hidden">{name}</span>
+			<span class="xs:hidden inline">{firstName}</span>
+		</div>
+		<ul class="flex gap-3 text-sm sm:gap-6 sm:text-base">
+			<li>
+				<a href="/" class="font-medium transition-all hover:text-cyan-500">About</a>
+			</li>
+			<li>
+				<a href="/contact" class="font-medium transition-all hover:text-cyan-500">Contact</a>
+			</li>
+			<li>
+				<a
+					href="https://github.com/aflansburg"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="flex cursor-pointer transition-all hover:text-cyan-500"
+					aria-label="GitHub Profile"
+				>
+					<GitHubIcon />
+				</a>
+			</li>
+			<li>
+				<button
+					class="cursor-pointer transition-all hover:text-cyan-500"
+					aria-label="Toggle theme"
+					onclick={toggleColorMode}><SunIcon /></button
+				>
+			</li>
+		</ul>
+	</nav>
 
-<div
-	class="min-h-screen px-8 pt-14 pb-24 sm:pt-16 sm:pb-32 md:pt-16 md:pb-32 lg:pt-20 lg:pb-36 {$colorMode ===
-	'dark'
-		? 'bg-zinc-900 text-zinc-50'
-		: 'bg-zinc-50'}"
->
-	{@render children()}
+	<div
+		class="min-h-screen px-8 pt-14 pb-24 sm:pt-16 sm:pb-32 md:pt-16 md:pb-32 lg:pt-20 lg:pb-36 {$colorMode ===
+		'dark'
+			? 'bg-zinc-900 text-zinc-50'
+			: 'bg-zinc-50'}"
+	>
+		{@render children()}
+	</div>
 </div>
 
 <style>

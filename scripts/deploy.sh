@@ -34,6 +34,8 @@ if ! gcloud compute regions list --format="value(name)" | grep -q "^$REGION$"; t
     echo "Available regions:"
     gcloud compute regions list --format="table[box](name,description)"
     exit 1
+else
+    echo "Region $REGION is valid."
 fi
 
 # Show project details and confirm
