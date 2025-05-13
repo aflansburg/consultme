@@ -148,11 +148,15 @@
 				>.
 			</p>
 			<p>
-				<span class="animate-glow flex items-center gap-2 font-bold text-cyan-500">
+				<span
+					class="animate-glow flex items-center gap-2 font-bold {$colorMode === 'dark'
+						? 'text-cyan-500'
+						: 'text-cyan-700'}"
+				>
 					Here's the source if you're interested: <a
 						href="https://github.com/aflansburg/consultme"
 						target="_blank"
-						class="text-white hover:underline"
+						class="{$colorMode === 'dark' ? 'text-white' : 'text-zinc-800'} hover:underline"
 					>
 						<GitHubIcon />
 					</a>
@@ -267,15 +271,23 @@
 	@keyframes glow {
 		0%,
 		100% {
-			text-shadow: 0 0 0px #67e8f9;
+			text-shadow: 0 0 0px var(--glow-color, #67e8f9);
 		}
 		50% {
-			text-shadow: 0 0 15px #67e8f9;
+			text-shadow: 0 0 15px var(--glow-color, #67e8f9);
 		}
 	}
 
 	.animate-glow {
 		animation: glow 2s ease-in-out infinite;
+	}
+
+	:global(.dark) .animate-glow {
+		--glow-color: #67e8f9;
+	}
+
+	:global(.light) .animate-glow {
+		--glow-color: #0e7490;
 	}
 
 	.pulse-animation {

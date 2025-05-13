@@ -1,12 +1,13 @@
 <script lang="ts">
+	import { colorMode } from '$lib/stores/sitePreferences.svelte';
 	export let className = '';
 </script>
 
 <svg
 	xmlns="http://www.w3.org/2000/svg"
 	viewBox="0 0 24 24"
-	class={`h-6 w-6 ${className}`}
-	fill="currentColor"
+	class={`h-6 w-6 ${className} transition-colors duration-200 hover:fill-violet-700`}
+	fill={$colorMode === 'dark' ? '#ffffff' : '#000000'}
 >
 	<path
 		fill-rule="evenodd"
