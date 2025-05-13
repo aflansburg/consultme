@@ -107,7 +107,7 @@ gcloud builds submit --config=cloudbuild.yaml --substitutions=_SERVICE_NAME=your
 PROJECT_ID=your-project-id
 
 # deploy build
-gcloud run deploy consultme --image gcr.io/$PROJECT_ID/consultme --platform managed --allow-unauthenticated --region us-central1
+gcloud run deploy consultme --image gcr.io/$PROJECT_ID/your-cloudrun-service-name --platform managed --allow-unauthenticated --region us-central1 # or whatever region you prefer
 ```
 
 Populate the `cloudbuild.yaml` file with the appropriate PUBLIC env var, and you can set your `OPENAI_API_KEY` directly in your Cloud Run service. Or clobber my deployment setup and deploy however you want. Vercel is pretty easy....

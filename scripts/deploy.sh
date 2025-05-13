@@ -2,14 +2,16 @@
 set -e
 
 # Check if required arguments are provided
-if [ $# -ne 2 ]; then
-    echo "Usage: $0 <service-name> <project-id>"
-    echo "Example: $0 myapp my-gcp-project"
+if [ $# -ne 3 ]; then
+    echo "Usage: $0 <service-name> <project-id> <region>"
+    echo "Example: $0 myapp my-gcp-project us-central1"
+    echo "Available regions: (run 'gcloud compute regions list' to see all options)"
     exit 1
 fi
 
 SERVICE_NAME=$1
 PROJECT_ID=$2
+REGION=$3
 
 # Check if gcloud is authenticated
 echo "Checking authentication status..."
@@ -25,6 +27,15 @@ if ! gcloud projects describe $PROJECT_ID >/dev/null 2>&1; then
     exit 1
 fi
 
+# Verify the region exists
+echo "Verifying region..."
+if ! gcloud compute regions list --format="value(name)" | grep -q "^$REGION$"; then
+    echo "Error: Region $REGION is not valid."
+    echo "Available regions:"
+    gcloud compute regions list --format="table[box](name,description)"
+    exit 1
+fi
+
 # Show project details and confirm
 echo -e "\nProject Details:"
 echo "=================="
@@ -37,7 +48,9 @@ gcloud projects describe $PROJECT_ID --format="table[box](
 
 # Prompt for confirmation
 echo -e "\nYou are about to deploy to the above project."
-read -p "Is this the correct project? (y/N) " confirm
+echo "Service: $SERVICE_NAME"
+echo "Region: $REGION"
+read -p "Is this correct? (y/N) " confirm
 if [[ $confirm != [yY] && $confirm != [yY][eE][sS] ]]; then
     echo "Deployment cancelled."
     exit 1
@@ -51,4 +64,4 @@ echo "Executing Cloud Build pipeline..."
 gcloud builds submit --config=cloudbuild.yaml --substitutions=_SERVICE_NAME=$SERVICE_NAME
 
 echo "Deploying to Cloud Run..."
-gcloud run deploy $SERVICE_NAME --image gcr.io/$PROJECT_ID/$SERVICE_NAME --platform managed --allow-unauthenticated --region us-central1
+gcloud run deploy $SERVICE_NAME --image gcr.io/$PROJECT_ID/$SERVICE_NAME --platform managed --allow-unauthenticated --region $REGION
