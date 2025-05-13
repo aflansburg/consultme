@@ -6,6 +6,7 @@ steps:
       '--build-arg', 'PUBLIC_MY_NAME=Abe Flansburg',
       '--build-arg', 'PUBLIC_MY_EMAIL=me@engabe.com',
       '--build-arg', 'PUBLIC_MY_LINKED_IN_URL=https://www.linkedin.com/in/abramflansburg/',
+      '--build-arg', 'PUBLIC_AVATAR_IMG_PATH=af-profile-sm.png',
       '.'
     ]
 
