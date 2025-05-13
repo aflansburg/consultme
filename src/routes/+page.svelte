@@ -257,7 +257,7 @@
 									<dd class="pr-2 text-center leading-relaxed text-green-400">
 										<button
 											on:click={toggleModal}
-											class="inline-flex items-center gap-2 rounded border border-green-500/30 bg-zinc-800 px-3 py-1.5 text-green-400 transition-all hover:border-green-500/50 hover:bg-zinc-700"
+											class="inline-flex cursor-pointer items-center gap-2 rounded border border-green-500/30 bg-zinc-800 px-3 py-1.5 text-green-400 transition-all hover:border-green-500/50 hover:bg-zinc-700"
 										>
 											<span class="text-white"><ClickMeIcon /></span>
 											<span>View</span>
