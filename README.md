@@ -63,6 +63,34 @@ The app will be available at `http://localhost:5173`
 
 ## Deploying to production
 
+### Google Cloud Run: Using the `deploy.sh` helper script
+
+First ensure you have the right adapter setup in `svelte.config.js`.
+e.g. for Cloud Run:
+```javascript
+import adapter from '@sveltejs/adapter-node';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
+	// Consult https://svelte.dev/docs/kit/integrations
+	// for more information about preprocessors
+	preprocess: vitePreprocess(),
+
+	kit: {
+		adapter: adapter()
+	}
+};
+
+export default config;
+```
+
+Then you can run:
+```bash
+./scripts/deploy.sh your-cloudrun-service-name your-gcp-project-id
+```
+
+### Manually
 I deploy to Cloud Run, so I do:
 
 ```bash
