@@ -9,7 +9,7 @@
 	let name = 'Rick Sanchez ?';
 	let firstName = name.split(' ')[0] + ' ?';
 	let avatarProperties = {
-		src: 'rick_sanchez.jpg',
+		src: 'rick_sanchez_sm.png',
 		alt: name,
 		class:
 			'w-16 h-16 sm:w-18 sm:h-18 rounded-full border-4 border-slate-50 shadow-lg cursor-pointer',
