@@ -126,20 +126,10 @@
 						target="_blank"
 						class="hover:underline">{myName}</a
 					></span
-				>
+				>, and honestly if you'd clicked that weird pulsating question mark icon, you'd have seen my
+				real name. (if you can't see the question mark you're probably on a Zune or something.)
 			</p>
 			<p>This is my portfolio slash consulting contact slash scheduling site ¯\_(ツ)_/¯.</p>
-			<p>
-				What you need to know about <span class="group relative">
-					<span class="font-bold text-cyan-700">{name}</span>
-					<span
-						class="invisible absolute -top-20 left-1/2 w-[300px] -translate-x-1/2 rounded-md bg-slate-800 px-3 py-2 text-center text-sm leading-snug text-white group-hover:visible"
-					>
-						Ha! You probably thought when you hovered on this text that it would say something like
-						"Main character of Rick & Morty" or something like that. Nah. Maybe I will another time.
-					</span>
-				</span>...
-			</p>
 			<p>{@html interpolatedFormatting}</p>
 			<p>
 				By the way, did you know that the color mode for this page is currently <span
@@ -370,39 +360,6 @@
 
 	:global(.light) .animate-glow {
 		--glow-color: #0e7490;
-	}
-
-	.pulse-animation {
-		animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-	}
-
-	.glow-border {
-		box-shadow:
-			0 0 5px #22c55e,
-			0 0 10px #22c55e,
-			0 0 15px #22c55e;
-		border: 2px solid rgba(34, 197, 94, 0.5);
-		transition: all 0.3s ease;
-	}
-
-	.glow-border:hover {
-		box-shadow:
-			0 0 10px #22c55e,
-			0 0 20px #22c55e,
-			0 0 30px #22c55e;
-		border-color: rgba(34, 197, 94, 0.8);
-	}
-
-	@keyframes pulse {
-		0%,
-		100% {
-			opacity: 1;
-			transform: scale(1);
-		}
-		50% {
-			opacity: 0.9;
-			transform: scale(1.05);
-		}
 	}
 
 	@keyframes blink-animation {
