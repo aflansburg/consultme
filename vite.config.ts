@@ -5,6 +5,13 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
+	define: {
+		'process.env.PUBLIC_MY_NAME': JSON.stringify(process.env.PUBLIC_MY_NAME || 'Morty Smith'),
+		'process.env.PUBLIC_MY_EMAIL': JSON.stringify(process.env.PUBLIC_MY_EMAIL || 'foo@bar.com'),
+		'process.env.PUBLIC_MY_LINKED_IN_URL': JSON.stringify(
+			process.env.PUBLIC_MY_LINKED_IN_URL || ''
+		)
+	},
 	test: {
 		workspace: [
 			{
