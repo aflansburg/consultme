@@ -7,6 +7,7 @@
 
 	let { children } = $props();
 	let name = 'Rick Sanchez ?';
+	let firstName = name.split(' ')[0] + ' ?';
 	let avatarProperties = {
 		src: 'rick_sanchez.jpg',
 		alt: name,
@@ -31,10 +32,9 @@
 	<div class="absolute -bottom-6 left-4">
 		<img {...avatarProperties} />
 	</div>
-	<div
-		class="animate-glow ml-[4.5rem] truncate text-lg font-bold tracking-wide sm:ml-20 sm:text-xl"
-	>
-		{name}
+	<div class="ml-[4.5rem] truncate pl-4 text-lg font-bold tracking-wide sm:ml-20 sm:text-xl">
+		<span class="xs:inline hidden">{name}</span>
+		<span class="xs:hidden inline">{firstName}</span>
 	</div>
 	<ul class="flex gap-3 text-sm sm:gap-6 sm:text-base">
 		<li>
@@ -65,7 +65,7 @@
 </nav>
 
 <div
-	class="min-h-screen px-4 pt-12 pb-24 sm:pt-16 sm:pb-32 md:pt-16 md:pb-32 lg:pt-20 lg:pb-36 {$colorMode ===
+	class="min-h-screen px-8 pt-14 pb-24 sm:pt-16 sm:pb-32 md:pt-16 md:pb-32 lg:pt-20 lg:pb-36 {$colorMode ===
 	'dark'
 		? 'bg-zinc-900 text-zinc-50'
 		: 'bg-zinc-50'}"
@@ -74,6 +74,15 @@
 </div>
 
 <style>
+	@media (min-width: 420px) {
+		:global(.xs\:inline) {
+			display: inline;
+		}
+		:global(.xs\:hidden) {
+			display: none;
+		}
+	}
+
 	@keyframes glow {
 		0%,
 		100% {
