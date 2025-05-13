@@ -201,9 +201,6 @@
 				</div>
 				<div class="w-full">
 					{#key data.character.id}
-						<p class="pb-8 text-center text-2xl font-bold md:text-3xl xl:col-span-2 xl:mb-0">
-							{data.character.name}
-						</p>
 						<div class="grid w-full grid-cols-1 items-start gap-6 xl:grid-cols-2">
 							<div class="flex flex-col items-center gap-4">
 								<img
