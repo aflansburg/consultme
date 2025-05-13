@@ -87,7 +87,7 @@ export default config;
 
 Then you can run:
 ```bash
-./scripts/deploy.sh your-cloudrun-service-name your-gcp-project-id
+./scripts/deploy.sh your-cloudrun-service-name your-gcp-project-id <region> # eg. us-central1
 ```
 
 ### Manually
