@@ -5,6 +5,7 @@
 	import { onMount } from 'svelte';
 	import { getCharacter } from '$lib/rickandmorty/character';
 	import { PUBLIC_MY_NAME } from '$env/static/public';
+	import GitHubIcon from '$lib/icons/GitHubIcon.svelte';
 
 	export let data: PageData;
 	let aiResponse = '';
@@ -92,7 +93,29 @@
 	});
 </script>
 
-<h1>
+<p>
+	I'm not <span class="group relative">
+		<button
+			type="button"
+			class="cursor-pointer border-none bg-transparent p-0 font-bold text-cyan-700 hover:underline"
+			on:click={fetchRickSanchez}>Rick Sanchez</button
+		>
+		<span
+			class="invisible absolute -top-8 left-1/2 -translate-x-1/2 rounded-md bg-slate-800 px-2 py-1 text-sm whitespace-nowrap text-white group-hover:visible"
+		>
+			Main character of Rick & Morty
+		</span>
+	</span>, obviously - I'm a Jack-of-all-trades engineer named
+	<span class="font-bold text-cyan-700"
+		><a href="https://www.linkedin.com/in/abramflansburg/" target="_blank" class="hover:underline"
+			>{myName}</a
+		></span
+	>
+</p>
+<br />
+<p>This is my portfolio slash consulting contact slash scheduling site ¯\_(ツ)_/¯.</p>
+<br />
+<p>
 	What you need to know about <span class="group relative">
 		<span class="font-bold text-cyan-700">{name}</span>
 		<span
@@ -102,7 +125,7 @@
 			character of Rick & Morty" or something like that. Nah. Maybe I will another time.
 		</span>
 	</span>...
-</h1>
+</p>
 <br />
 <p>{@html interpolatedFormatting}</p>
 <br />
@@ -125,34 +148,24 @@
 </p>
 <br />
 <p>
+	<span class="flex items-center gap-2 font-bold text-cyan-500">
+		Here's the source if you're interested: <a
+			href="https://github.com/aflansburg/consultme"
+			target="_blank"
+			class="text-white hover:underline"
+		>
+			<GitHubIcon />
+		</a>
+	</span>
+</p>
+<br />
+<p>
 	It communicates with a Python <span class="font-bold text-teal-600"
 		><a href="https://fastapi.tiangolo.com/" target="_blank" class="hover:underline">FastAPI</a
 		></span
 	>
 	backend.
 </p>
-<br />
-<p>
-	I'm not <span class="group relative">
-		<button
-			type="button"
-			class="cursor-pointer border-none bg-transparent p-0 font-bold text-cyan-700 hover:underline"
-			on:click={fetchRickSanchez}>Rick Sanchez</button
-		>
-		<span
-			class="invisible absolute -top-8 left-1/2 -translate-x-1/2 rounded-md bg-slate-800 px-2 py-1 text-sm whitespace-nowrap text-white group-hover:visible"
-		>
-			Main character of Rick & Morty
-		</span>
-	</span>, obviously - I'm a Jack-of-all-trades engineer named
-	<span class="font-bold text-cyan-700"
-		><a href="https://www.linkedin.com/in/abramflansburg/" target="_blank" class="hover:underline"
-			>{myName}</a
-		></span
-	>
-</p>
-<br />
-<p>This is my portfolio slash consulting contact slash scheduling site ¯\_(ツ)_/¯.</p>
 <br />
 <p class="text-left">Anyways, here's a random Rick & Morty Character.</p>
 <p class="text-left">An LLM generates the additional information for each character.</p>
