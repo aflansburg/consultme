@@ -66,8 +66,9 @@
 
 	let name = 'Rick Sanchez';
 	let overview = `
-        $$$name$$$ is a scientist who is known for his crazy adventures and his ability to travel through time and space.
-        <br />He is also known for his love of that sweet green juice and his tendency to get into trouble.
+        Oh yeah, so $$$name$$$ is a scientist who is known for his crazy adventures and his ability to
+        travel through time and space. He is also known for his love of that sweet green juice and his
+        tendency to get into trouble.
     `;
 
 	let interpolatedFormatting = overview.replace(
@@ -119,26 +120,24 @@
 					>
 						Main character of Rick & Morty
 					</span>
-				</span>, obviously - I'm a Jack-of-all-trades engineer named
+				</span>- obviously - I'm just a Jack-of-all-trades engineer named
 				<span class="font-bold text-cyan-700"
 					><a
 						href="https://www.linkedin.com/in/abramflansburg/"
 						target="_blank"
 						class="hover:underline">{myName}</a
-					></span
-				>, and honestly if you'd clicked that weird pulsating question mark icon, you'd have seen my
-				real name. (if you can't see the question mark you're probably on a Zune or something.)
+					>.</span
+				>
+				<br />
+			</p>
+			<p>
+				Honestly if you'd clicked that weird pulsating question mark icon, you'd have seen my real
+				name - although if you can't see the question mark you're probably on a Zune or something.
 			</p>
 			<p>This is my portfolio slash consulting contact slash scheduling site ¯\_(ツ)_/¯.</p>
-			<p>{@html interpolatedFormatting}</p>
 			<p>
-				By the way, did you know that the color mode for this page is currently <span
-					class={`${$colorMode === 'dark' ? 'text-neutral-50' : 'text-stone-950'} font-bold`}
-					>{$colorMode}</span
-				>?
-			</p>
-			<p>
-				This is a pretty simple web application created with <span class="font-bold text-orange-600"
+				It's a fairly straightforward SPA application created with <span
+					class="font-bold text-orange-600"
 					><a href="https://kit.svelte.dev/" target="_blank" class="hover:underline">SvelteKit</a
 					></span
 				>
@@ -146,7 +145,16 @@
 				<span class="font-bold text-sky-600"
 					><a href="https://tailwindcss.com/" target="_blank" class="hover:underline">TailwindCSS</a
 					></span
-				>.
+				> and a dash of "AI" (LLM).
+			</p>
+			<p>{@html interpolatedFormatting}</p>
+			<p>
+				By the way, did you know that the color mode for this page is currently <span
+					class={`${$colorMode === 'dark' ? 'text-neutral-50' : 'text-stone-950'} font-bold text-red-500`}
+					>{$colorMode}</span
+				>? SvelteKit has some pretty interesting state management. You can use these writable stores
+				to persist and mutate state across the entire app, and derive values from that state as
+				needed.
 			</p>
 			<p>
 				<span
@@ -324,6 +332,11 @@
 					{/if}
 				{:else}
 					<span>{@html aiResponse}</span>
+					<br />
+					<span class="mt-4 text-sm text-green-500/70 italic"
+						>>&nbsp;Please note that the information provided may not be canonical across all known
+						dimensions. Some information fetched from the Citadel may be outdated or incorrect.
+					</span>
 				{/if}
 			</div>
 		</div>
