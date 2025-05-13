@@ -3,6 +3,9 @@
 A simple SvelteKit application for portfolio, consulting site, etc.
 Has a weird obsession with Rick & Morty lore. ¯\_(ツ)_/¯
 
+You can check out my deployed version on Google Cloud run at:
+https://engabe.com
+
 ## Prerequisites
 
 This project uses Node.js v22.15.0. We recommend using NVM (Node Version Manager) to manage your Node.js versions.
