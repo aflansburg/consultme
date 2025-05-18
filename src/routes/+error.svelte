@@ -31,7 +31,7 @@
 		}, 800);
 
 		// Setup alarm sound
-		audio = new Audio('/alarm.mp3');
+		audio = new Audio('/nostromo_sd_alarm.mp3');
 		audio.volume = 0.3;
 		audio.loop = true;
 
