@@ -8,6 +8,7 @@
 	import GitHubIcon from '$lib/icons/GitHubIcon.svelte';
 	import ClickMeIcon from '$lib/icons/ClickMeIcon.svelte';
 	import GreenCheckIcon from '$lib/icons/GreenCheckIcon.svelte';
+	import { weirdWord } from '$lib/stores/weirdWord.svelte';
 
 	export let data: PageData;
 	let aiResponse = '';
@@ -105,6 +106,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>{$weirdWord}</title>
+</svelte:head>
+
 <div class="container mx-auto px-4">
 	<div class="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_2fr] lg:gap-12">
 		<div class="space-y-4">
@@ -113,7 +118,7 @@
 					<button
 						type="button"
 						class="cursor-pointer border-none bg-transparent p-0 font-bold text-cyan-700 hover:underline"
-						on:click={fetchRickSanchez}>Rick Sanchez</button
+						onclick={fetchRickSanchez}>Rick Sanchez</button
 					>
 					<span
 						class="invisible absolute -top-8 left-1/2 -translate-x-1/2 rounded-md bg-slate-800 px-2 py-1 text-sm whitespace-nowrap text-white group-hover:visible"
@@ -208,7 +213,7 @@
 								/>
 								<button
 									class="pulse-animation glow-border relative cursor-pointer rounded-md bg-zinc-700 px-4 py-2 text-white hover:bg-lime-400"
-									on:click={() => {
+									onclick={() => {
 										fetchRandomCharacter();
 									}}
 								>
@@ -244,8 +249,8 @@
 									<dt class="mb-2 text-center font-medium text-green-500/80">Additional Info:</dt>
 									<dd class="pr-2 text-center leading-relaxed text-green-400">
 										<button
-											on:click={toggleModal}
-											on:keydown={(e) => e.key === 'Enter' && toggleModal()}
+											onclick={toggleModal}
+											onkeydown={handleKeydown}
 											class="inline-flex cursor-pointer items-center gap-2 rounded border border-green-500/30 bg-zinc-800 px-3 py-1.5 text-green-400 transition-all hover:border-green-500/50 hover:bg-zinc-700"
 										>
 											{#if fetchStarted && !aiResponse && !showModal}
@@ -278,7 +283,7 @@
 		<!-- Invisible button that covers the backdrop for keyboard accessibility -->
 		<button
 			class="absolute inset-0 h-full w-full cursor-default bg-transparent"
-			on:click={toggleModal}
+			onclick={toggleModal}
 			aria-label="Close modal by clicking backdrop"
 		></button>
 
@@ -289,7 +294,7 @@
 			aria-modal="true"
 		>
 			<button
-				on:click={toggleModal}
+				onclick={toggleModal}
 				class="absolute top-4 right-4 cursor-pointer text-green-500/80 hover:text-green-500 focus:ring-0 focus:ring-transparent focus:ring-offset-0 focus:outline-none"
 				aria-label="Close modal"
 			>

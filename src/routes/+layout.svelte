@@ -5,6 +5,8 @@
 	import QuestionMarkIcon from '$lib/icons/QuestionMarkIcon.svelte';
 	import { colorMode } from '$lib/stores/sitePreferences.svelte';
 	import { avatarImage } from '$lib/stores/avatarImage.svelte';
+	import { weirdWord } from '$lib/stores/weirdWord.svelte';
+	import { errorMessage } from '$lib/stores/errorMessageStore.svelte';
 	import { PUBLIC_AVATAR_IMG_PATH, PUBLIC_MY_NAME } from '$env/static/public';
 	import { goto } from '$app/navigation';
 
@@ -28,6 +30,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>{$weirdWord}</title>
+</svelte:head>
+
 <div class={$colorMode}>
 	<nav
 		class="relative flex items-center justify-between px-4 py-3 {$colorMode === 'dark'
@@ -46,14 +52,14 @@
 					class="relative ml-1 inline-flex cursor-pointer items-center border-none bg-transparent p-0 align-middle text-green-500 hover:text-green-400 focus:outline-none"
 					style="vertical-align: middle; position: relative; top: -1px;"
 					onclick={() => {
-						avatarImage.set(PUBLIC_AVATAR_IMG_PATH);
+						avatarImage.set('/' + PUBLIC_AVATAR_IMG_PATH);
 						name = PUBLIC_MY_NAME;
 						firstName = PUBLIC_MY_NAME.split(' ')[0];
 						showQuestionMark = false;
 					}}
 					onkeydown={(e) => {
 						if (e.key === 'Enter') {
-							avatarImage.set(PUBLIC_AVATAR_IMG_PATH);
+							avatarImage.set('/' + PUBLIC_AVATAR_IMG_PATH);
 							name = PUBLIC_MY_NAME;
 							firstName = PUBLIC_MY_NAME.split(' ')[0];
 							showQuestionMark = false;
@@ -70,7 +76,16 @@
 				<a href="/" class="font-medium transition-all hover:text-cyan-500">About</a>
 			</li>
 			<li>
+				<a href="/projects" class="font-medium transition-all hover:text-cyan-500">Projects</a>
+			</li>
+			<li>
 				<a href="/contact" class="font-medium transition-all hover:text-cyan-500">Contact</a>
+			</li>
+			<li>
+				<a
+					href="/this-route-def-does-not-exist"
+					class="font-medium transition-all hover:text-red-500">Whoops</a
+				>
 			</li>
 			<li>
 				<a

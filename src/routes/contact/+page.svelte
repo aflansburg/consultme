@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { PUBLIC_MY_EMAIL, PUBLIC_MY_LINKED_IN_URL } from '$env/static/public';
+	import { weirdWord } from '$lib/stores/weirdWord.svelte';
 </script>
+
+<svelte:head>
+	<title>{$weirdWord} Contact</title>
+</svelte:head>
 
 <div class="flex flex-col items-center gap-3 py-4">
 	<p>Wow this page is really something else.</p>
