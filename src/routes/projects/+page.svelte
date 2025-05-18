@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { weirdWord } from '$lib/stores/weirdWord.svelte';
+	import { colorMode } from '$lib/stores/sitePreferences.svelte';
+
 	import {
 		generateRandomCombination,
 		type AdjectiveType,
@@ -8,10 +10,10 @@
 	} from '$lib/utils/nameGenerator';
 	import ClickMeIcon from '$lib/icons/ClickMeIcon.svelte';
 
-	let randomCombination = '';
-	let loading = false;
+	let randomCombination = $state('');
+	let loading = $state(false);
 	let spinnerFrames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
-	let currentSpinnerFrame = 0;
+	let currentSpinnerFrame = $state(0);
 	let spinnerInterval: ReturnType<typeof setInterval>;
 
 	const handleGenerateRandomCombination = () => {
@@ -52,7 +54,7 @@
 			additionalHtmlContent: [
 				`
                 <p class="text-sm text-gray-200 py-2">
-                    Sample project is a random name generating project nobody asked for with support for CommonJS, ES6 Module, and browser script
+                    Sample project is a sample project that helps you boilerplate a sample project for projecting samples.
                 </p>
             `
 			]
@@ -75,7 +77,7 @@
 	<title>{$weirdWord} Projects</title>
 </svelte:head>
 
-<div class="projects-container">
+<div class="projects-container" class:dark={$colorMode === 'dark'}>
 	<h1 class="mb-4 text-2xl font-bold">Projects</h1>
 	<p class="mb-4">This is a showcase of mostly useless projects I've made.</p>
 	<ul role="list" class="divide-y divide-gray-600">
@@ -91,11 +93,19 @@
 					<div class="flex items-center gap-4">
 						<button
 							type="button"
-							class="inline-flex cursor-pointer items-center gap-2 rounded border border-green-500/30 bg-zinc-800 px-3 py-1.5 text-green-400 transition-all hover:border-green-500/50 hover:bg-zinc-700"
+							class="inline-flex cursor-pointer items-center gap-2 rounded border border-green-500/30 {$colorMode ===
+							'dark'
+								? 'bg-zinc-800'
+								: 'bg-zinc-200'} px-3 py-1.5 text-green-400 transition-all hover:border-green-500/50 hover:{$colorMode ===
+							'dark'
+								? 'bg-zinc-700'
+								: 'bg-zinc-300'}"
 							onclick={handleGenerateRandomCombination}
 							aria-label="Generate Random Combination"
 						>
-							<span class="text-white"><ClickMeIcon /></span>
+							<ClickMeIcon
+								className={$colorMode === 'dark' ? 'text-green-300' : 'text-green-600'}
+							/>
 							{loading ? 'Loading...' : ''}
 						</button>
 						<p
@@ -153,5 +163,35 @@
 		50% {
 			text-shadow: 0 0 15px var(--glow-color, #67e8f9);
 		}
+	}
+
+	/* Color mode styles */
+	.projects-container {
+		color: var(--text-color, #1e293b); /* Default to a dark slate color */
+	}
+
+	.projects-container.dark {
+		--text-color: #f8fafc; /* Light text for dark mode */
+	}
+
+	:global(.dark) .glow-border {
+		--glow-color: #22c55e;
+	}
+
+	/* Force text color based on color mode */
+	:global(.projects-container *) {
+		color: #1e293b !important; /* Default text color for light mode */
+	}
+
+	:global(.dark .projects-container *) {
+		color: #f8fafc !important; /* Light text for dark mode */
+	}
+
+	/* Exceptions for links and special elements */
+	:global(.projects-container a),
+	:global(.projects-container button),
+	:global(.projects-container .text-green-400),
+	:global(.projects-container .text-cyan-400) {
+		color: inherit !important; /* Allow these elements to keep their specific colors */
 	}
 </style>
