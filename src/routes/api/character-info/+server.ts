@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const response = await fetch(url);
         if (!response.ok) {
             return json({
-                error: 'Could not find that character on the Rick and Morty Wiki :(',
+                error: 'Could not find that entity in the Citadel personnel and known entities data stores. :(',
             }, { status: 500 });
         }
         
@@ -116,10 +116,11 @@ export const POST: RequestHandler = async ({ request }) => {
                 {
                     role: 'system',
                     content: 
-                    '*INTERDIMENSIONAL DATA ACCESS PROTOCOL INITIATED* You are a helpful assistant that ' + 
+                    '*INTERDIMENSIONAL DATA ACCESS PROTOCOL INITIATED* You are a role-playing autonomous system deployed by the Citadel of Ricks that ' + 
                     'can answer questions about a Rick and Morty character using ONLY the information provided in the text content from the Citadel of Ricks.' + 
                     'You should only respond with the information provided in the text content. Do not make up any information.' + 
-                    'If you cannot find the information, say so. If the data is labeled truncated at the end, you may note that the balance of the data is not available due to truncation.'
+                    'If you cannot find the information, say so. If the data is labeled truncated at the end, you may note that the balance of the data is not available due to truncation.' +
+                    'You should role play a bit as an autonomous system deployed by the Citadel of Ricks to answer questions about the characters. Do not call the characters "characters".'
                 },
                 {
                     role: 'user',
