@@ -192,14 +192,14 @@
 						About
 					</a>
 					<a
-						href="/projects"
+						href="/work"
 						class="block px-4 py-3 text-lg font-medium transition-all hover:text-cyan-500 {$colorMode ===
 						'dark'
 							? 'hover:bg-zinc-700/70'
 							: 'hover:bg-zinc-100/70'} rounded-md"
 						onclick={toggleMenu}
 					>
-						Projects
+						Work
 					</a>
 					<a
 						href="/contact"
