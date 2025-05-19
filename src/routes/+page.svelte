@@ -110,7 +110,7 @@
 	<title>{$weirdWord}</title>
 </svelte:head>
 
-<div class="container mx-auto px-4">
+<div class="container mx-auto px-4 pt-4">
 	<div class="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_2fr] lg:gap-12">
 		<div class="space-y-4">
 			<p>

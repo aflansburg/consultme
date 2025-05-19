@@ -299,7 +299,7 @@
 	{/if}
 
 	<div
-		class="min-h-screen px-8 pt-14 pb-24 sm:pt-16 sm:pb-32 md:pt-16 md:pb-32 lg:pt-20 lg:pb-36 {$colorMode ===
+		class="min-h-screen px-8 pt-8 pb-24 sm:pt-8 sm:pb-32 md:pt-8 md:pb-32 lg:pt-8 lg:pb-36 {$colorMode ===
 		'dark'
 			? 'bg-zinc-900 text-zinc-50'
 			: 'bg-zinc-50'}"

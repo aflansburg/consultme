@@ -42,79 +42,117 @@
 	});
 </script>
 
-<div
-	class="relative flex h-screen flex-col items-center justify-center gap-4 overflow-hidden bg-black"
->
-	<!-- Multiple pulsing background elements -->
-	<div class="fixed inset-0 flex items-center justify-center">
-		<span class="animate-pulse-glow absolute z-0 h-48 w-96 rounded-full opacity-60 blur-3xl"></span>
+<div class="error-container">
+	<div
+		class="relative flex h-screen w-full flex-col items-center justify-start overflow-hidden bg-black pt-[3vh]"
+	>
+		<!-- Multiple pulsing background elements -->
+		<div class="fixed inset-0 flex items-center justify-center">
+			<span class="animate-pulse-glow absolute z-0 h-1/4 w-1/3 rounded-full opacity-60 blur-3xl"
+			></span>
+		</div>
+		<div class="animate-flashing fixed top-0 right-0 left-0 h-2 bg-red-600"></div>
+		<div class="animate-flashing-delayed fixed right-0 bottom-0 left-0 h-2 bg-red-600"></div>
+
+		<!-- Alert warning strips -->
+		<div class="alert-stripes fixed inset-0 opacity-20"></div>
+
+		<!-- Main content -->
+		<div
+			class="relative z-10 flex max-h-screen w-full flex-col items-center gap-2 px-4 text-center sm:gap-4 sm:px-6"
+		>
+			<!-- Warning symbol -->
+			<div class="warning-symbol {showAlert ? 'visible' : 'invisible'} scale-75 sm:scale-100">
+				<div class="triangle"></div>
+				<span>!</span>
+			</div>
+
+			<!-- ERROR heading -->
+			<h1
+				class="animate-pulse-text mb-2 text-4xl font-bold tracking-wider text-red-500 sm:text-6xl"
+			>
+				ERROR
+			</h1>
+
+			<!-- Status code -->
+			<div class="error-code-container">
+				<p
+					class="rounded-md border border-red-500/50 bg-red-900/30 px-4 py-1 font-mono text-2xl tracking-widest text-red-300 sm:px-6 sm:py-2 sm:text-4xl"
+				>
+					{page.status}
+				</p>
+			</div>
+
+			<!-- Error message -->
+			<div class="mt-2 max-w-lg">
+				<p
+					class="rounded-md border border-red-500/30 bg-red-900/20 px-4 py-2 text-sm text-red-100 sm:px-6 sm:py-3 sm:text-xl"
+				>
+					{page.error?.message || 'Unknown error occurred'}
+				</p>
+			</div>
+
+			<!-- Buttons -->
+			<div class="mt-3 flex flex-wrap items-center justify-center gap-2 sm:mt-6 sm:gap-4">
+				<a
+					href="/"
+					class="rounded-md border border-red-500/50 bg-red-900/60 px-4 py-2 text-sm text-white transition-all hover:scale-105 hover:bg-red-800 sm:px-6 sm:py-3 sm:text-base"
+				>
+					Return to Safety
+				</a>
+
+				<button
+					class="px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-base {alarmPlaying
+						? 'bg-red-700'
+						: 'bg-red-900/40'} flex items-center gap-2 rounded-md border border-red-500/50 text-white transition-all hover:bg-red-800"
+					onclick={toggleAlarm}
+				>
+					<span
+						class="inline-block h-3 w-3 sm:h-4 sm:w-4 {alarmPlaying
+							? 'animate-pulse bg-red-400'
+							: 'bg-red-300'} rounded-full"
+					></span>
+					{alarmPlaying ? 'Silence Alarm' : 'Activate Alarm'}
+				</button>
+			</div>
+		</div>
+
+		<!-- Corner alert lights -->
+		<div class="alert-light absolute top-4 left-4 {showAlert ? 'light-on' : ''}"></div>
+		<div class="alert-light absolute top-4 right-4 {showAlert ? '' : 'light-on'}"></div>
+		<div class="alert-light absolute bottom-4 left-4 {showAlert ? '' : 'light-on'}"></div>
+		<div class="alert-light absolute right-4 bottom-4 {showAlert ? 'light-on' : ''}"></div>
 	</div>
-	<div class="animate-flashing fixed top-0 right-0 left-0 h-2 bg-red-600"></div>
-	<div class="animate-flashing-delayed fixed right-0 bottom-0 left-0 h-2 bg-red-600"></div>
-
-	<!-- Alert warning strips -->
-	<div class="alert-stripes fixed inset-0 opacity-20"></div>
-
-	<!-- Main content -->
-	<div class="relative z-10 flex flex-col items-center gap-6 px-6 text-center">
-		<!-- Warning symbol -->
-		<div class="warning-symbol {showAlert ? 'visible' : 'invisible'}">
-			<div class="triangle"></div>
-			<span>!</span>
-		</div>
-
-		<!-- ERROR heading -->
-		<h1 class="animate-pulse-text mb-4 text-6xl font-bold tracking-wider text-red-500">ERROR</h1>
-
-		<!-- Status code -->
-		<div class="error-code-container">
-			<p
-				class="rounded-md border border-red-500/50 bg-red-900/30 px-6 py-2 font-mono text-4xl tracking-widest text-red-300"
-			>
-				{page.status}
-			</p>
-		</div>
-
-		<!-- Error message -->
-		<div class="mt-4 max-w-lg">
-			<p class="rounded-md border border-red-500/30 bg-red-900/20 px-6 py-4 text-xl text-red-100">
-				{page.error?.message || 'Unknown error occurred'}
-			</p>
-		</div>
-
-		<!-- Buttons -->
-		<div class="mt-8 flex items-center gap-4">
-			<a
-				href="/"
-				class="rounded-md border border-red-500/50 bg-red-900/60 px-6 py-3 text-white transition-all hover:scale-105 hover:bg-red-800"
-			>
-				Return to Safety
-			</a>
-
-			<button
-				class="px-6 py-3 {alarmPlaying
-					? 'bg-red-700'
-					: 'bg-red-900/40'} flex items-center gap-2 rounded-md border border-red-500/50 text-white transition-all hover:bg-red-800"
-				onclick={toggleAlarm}
-			>
-				<span
-					class="inline-block h-4 w-4 {alarmPlaying
-						? 'animate-pulse bg-red-400'
-						: 'bg-red-300'} rounded-full"
-				></span>
-				{alarmPlaying ? 'Silence Alarm' : 'Activate Alarm'}
-			</button>
-		</div>
-	</div>
-
-	<!-- Corner alert lights -->
-	<div class="alert-light absolute top-4 left-4 {showAlert ? 'light-on' : ''}"></div>
-	<div class="alert-light absolute top-4 right-4 {showAlert ? '' : 'light-on'}"></div>
-	<div class="alert-light absolute bottom-4 left-4 {showAlert ? '' : 'light-on'}"></div>
-	<div class="alert-light absolute right-4 bottom-4 {showAlert ? 'light-on' : ''}"></div>
 </div>
 
 <style>
+	/* Override layout container */
+	.error-container {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		width: 100vw;
+		height: 100vh;
+		z-index: 9999;
+	}
+
+	/* Apply these styles only when error component exists */
+	:global(html:has(.error-container) nav) {
+		display: none;
+	}
+
+	:global(html:has(.error-container) body) {
+		overflow: hidden;
+		margin: 0;
+		padding: 0;
+	}
+
+	:global(html:has(.error-container) .min-h-screen) {
+		padding: 0;
+	}
+
 	@keyframes pulse-glow {
 		0%,
 		100% {
@@ -178,8 +216,8 @@
 	}
 
 	.alert-light {
-		width: 20px;
-		height: 20px;
+		width: 16px;
+		height: 16px;
 		border-radius: 50%;
 		background-color: rgba(220, 38, 38, 0.2);
 		border: 2px solid rgba(239, 68, 68, 0.6);
@@ -193,8 +231,8 @@
 
 	.warning-symbol {
 		position: relative;
-		width: 100px;
-		height: 100px;
+		width: 80px;
+		height: 80px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -205,17 +243,17 @@
 		position: absolute;
 		width: 0;
 		height: 0;
-		border-left: 50px solid transparent;
-		border-right: 50px solid transparent;
-		border-bottom: 90px solid rgb(255, 204, 0);
+		border-left: 40px solid transparent;
+		border-right: 40px solid transparent;
+		border-bottom: 72px solid rgb(255, 204, 0);
 		transform: translateY(-5px);
 	}
 
 	.warning-symbol span {
 		position: relative;
 		z-index: 1;
-		transform: translateY(10px);
-		font-size: 42px;
+		transform: translateY(8px);
+		font-size: 36px;
 		font-weight: 900;
 		color: black;
 	}
@@ -229,18 +267,35 @@
 		content: '';
 		position: absolute;
 		top: 50%;
-		width: 20px;
-		height: 3px;
+		width: 16px;
+		height: 2px;
 		background-color: rgba(239, 68, 68, 0.7);
 	}
 
 	.error-code-container::before {
-		left: -30px;
+		left: -24px;
 		transform: translateY(-50%);
 	}
 
 	.error-code-container::after {
-		right: -30px;
+		right: -24px;
 		transform: translateY(-50%);
+	}
+
+	/* Media query for very small screens */
+	@media (max-height: 500px) {
+		.warning-symbol {
+			width: 60px;
+			height: 60px;
+			scale: 0.7;
+		}
+		.triangle {
+			border-left: 30px solid transparent;
+			border-right: 30px solid transparent;
+			border-bottom: 54px solid rgb(255, 204, 0);
+		}
+		.warning-symbol span {
+			font-size: 28px;
+		}
 	}
 </style>
