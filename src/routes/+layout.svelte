@@ -100,7 +100,7 @@
 				<a href="/" class="font-medium transition-all hover:text-cyan-500">About</a>
 			</li>
 			<li>
-				<a href="/projects" class="font-medium transition-all hover:text-cyan-500">Projects</a>
+				<a href="/work" class="font-medium transition-all hover:text-cyan-500">Work</a>
 			</li>
 			<li>
 				<a href="/contact" class="font-medium transition-all hover:text-cyan-500">Contact</a>
