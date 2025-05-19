@@ -54,7 +54,7 @@
 		</div>
 		<div class="ml-[4.5rem] truncate pl-4 text-lg font-bold tracking-wide sm:ml-20 sm:text-xl">
 			<span class="xs:inline hidden">{name}</span>
-			<span class="xs:hidden inline">{firstName}</span>
+			<span class="xs:hidden inline">{name}</span>
 			{#if showQuestionMark}
 				<button
 					type="button"
