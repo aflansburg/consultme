@@ -1,4 +1,4 @@
-FROM node:20-slim AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 COPY package*.json ./
@@ -16,7 +16,7 @@ ENV PUBLIC_MY_LINKED_IN_URL=${PUBLIC_MY_LINKED_IN_URL}
 
 RUN npm run build
 
-FROM node:20-slim
+FROM node:22-alpine
 WORKDIR /app
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/package.json .
