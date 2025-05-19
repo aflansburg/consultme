@@ -63,6 +63,14 @@ The app will be available at `http://localhost:5173`
 
 ## Deploying to production
 
+### The Dockerfile
+
+You might be asking yourself why the Docker image will be built using `node:22-slim` and then a long list of installed libs.
+
+We need the libs for chromium & playwright to work in Google Cloud Run, and this keeps our image relatively slim.
+
+It can take a little bit to install deps during build, but still reasonably fast.
+
 ### Google Cloud Run: Using the `deploy.sh` helper script
 
 First ensure you have the right adapter setup in `svelte.config.js`.
