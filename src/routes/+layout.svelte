@@ -7,6 +7,11 @@
 	import QuestionMarkIcon from '$lib/icons/QuestionMarkIcon.svelte';
 	import MenuIcon from '$lib/icons/MenuIcon.svelte';
 	import CloseIcon from '$lib/icons/CloseIcon.svelte';
+	import YouTubeIcon from '$lib/icons/YouTubeIcon.svelte';
+	import SkullIcon from '$lib/icons/SkullIcon.svelte';
+	import RickAndMortyIcon from '$lib/icons/RickAndMortyIcon.svelte';
+	import YouTubeModal from '$lib/components/YouTubeModal.svelte';
+	import MatrixLyrics from '$lib/components/MatrixLyrics.svelte';
 	import { colorMode } from '$lib/stores/sitePreferences.svelte';
 	import { avatarImage } from '$lib/stores/avatarImage.svelte';
 	import { name, firstName, identityRevealed } from '$lib/stores/identity.svelte';
@@ -23,6 +28,14 @@
 	let screenGlitching = $state(false);
 	let vhsGlitching = $state(false);
 	let glitchCounter = $state(0); // Counter for 4:1 ratio
+	let showYouTubeModal = $state(false);
+	let currentVideoId = $state('');
+	let showMatrixLyrics = $state(false);
+	let currentLyrics = $state("");
+	let lyricsMode = $state<"matrix" | "straight">("matrix");
+	let lyricsTimer: ReturnType<typeof setTimeout>;
+	let youtubeVideoId = $state('https://youtu.be/M1tIH55Bo8k?si=0TQ1EmMIrn4H631I&t=206'); // YouTube video with timestamp
+	let rickAndMortyVideoId = $state('https://www.youtube.com/watch?v=i7RMgPHGSMU'); // Rick and Morty video
 	let avatarProperties = $derived({
 		src: $avatarImage,
 		alt: $name,
@@ -40,6 +53,57 @@
 
 	function toggleMenu() {
 		isMenuOpen = !isMenuOpen;
+	}
+
+	function openYouTubeModal(videoId: string) {
+		currentVideoId = videoId;
+		showYouTubeModal = true;
+
+		// Clear any existing timer
+		if (lyricsTimer) {
+			clearTimeout(lyricsTimer);
+		}
+		showMatrixLyrics = false;
+
+		// Check if this is the sad video (M1tIH55Bo8k)
+		if (videoId.includes('M1tIH55Bo8k')) {
+			currentLyrics = "Something kinda sad about The way that things have come to be Desensitized to everything What became of subtlety? How can this mean anything to me If I really don't feel anything at all?";
+			lyricsMode = "matrix";
+			// Start lyrics after 24 seconds
+			lyricsTimer = setTimeout(() => {
+				showMatrixLyrics = true;
+				// Stop lyrics after 35 seconds
+				setTimeout(() => {
+					showMatrixLyrics = false;
+				}, 35000);
+			}, 24000);
+		}
+		// Check if this is the Rick and Morty video (i7RMgPHGSMU)
+		else if (videoId.includes('i7RMgPHGSMU')) {
+			currentLyrics = "Somewhere out on that horizon Out beyond the neon lights I know there must be something better But there's nowhere else in sight It's survival in the city When you live from day to day City streets don't have much pity When you're down, that's where you'll stay";
+			lyricsMode = "straight";
+			// Start lyrics right away with the video
+			lyricsTimer = setTimeout(() => {
+				showMatrixLyrics = true;
+				// Stop lyrics after enough time for all lyrics (about 40 seconds)
+				setTimeout(() => {
+					showMatrixLyrics = false;
+				}, 40000);
+			}, 1000); // Start after 1 second
+		}
+	}
+
+	function closeYouTubeModal() {
+		showYouTubeModal = false;
+		currentVideoId = '';
+
+		// Clean up lyrics
+		if (lyricsTimer) {
+			clearTimeout(lyricsTimer);
+		}
+		showMatrixLyrics = false;
+		currentLyrics = "";
+		lyricsMode = "matrix";
 	}
 
 	// Developer Console Easter Eggs
@@ -215,6 +279,26 @@
 			</li>
 			<li>
 				<button
+					class="flex cursor-pointer transition-all hover:text-gray-300"
+					aria-label="Sad"
+					onclick={() => openYouTubeModal(youtubeVideoId)}
+					title="Sad"
+				>
+					<SkullIcon />
+				</button>
+			</li>
+			<li>
+				<button
+					class="flex cursor-pointer transition-all hover:text-green-400"
+					aria-label="In the City"
+					onclick={() => openYouTubeModal(rickAndMortyVideoId)}
+					title="In the City"
+				>
+					<RickAndMortyIcon />
+				</button>
+			</li>
+			<li>
+				<button
 					class="cursor-pointer transition-all hover:text-cyan-500"
 					aria-label="Toggle theme"
 					onclick={toggleColorMode}
@@ -340,7 +424,7 @@
 							href="https://www.linkedin.com/in/abramflansburg/"
 							target="_blank"
 							rel="noopener noreferrer"
-							class="{$colorMode === 'dark' ? 'text-zinc-500/60' : 'text-zinc-400/80'} 
+							class="{$colorMode === 'dark' ? 'text-zinc-500/60' : 'text-zinc-400/80'}
 								flex w-full transform items-center gap-3 rounded-md border px-4 py-3
 								shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow active:scale-[0.99]"
 							aria-label="LinkedIn Profile"
@@ -352,6 +436,40 @@
 								>LinkedIn</span
 							>
 						</a>
+						<button
+							onclick={() => {
+								openYouTubeModal(youtubeVideoId);
+								toggleMenu();
+							}}
+							class="{$colorMode === 'dark' ? 'text-zinc-500/60' : 'text-zinc-400/80'}
+								flex w-full transform items-center gap-3 rounded-md border px-4 py-3
+								shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow active:scale-[0.99]"
+							aria-label="Sad"
+						>
+							<div class="text-white">
+								<SkullIcon />
+							</div>
+							<span class="font-medium {$colorMode === 'dark' ? 'text-zinc-200' : 'text-zinc-800'}"
+								>Sad</span
+							>
+						</button>
+						<button
+							onclick={() => {
+								openYouTubeModal(rickAndMortyVideoId);
+								toggleMenu();
+							}}
+							class="{$colorMode === 'dark' ? 'text-zinc-500/60' : 'text-zinc-400/80'}
+								flex w-full transform items-center gap-3 rounded-md border px-4 py-3
+								shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow active:scale-[0.99]"
+							aria-label="In the City"
+						>
+							<div class="text-green-400">
+								<RickAndMortyIcon />
+							</div>
+							<span class="font-medium {$colorMode === 'dark' ? 'text-zinc-200' : 'text-zinc-800'}"
+								>In the City</span
+							>
+						</button>
 					</div>
 					<h3
 						class="mb-2 text-sm font-medium {$colorMode === 'dark'
@@ -437,6 +555,16 @@
 			<div class="matrix-rune portal" style="left: 68%; top: 40%; animation-delay: 2.6s;">◇</div>
 		</div>
 	{/if}
+
+	<!-- YouTube Video Modal -->
+	<YouTubeModal
+		videoId={currentVideoId}
+		isOpen={showYouTubeModal}
+		onClose={closeYouTubeModal}
+	/>
+
+	<!-- Matrix Lyrics Overlay -->
+	<MatrixLyrics isActive={showMatrixLyrics} lyrics={currentLyrics} mode={lyricsMode} />
 </div>
 
 <style>
