@@ -1,14 +1,109 @@
+/* C-137-INFO Terminal Interface Core Styles */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;400;700&display=swap');
+
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 
+:root {
+    --terminal-green: #00ff41;
+    --terminal-blue: #4dabf7;
+    --portal-orange: #fd7e14;
+    --neon-purple: #be4bdb;
+    --citadel-gray: #1a1a1a;
+    --rick-cyan: #67e8f9;
+    --scan-line: rgba(0, 255, 65, 0.03);
+}
+
+/* CRT Screen Effect */
+.crt-screen {
+    position: relative;
+    background: radial-gradient(ellipse at center, #0a0a0a 0%, #000000 100%);
+    overflow: hidden;
+}
+
+.crt-screen::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        linear-gradient(transparent 50%, var(--scan-line) 50%),
+        linear-gradient(90deg, transparent 50%, rgba(0, 255, 65, 0.01) 50%);
+    background-size: 100% 4px, 4px 100%;
+    pointer-events: none;
+    z-index: 1000;
+    animation: scanlines 0.1s linear infinite;
+}
+
+.crt-screen::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 255, 65, 0.02) 100%);
+    pointer-events: none;
+    z-index: 999;
+}
+
+/* Terminal Typography */
+.terminal-font {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    letter-spacing: 0.5px;
+}
+
+.sci-fi-header {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px; /* Mobile: reduced spacing */
+}
+
+/* Responsive sci-fi header sizing */
+@media (min-width: 640px) {
+    .sci-fi-header {
+        letter-spacing: 2px; /* Desktop: full spacing */
+    }
+}
+
+/* ASCII Art Styling - Responsive */
+.ascii-art {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.625rem; /* Mobile: xs (10px) */
+    line-height: 1.1;
+    color: var(--terminal-green);
+    text-shadow: 0 0 10px var(--terminal-green);
+    white-space: pre;
+    overflow: hidden;
+}
+
+/* Responsive ASCII art sizing */
+@media (min-width: 480px) {
+    .ascii-art {
+        font-size: 0.75rem; /* Small tablets: 12px */
+        line-height: 1.2;
+    }
+}
+
+@media (min-width: 768px) {
+    .ascii-art {
+        font-size: 0.875rem; /* Desktop: 14px */
+        line-height: 1.2;
+    }
+}
+
+/* Enhanced Animations */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
 
 @keyframes slideUp {
-    from { 
+    from {
         transform: translateY(20px);
         opacity: 0;
     }
@@ -38,5 +133,248 @@
         transform: translateX(0);
         opacity: 1;
     }
+}
+
+@keyframes scanlines {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(4px); }
+}
+
+@keyframes terminal-flicker {
+    0%, 98% { opacity: 1; }
+    99% { opacity: 0.98; }
+    100% { opacity: 1; }
+}
+
+@keyframes data-stream {
+    0% { transform: translateY(-100%); opacity: 0; }
+    5% { opacity: 0.6; }
+    15% { opacity: 0.8; }
+    25% { opacity: 0.3; }
+    35% { opacity: 0.7; }
+    45% { opacity: 0.4; }
+    55% { opacity: 0.9; }
+    65% { opacity: 0.2; }
+    75% { opacity: 0.6; }
+    85% { opacity: 0.5; }
+    95% { opacity: 0.3; }
+    100% { transform: translateY(100vh); opacity: 0; }
+}
+
+@keyframes portal-pulse {
+    0%, 100% {
+        box-shadow: 0 0 5px var(--terminal-blue), 0 0 10px var(--portal-orange), inset 0 0 5px var(--neon-purple);
+        border-color: var(--terminal-blue);
+    }
+    50% {
+        box-shadow: 0 0 20px var(--portal-orange), 0 0 30px var(--terminal-blue), inset 0 0 10px var(--neon-purple);
+        border-color: var(--portal-orange);
+    }
+}
+
+@keyframes glitch {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-0.5px); }
+    40% { transform: translateX(0.5px); }
+    60% { transform: translateX(-0.5px); }
+    80% { transform: translateX(0.5px); }
+}
+
+@keyframes subtle-glitch {
+    0%, 100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    25% {
+        transform: translateX(-0.3px);
+        opacity: 0.98;
+    }
+    50% {
+        transform: translateX(0.3px);
+        opacity: 0.95;
+    }
+    75% {
+        transform: translateX(-0.2px);
+        opacity: 0.98;
+    }
+}
+
+/* Enhanced Terminal Elements */
+.terminal-border {
+    border: 2px solid var(--terminal-green);
+    box-shadow:
+        0 0 10px var(--terminal-green),
+        inset 0 0 10px rgba(0, 255, 65, 0.1);
+    animation: terminal-flicker 3s infinite;
+}
+
+.portal-border {
+    border: 2px solid var(--terminal-blue);
+    animation: portal-pulse 2s ease-in-out infinite;
+}
+
+.glitch-text {
+    animation: subtle-glitch 0.8s ease-in-out infinite;
+}
+
+/* Original stronger glitch for specific elements if needed */
+.glitch-text-strong {
+    animation: glitch 0.3s ease-in-out infinite;
+}
+
+.data-stream {
+    position: absolute;
+    color: var(--terminal-green);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    opacity: 0.4;
+    animation: data-stream 6s linear infinite;
+    pointer-events: none;
+    text-shadow: 0 0 3px var(--terminal-green);
+    white-space: pre;
+    line-height: 0.8;
+    transform: translateY(-100vh);
+}
+
+/* Konami Code Matrix Runes Overlay */
+.matrix-runes-overlay {
+    animation: matrix-overlay-fade 3s ease-out forwards;
+}
+
+.matrix-rune {
+    position: absolute;
+    font-size: 24px;
+    color: var(--terminal-green);
+    opacity: 0;
+    animation: matrix-rune-appear 3s ease-out forwards;
+    text-shadow: 0 0 8px var(--terminal-green), 0 0 16px var(--terminal-green);
+    font-family: 'JetBrains Mono', monospace;
+    transform: scale(0) rotate(0deg);
+}
+
+.matrix-rune.binary {
+    font-size: 12px;
+    color: var(--rick-cyan);
+    text-shadow: 0 0 6px var(--rick-cyan), 0 0 12px var(--rick-cyan);
+}
+
+.matrix-rune.portal {
+    font-size: 32px;
+    color: var(--portal-orange);
+    text-shadow: 0 0 10px var(--portal-orange), 0 0 20px var(--portal-orange);
+}
+
+@keyframes matrix-overlay-fade {
+    0% { opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes matrix-rune-appear {
+    0% {
+        opacity: 0;
+        transform: scale(0) rotate(0deg);
+    }
+    15% {
+        opacity: 0.8;
+        transform: scale(1.2) rotate(180deg);
+    }
+    30% {
+        opacity: 1;
+        transform: scale(1) rotate(360deg);
+    }
+    70% {
+        opacity: 1;
+        transform: scale(1) rotate(360deg);
+    }
+    85% {
+        opacity: 0.6;
+        transform: scale(0.8) rotate(540deg);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0) rotate(720deg);
+    }
+}
+
+/* Button Enhancements */
+.terminal-button {
+    background: linear-gradient(45deg, #0a0a0a, #1a1a1a);
+    border: 1px solid var(--terminal-green);
+    color: var(--terminal-green);
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.terminal-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.terminal-button:hover::before {
+    left: 100%;
+}
+
+.terminal-button:hover {
+    box-shadow:
+        0 0 15px var(--terminal-green),
+        inset 0 0 15px rgba(0, 255, 65, 0.1);
+    text-shadow: 0 0 10px var(--terminal-green);
+}
+
+/* Color utility classes */
+.text-terminal-green { color: var(--terminal-green); }
+.text-terminal-blue { color: var(--terminal-blue); }
+.text-portal-orange { color: var(--portal-orange); }
+.text-neon-purple { color: var(--neon-purple); }
+.text-rick-cyan { color: var(--rick-cyan); }
+
+/* Enhanced hover states */
+.hover\:text-terminal-green:hover { color: var(--terminal-green); }
+.hover\:text-portal-orange:hover { color: var(--portal-orange); }
+.hover\:text-neon-purple:hover { color: var(--neon-purple); }
+
+/* System status indicator */
+.system-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--terminal-green);
+}
+
+.system-status::before {
+    content: '●';
+    animation: pulse 2s infinite;
+    color: var(--terminal-green);
+}
+
+/* Matrix-style background effect (subtle) */
+.matrix-bg {
+    position: relative;
+}
+
+.matrix-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2300ff41' fill-opacity='0.05'%3E%3Ctext x='20' y='20' text-anchor='middle' dominant-baseline='middle' font-family='monospace' font-size='12'%3E1%3C/text%3E%3Ctext x='20' y='20' text-anchor='middle' dominant-baseline='middle' font-family='monospace' font-size='8' opacity='0.5'%3E0%3C/text%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: -1;
 }
 

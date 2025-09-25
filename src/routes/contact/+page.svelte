@@ -7,38 +7,38 @@
 	<title>{$weirdWord} Contact</title>
 </svelte:head>
 
-<div class="flex flex-col items-center gap-3 py-4">
+<div class="flex flex-col items-center gap-3 py-4 terminal-font">
 	<p>Wow this page is really something else.</p>
 	<p>Click to copy my email address to your clipboard.</p>
 	<button
-		class="cursor-pointer rounded-md bg-cyan-700 px-4 py-2 text-white"
+		class="terminal-button px-4 py-2 rounded-md cursor-pointer font-bold"
 		onclick={() => {
 			navigator.clipboard.writeText(PUBLIC_MY_EMAIL);
 		}}
 	>
-		{PUBLIC_MY_EMAIL}
+		> COPY_EMAIL: {PUBLIC_MY_EMAIL}
 	</button>
 	<p>Then you can experience the extreme joy of pasting that into your email client manually.</p>
 	<br />
 	<p>
-		My LinkedIn <span class="font-bold text-cyan-600 italic">(Non-Lunatic edition)</span> is also here
+		My LinkedIn <span class="font-bold text-rick-cyan italic">(Non-Lunatic edition)</span> is also here
 		if you want to connect with me:
 	</p>
 	<button
 		onclick={() => {
 			window.open(PUBLIC_MY_LINKED_IN_URL, '_blank');
 		}}
-		class="cursor-pointer rounded-md bg-cyan-700 px-4 py-2 text-white"
+		class="terminal-button px-4 py-2 rounded-md cursor-pointer font-bold"
 	>
-		Connect on LinkedIn
+		> CONNECT_LINKEDIN
 	</button>
 	<p>
-		Oh what did I mean by <span class="font-bold text-cyan-600 italic">Non-Lunatic edition?</span>
+		Oh what did I mean by <span class="font-bold text-rick-cyan italic">Non-Lunatic edition?</span>
 	</p>
 	<p>
 		Well, I'm not a lunatic, but there is this subreddit called <a
 			href="https://www.reddit.com/r/LinkedInLunatics/"
-			class="font-bold text-cyan-700">r/LinkedInLunatics</a
+			class="font-bold text-portal-orange hover:text-rick-cyan underline hover:no-underline transition-colors">r/LinkedInLunatics</a
 		>
 		that you should check out sometime.
 	</p>

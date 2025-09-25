@@ -13,12 +13,15 @@
 	import { errorMessage } from '$lib/stores/errorMessageStore.svelte';
 	import { PUBLIC_AVATAR_IMG_PATH, PUBLIC_MY_NAME } from '$env/static/public';
 	import { goto } from '$app/navigation';
+	import { konamiDetector } from '$lib/utils/konamiCode';
+	import { bootSequenceStore } from '$lib/stores/bootSequenceStore.svelte';
 
 	let { children } = $props();
 	let name = $state('Rick Sanchez');
 	let firstName = $derived(name.split(' ')[0]);
 	let showQuestionMark = $state(true);
 	let isMenuOpen = $state(false);
+	let konamiActivated = $state(false);
 	let avatarProperties = $derived({
 		src: $avatarImage,
 		alt: name,
@@ -37,24 +40,99 @@
 	function toggleMenu() {
 		isMenuOpen = !isMenuOpen;
 	}
+
+	// Developer Console Easter Eggs
+	if (typeof window !== 'undefined') {
+		// Welcome message for developers
+		console.log(`
+╔═══════════════════════════════════════════════════════════╗
+║                    C-137-INFO SYSTEM                      ║
+║           Welcome, fellow interdimensional dev!           ║
+║                                                           ║
+║  Try typing some commands:                                ║
+║  • portal() - Open a portal to the source code            ║
+║  • schwifty() - Get Schwifty status                       ║
+║  • rick.getIQ() - Access Rick's intelligence level        ║
+║  • morty.anxiety() - Check Morty's stress levels          ║
+║  • resetBoot() - Reset boot sequence                      ║
+║  • bootStatus() - Check boot sequence status              ║
+║                                                           ║
+║  Or try the Konami Code: ↑↑↓↓←→←→BA                       ║
+╚═══════════════════════════════════════════════════════════╝
+		`);
+
+		// Developer console commands
+		(window as any).portal = () => {
+			console.log('🌀 Portal opened! https://github.com/aflansburg/consultme');
+			window.open('https://github.com/aflansburg/consultme', '_blank');
+		};
+
+		(window as any).schwifty = () => {
+			console.log('💫 Getting Schwifty! Current schwiftiness level: Over 9000!');
+			return { schwiftiness: 'MAXIMUM', status: 'SCHWIFTY', pants: 'OFF' };
+		};
+
+		(window as any).rick = {
+			getIQ: () => {
+				console.log('🧠 Rick C-137 IQ: ∞ (Undefined due to interdimensional intelligence overflow)');
+				return Infinity;
+			}
+		};
+
+		(window as any).morty = {
+			anxiety: () => {
+				console.log('😰 Morty anxiety level: 98.7% - "Oh jeez, Rick!"');
+				return { level: '98.7%', status: 'OH_JEEZ', phrase: 'Oh jeez, Rick!' };
+			}
+		};
+
+		// Boot sequence control commands
+		(window as any).resetBoot = () => {
+			bootSequenceStore.reset();
+			console.log('🔄 Boot sequence reset! Refresh the page to see it again.');
+		};
+
+		(window as any).bootStatus = () => {
+			const shouldShow = bootSequenceStore.shouldShowBootSequence;
+			console.log(`🛸 Boot sequence status: ${shouldShow ? 'WILL SHOW' : 'HIDDEN'}`);
+			return { shouldShow, instructions: 'Use resetBoot() to show it again' };
+		};
+
+		// Konami Code Easter Egg
+		if (konamiDetector) {
+			konamiDetector.onKonamiCode(() => {
+				konamiActivated = true;
+				console.log('🛸 KONAMI CODE ACTIVATED! Portal Gun charged to 100%! 🛸');
+				console.log('✨ Initiating interdimensional glitch sequence...');
+				// Trigger glitch effect on the entire page
+				document.body.classList.add('glitch-text');
+				setTimeout(() => {
+					document.body.classList.remove('glitch-text');
+					konamiActivated = false;
+					console.log('🎯 Glitch sequence complete. Reality restored.');
+				}, 3000);
+			});
+		}
+	}
 </script>
 
 <svelte:head>
 	<title>{$weirdWord}</title>
 </svelte:head>
 
-<div class={$colorMode}>
+<div class="crt-screen {$colorMode}">
 	<nav
-		class="relative flex items-center justify-between px-4 py-3 {$colorMode === 'dark'
-			? 'border-b border-zinc-700 bg-zinc-900 text-zinc-50'
-			: 'border-b border-zinc-200 bg-white text-zinc-800'} shadow-lg backdrop-blur-sm"
+		class="relative flex items-center justify-between px-4 py-3 terminal-border {$colorMode === 'dark'
+			? 'bg-black/90 text-green-400'
+			: 'bg-zinc-900/95 text-green-300'} shadow-lg backdrop-blur-sm"
 	>
 		<div class="absolute -bottom-6 left-4">
 			<img {...avatarProperties} />
 		</div>
 		<div class="ml-[4.5rem] truncate pl-4 text-lg font-bold tracking-wide sm:ml-20 sm:text-xl">
-			<span class="xs:inline hidden">{name}</span>
-			<span class="xs:hidden inline">{name}</span>
+			<div class="ascii-art text-xs mb-1">C-137-INFO :: SYS_ID: {$weirdWord.toUpperCase()}</div>
+			<span class="xs:inline hidden terminal-font">{name}</span>
+			<span class="xs:hidden inline terminal-font">{name}</span>
 			{#if showQuestionMark}
 				<button
 					type="button"
@@ -299,13 +377,48 @@
 	{/if}
 
 	<div
-		class="min-h-screen px-8 pt-8 pb-24 sm:pt-8 sm:pb-32 md:pt-8 md:pb-32 lg:pt-8 lg:pb-36 {$colorMode ===
+		class="min-h-screen px-4 pt-4 pb-16 sm:px-8 sm:pt-8 sm:pb-32 md:pt-8 md:pb-32 lg:pt-8 lg:pb-36 terminal-font {$colorMode ===
 		'dark'
-			? 'bg-zinc-900 text-zinc-50'
-			: 'bg-zinc-50'}"
+			? 'bg-black text-green-400'
+			: 'bg-zinc-900 text-green-300'}"
 	>
 		{@render children()}
 	</div>
+
+	<!-- Konami Code Matrix Runes Overlay -->
+	{#if konamiActivated}
+		<div class="matrix-runes-overlay fixed inset-0 z-[9998] pointer-events-none">
+			<!-- Matrix runes scattered across the screen -->
+			<div class="matrix-rune" style="left: 5%; top: 10%; animation-delay: 0s;">ᚠ</div>
+			<div class="matrix-rune" style="left: 15%; top: 25%; animation-delay: 0.3s;">ᚢ</div>
+			<div class="matrix-rune" style="left: 25%; top: 15%; animation-delay: 0.6s;">ᚦ</div>
+			<div class="matrix-rune" style="left: 35%; top: 35%; animation-delay: 0.9s;">ᚨ</div>
+			<div class="matrix-rune" style="left: 45%; top: 20%; animation-delay: 1.2s;">ᚱ</div>
+			<div class="matrix-rune" style="left: 55%; top: 40%; animation-delay: 1.5s;">ᚲ</div>
+			<div class="matrix-rune" style="left: 65%; top: 10%; animation-delay: 1.8s;">ᚷ</div>
+			<div class="matrix-rune" style="left: 75%; top: 30%; animation-delay: 2.1s;">ᚹ</div>
+			<div class="matrix-rune" style="left: 85%; top: 45%; animation-delay: 2.4s;">ᚺ</div>
+			<div class="matrix-rune" style="left: 10%; top: 55%; animation-delay: 0.4s;">ᚾ</div>
+			<div class="matrix-rune" style="left: 30%; top: 65%; animation-delay: 0.7s;">ᛁ</div>
+			<div class="matrix-rune" style="left: 50%; top: 70%; animation-delay: 1.0s;">ᛃ</div>
+			<div class="matrix-rune" style="left: 70%; top: 60%; animation-delay: 1.3s;">ᛇ</div>
+			<div class="matrix-rune" style="left: 90%; top: 75%; animation-delay: 1.6s;">ᛈ</div>
+			<div class="matrix-rune" style="left: 20%; top: 80%; animation-delay: 1.9s;">ᛉ</div>
+			<div class="matrix-rune" style="left: 40%; top: 85%; animation-delay: 2.2s;">ᛋ</div>
+			<div class="matrix-rune" style="left: 60%; top: 90%; animation-delay: 2.5s;">ᛏ</div>
+			<div class="matrix-rune" style="left: 80%; top: 85%; animation-delay: 2.8s;">ᛒ</div>
+			<!-- Binary/Hex scattered around -->
+			<div class="matrix-rune binary" style="left: 12%; top: 45%; animation-delay: 0.5s;">01100011</div>
+			<div class="matrix-rune binary" style="left: 38%; top: 55%; animation-delay: 1.1s;">0xFF42</div>
+			<div class="matrix-rune binary" style="left: 62%; top: 25%; animation-delay: 1.7s;">11010001</div>
+			<div class="matrix-rune binary" style="left: 78%; top: 65%; animation-delay: 2.3s;">0x137C</div>
+			<!-- Portal symbols -->
+			<div class="matrix-rune portal" style="left: 8%; top: 70%; animation-delay: 0.8s;">◉</div>
+			<div class="matrix-rune portal" style="left: 88%; top: 15%; animation-delay: 1.4s;">⬢</div>
+			<div class="matrix-rune portal" style="left: 42%; top: 75%; animation-delay: 2.0s;">◈</div>
+			<div class="matrix-rune portal" style="left: 68%; top: 40%; animation-delay: 2.6s;">◇</div>
+		</div>
+	{/if}
 </div>
 
 <style>
