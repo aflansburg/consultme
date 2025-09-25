@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
 
     const chatCompletion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: "gpt-4o-nano",
         messages: [
             {
                 role: 'system',
