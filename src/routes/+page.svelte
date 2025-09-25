@@ -27,11 +27,17 @@
 	const myName = PUBLIC_MY_NAME;
 	let showModal = $state(false);
 	let imageLoaded = $state(false);
+	let terminalLogs = $state<string[]>([]);
 
 	async function fetchCharacterInfo() {
 		loading = true;
 		fetchStarted = true;
 		aiResponse = '';
+		terminalLogs = [];
+
+		// Add initial log
+		terminalLogs = [...terminalLogs, '> INITIATING_CITADEL_DATABASE_ACCESS...'];
+
 		try {
 			const response = await fetch('/api/character-info', {
 				method: 'POST',
@@ -47,9 +53,14 @@
 				aiResponse = `${cannedAiErrorResponse}<br />Error:<br />${result.error}`;
 			} else {
 				aiResponse = result.info;
+				// Add logs if they exist in the response
+				if (result.logs) {
+					terminalLogs = [...terminalLogs, ...result.logs];
+				}
 			}
 		} catch (error) {
 			aiResponse = `${cannedAiErrorResponse}\nError:\n${error}`;
+			terminalLogs = [...terminalLogs, '> ERROR: CONNECTION_TO_CITADEL_LOST'];
 		} finally {
 			loading = false;
 		}
@@ -412,14 +423,31 @@
 				class="terminal-text max-h-[70vh] overflow-y-auto pr-2 terminal-font leading-relaxed text-terminal-green"
 			>
 				{#if loading}
-					<div class="ascii-art text-xs mb-2">
-> ACCESSING CITADEL DATABASES...
-> SCRAPING FANDOM WIKI...
-> PROCESSING NEURAL NETWORK...
+					<div class="ascii-art text-xs mb-4">
+╭─ REAL-TIME TERMINAL OUTPUT ─╮
+│ STATUS: PROCESSING           │
+╰──────────────────────────────╯
 					</div>
+
+					<!-- Terminal logs section -->
+					<div class="terminal-logs-container mb-4 max-h-40 overflow-y-auto bg-black/50 p-3 rounded border border-terminal-green/30">
+						{#each terminalLogs as log}
+							<div class="terminal-log-line text-xs text-terminal-green font-mono">
+								<span class="opacity-60">[{new Date().toLocaleTimeString()}]</span>
+								<span class="ml-2">{log}</span>
+							</div>
+						{/each}
+						{#if terminalLogs.length === 0}
+							<div class="terminal-log-line text-xs text-terminal-green/60 font-mono">
+								<span class="opacity-60">[{new Date().toLocaleTimeString()}]</span>
+								<span class="ml-2">> INITIALIZING_SYSTEM...</span>
+							</div>
+						{/if}
+					</div>
+
 					<span class="glitch-text">
 						<span class="spinner inline-block text-terminal-blue">{spinnerFrames[currentSpinnerFrame]}</span>
-						<strong class="text-portal-orange">ANALYSIS IN PROGRESS...</strong>
+						<strong class="text-portal-orange">DEEP ANALYSIS IN PROGRESS...</strong>
 					</span>
 					{#if !aiResponse}
 						<p class="mt-4 text-sm text-rick-cyan italic">
@@ -552,5 +580,40 @@
 			inset 0 0 10px rgba(220, 38, 38, 0.1);
 		text-shadow: 0 0 8px rgba(248, 113, 113, 0.5);
 		color: rgb(248, 113, 113);
+	}
+
+	/* Terminal logs styling */
+	.terminal-logs-container {
+		scrollbar-width: thin;
+		scrollbar-color: var(--terminal-green) transparent;
+	}
+
+	.terminal-logs-container::-webkit-scrollbar {
+		width: 4px;
+	}
+
+	.terminal-logs-container::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	.terminal-logs-container::-webkit-scrollbar-thumb {
+		background: var(--terminal-green);
+		border-radius: 2px;
+	}
+
+	.terminal-log-line {
+		animation: terminal-log-appear 0.3s ease-out;
+		padding: 1px 0;
+	}
+
+	@keyframes terminal-log-appear {
+		from {
+			opacity: 0;
+			transform: translateX(-10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0);
+		}
 	}
 </style>
