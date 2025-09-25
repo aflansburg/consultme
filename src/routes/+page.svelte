@@ -28,6 +28,7 @@
 	let showModal = $state(false);
 	let imageLoaded = $state(false);
 	let terminalLogs = $state<string[]>([]);
+	let logsContainer = $state<HTMLDivElement | undefined>();
 
 	async function fetchCharacterInfo() {
 		loading = true;
@@ -39,7 +40,7 @@
 		terminalLogs = [...terminalLogs, '> INITIATING_CITADEL_DATABASE_ACCESS...'];
 
 		try {
-			const response = await fetch('/api/character-info', {
+			const response = await fetch('/api/character-info-stream', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -48,20 +49,46 @@
 					characterName: data.character.name
 				})
 			});
-			const result = await response.json();
-			if (result.error) {
-				aiResponse = `${cannedAiErrorResponse}<br />Error:<br />${result.error}`;
-			} else {
-				aiResponse = result.info;
-				// Add logs if they exist in the response
-				if (result.logs) {
-					terminalLogs = [...terminalLogs, ...result.logs];
+
+			if (!response.body) {
+				throw new Error('No response body');
+			}
+
+			const reader = response.body.getReader();
+			const decoder = new TextDecoder();
+
+			while (true) {
+				const { done, value } = await reader.read();
+				if (done) break;
+
+				const chunk = decoder.decode(value);
+				const lines = chunk.split('\n');
+
+				for (const line of lines) {
+					if (line.startsWith('data: ')) {
+						const data = JSON.parse(line.slice(6));
+
+						if (data.type === 'log') {
+							terminalLogs = [...terminalLogs, `[${data.timestamp}] ${data.message}`];
+							// Auto-scroll to bottom
+							setTimeout(() => {
+								if (logsContainer) {
+									logsContainer.scrollTop = logsContainer.scrollHeight;
+								}
+							}, 50);
+						} else if (data.type === 'complete') {
+							aiResponse = data.data.info;
+							loading = false;
+						} else if (data.type === 'error') {
+							aiResponse = `${cannedAiErrorResponse}<br />Error:<br />${data.message}`;
+							loading = false;
+						}
+					}
 				}
 			}
 		} catch (error) {
 			aiResponse = `${cannedAiErrorResponse}\nError:\n${error}`;
 			terminalLogs = [...terminalLogs, '> ERROR: CONNECTION_TO_CITADEL_LOST'];
-		} finally {
 			loading = false;
 		}
 	}
@@ -435,11 +462,10 @@
 					</div>
 
 					<!-- Terminal logs section -->
-					<div class="terminal-logs-container mb-4 max-h-40 overflow-y-auto bg-black/50 p-3 rounded border border-terminal-green/30">
+					<div bind:this={logsContainer} class="terminal-logs-container mb-4 max-h-40 overflow-y-auto bg-black/50 p-3 rounded border border-terminal-green/30">
 						{#each terminalLogs as log}
 							<div class="terminal-log-line text-xs text-terminal-green font-mono">
-								<span class="opacity-60">[{new Date().toLocaleTimeString()}]</span>
-								<span class="ml-2">{log}</span>
+								<span>{log}</span>
 							</div>
 						{/each}
 						{#if terminalLogs.length === 0}

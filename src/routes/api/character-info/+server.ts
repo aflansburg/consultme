@@ -163,8 +163,8 @@ export const POST: RequestHandler = async ({ request }) => {
 
                     'CRITICAL: Use EXACTLY this format with proper line breaks between each section:\n\n' +
                     '╔═══════════════════════════════════════════════════════════════╗\n' +
-                    '║                 C-137-INFO ENTITY REPORT                     ║\n' +
-                    '║                 CLASSIFICATION: [TYPE]                       ║\n' +
+                    '║                 C-137-INFO ENTITY REPORT                      ║\n' +
+                    '║                 CLASSIFICATION: [TYPE]                        ║\n' +
                     '╚═══════════════════════════════════════════════════════════════╝\n' +
                     '\n' +
                     '> ENTITY_ID: 0x####_XXXX\n' +
