@@ -7,6 +7,8 @@
 
 :root {
     --terminal-green: #00ff41;
+    --terminal-red: #d01b1b;
+    --terminal-dark-red: #8d0000;
     --terminal-blue: #4dabf7;
     --portal-orange: #fd7e14;
     --neon-purple: #be4bdb;
@@ -311,6 +313,18 @@
     overflow: hidden;
 }
 
+.terminal-button-disabled {
+    background: linear-gradient(45deg, #620000, #1a1a1a);
+    border: 1px solid var(--terminal-dark-red);
+    color: var(--terminal-dark-red);
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
 .terminal-button::before {
     content: '';
     position: absolute;
@@ -335,6 +349,7 @@
 
 /* Color utility classes */
 .text-terminal-green { color: var(--terminal-green); }
+.text-terminal-red { color: var(--terminal-red); }
 .text-terminal-blue { color: var(--terminal-blue); }
 .text-portal-orange { color: var(--portal-orange); }
 .text-neon-purple { color: var(--neon-purple); }

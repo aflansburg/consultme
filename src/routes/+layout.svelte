@@ -9,6 +9,7 @@
 	import CloseIcon from '$lib/icons/CloseIcon.svelte';
 	import { colorMode } from '$lib/stores/sitePreferences.svelte';
 	import { avatarImage } from '$lib/stores/avatarImage.svelte';
+	import { name, firstName, identityRevealed } from '$lib/stores/identity.svelte';
 	import { weirdWord } from '$lib/stores/weirdWord.svelte';
 	import { errorMessage } from '$lib/stores/errorMessageStore.svelte';
 	import { PUBLIC_AVATAR_IMG_PATH, PUBLIC_MY_NAME } from '$env/static/public';
@@ -17,14 +18,11 @@
 	import { bootSequenceStore } from '$lib/stores/bootSequenceStore.svelte';
 
 	let { children } = $props();
-	let name = $state('Rick Sanchez');
-	let firstName = $derived(name.split(' ')[0]);
-	let showQuestionMark = $state(true);
 	let isMenuOpen = $state(false);
 	let konamiActivated = $state(false);
 	let avatarProperties = $derived({
 		src: $avatarImage,
-		alt: name,
+		alt: $name,
 		class:
 			'w-16 h-16 sm:w-18 sm:h-18 rounded-full border-4 border-slate-50 shadow-lg cursor-pointer',
 		style: 'object-fit: cover;',
@@ -131,32 +129,8 @@
 		</div>
 		<div class="ml-[4.5rem] truncate pl-4 text-lg font-bold tracking-wide sm:ml-20 sm:text-xl">
 			<div class="ascii-art text-xs mb-1">C-137-INFO :: SYS_ID: {$weirdWord.toUpperCase()}</div>
-			<span class="xs:inline hidden terminal-font">{name}</span>
-			<span class="xs:hidden inline terminal-font">{name}</span>
-			{#if showQuestionMark}
-				<button
-					type="button"
-					class="relative ml-1 inline-flex cursor-pointer items-center border-none bg-transparent p-0 align-middle text-green-500 hover:text-green-400 focus:outline-none"
-					style="vertical-align: middle; position: relative; top: -1px;"
-					onclick={() => {
-						avatarImage.set('/' + PUBLIC_AVATAR_IMG_PATH);
-						name = PUBLIC_MY_NAME;
-						firstName = PUBLIC_MY_NAME.split(' ')[0];
-						showQuestionMark = false;
-					}}
-					onkeydown={(e) => {
-						if (e.key === 'Enter') {
-							avatarImage.set('/' + PUBLIC_AVATAR_IMG_PATH);
-							name = PUBLIC_MY_NAME;
-							firstName = PUBLIC_MY_NAME.split(' ')[0];
-							showQuestionMark = false;
-						}
-					}}
-					aria-label="Reset identity"
-				>
-					<QuestionMarkIcon className="pulse-svg cursor-pointer" />
-				</button>
-			{/if}
+			<span class="xs:inline hidden terminal-font">{$name}</span>
+			<span class="xs:hidden inline terminal-font">{$name}</span>
 		</div>
 
 		<!-- Mobile menu button -->

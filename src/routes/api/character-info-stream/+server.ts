@@ -130,7 +130,7 @@ async function processCharacterInfo(
             timeout: 45000 // 45 second timeout
         });
         addLog('> NAVIGATION_COMPLETE: Extracting data');
-    } catch (error) {
+    } catch (error: any) {
         if (error.message.includes('Timeout')) {
             addLog('> NAVIGATION_TIMEOUT: Retrying with reduced timeout...');
             try {
@@ -139,7 +139,7 @@ async function processCharacterInfo(
                     timeout: 20000 // 20 second timeout for retry
                 });
                 addLog('> NAVIGATION_RETRY_SUCCESS: Extracting data');
-            } catch (retryError) {
+            } catch (retryError: any) {
                 addLog('> NAVIGATION_FAILED: Attempting data extraction anyway...');
                 // Continue anyway - sometimes we can still extract data
             }
@@ -233,10 +233,10 @@ async function processCharacterInfo(
                 '- Reference Rick Sanchez exposure and survival rates when applicable\n\n' +
 
                 'CRITICAL: Use EXACTLY this format with proper line breaks between each section:\n\n' +
-                '╔═══════════════════════════════════════════════════╗\n' +
-                '║               C-137-INFO ENTITY REPOR             ║\n' +
-                '║               CLASSIFICATION: [TYPE]              ║\n' +
-                '╚═══════════════════════════════════════════════════╝\n' +
+                '╔═════════════════════════════════════╗\n' +
+                '║       CLASSIFICATION: [TYPE]        ║\n' +
+                '║       C-137-INFO ENTITY REPORT      ║\n' +
+                '╚═════════════════════════════════════╝\n' +
                 '\n' +
                 '> ENTITY_ID: 0x####_XXXX\n' +
                 '> DESIGNATION: [Name]\n' +
@@ -261,11 +261,11 @@ async function processCharacterInfo(
                 '> SURVIVAL_RATE: ##%\n' +
                 '> IMPACT_LEVEL: [Rating]\n' +
                 '\n' +
-                '════════════════════════════════════════════════════════════════\n' +
+                '══════════════════════════════════════════════════════\n' +
                 'STATUS: ANALYSIS_COMPLETE\n' +
                 'CONFIDENCE: ##.#%\n' +
                 'NEXT_UPDATE: [Status]\n' +
-                '════════════════════════════════════════════════════════════════\n' +
+                '══════════════════════════════════════════════════════\n' +
                 '\n' +
                 'IMPORTANT: Each section MUST be separated by blank lines. Use \\n\\n between sections.'
             },

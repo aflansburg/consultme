@@ -4,7 +4,9 @@
 	import { invalidateAll } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { getCharacter } from '$lib/rickandmorty/character';
-	import { PUBLIC_MY_NAME } from '$env/static/public';
+	import { PUBLIC_MY_NAME, PUBLIC_AVATAR_IMG_PATH } from '$env/static/public';
+	import { avatarImage } from '$lib/stores/avatarImage.svelte';
+	import { name, identityRevealed } from '$lib/stores/identity.svelte';
 	import GitHubIcon from '$lib/icons/GitHubIcon.svelte';
 	import ClickMeIcon from '$lib/icons/ClickMeIcon.svelte';
 	import GreenCheckIcon from '$lib/icons/GreenCheckIcon.svelte';
@@ -23,7 +25,7 @@
 	let spinnerFrames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
 	let currentSpinnerFrame = $state(0);
 	let spinnerInterval: ReturnType<typeof setInterval>;
-	const cannedAiErrorResponse = `<span class="text-red-500">Failed to load additional information.`;
+	const cannedAiErrorResponse = `Failed to load additional information.`;
 	const myName = PUBLIC_MY_NAME;
 	let showModal = $state(false);
 	let imageLoaded = $state(false);
@@ -80,14 +82,14 @@
 							aiResponse = data.data.info;
 							loading = false;
 						} else if (data.type === 'error') {
-							aiResponse = `${cannedAiErrorResponse}<br />Error:<br />${data.message}`;
+							aiResponse = `**Error:**\n${cannedAiErrorResponse} ${data.message}`;
 							loading = false;
 						}
 					}
 				}
 			}
 		} catch (error) {
-			aiResponse = `${cannedAiErrorResponse}\nError:\n${error}`;
+			aiResponse = `**Error:**\n${cannedAiErrorResponse} ${error}`;
 			terminalLogs = [...terminalLogs, '> ERROR: CONNECTION_TO_CITADEL_LOST'];
 			loading = false;
 		}
@@ -100,15 +102,23 @@
 		await invalidateAll();
 	}
 
+	let errorMessage = $state('');
+
 	async function fetchRickSanchez() {
+		loading = true;
+		errorMessage = '';
+
 		try {
 			const rick = await getCharacter(1);
 			data.character = rick;
 			aiResponse = '';
 			fetchStarted = false;
 			imageLoaded = false; // Reset image loaded state
+			loading = false;
 		} catch (error) {
 			console.error('Failed to fetch Rick Sanchez:', error);
+			errorMessage = 'Failed to load Rick Sanchez. Please try again.';
+			loading = false;
 		}
 	}
 
@@ -117,6 +127,12 @@
 		if (event.key === 'Escape' && showModal) {
 			toggleModal();
 		}
+	}
+
+	function revealIdentity() {
+		avatarImage.set('/' + PUBLIC_AVATAR_IMG_PATH);
+		name.set(PUBLIC_MY_NAME);
+		identityRevealed.set(true);
 	}
 
 	onMount(() => {
@@ -156,9 +172,9 @@
 
 <TerminalBootSequence />
 
-<div class="container mx-auto px-2 pt-2 sm:px-4 sm:pt-4">
-	<div class="grid grid-cols-1 gap-4 sm:gap-8 lg:grid-cols-[1fr_2fr] lg:gap-12">
-		<div class="space-y-3 sm:space-y-4">
+<div class="container mx-auto px-2 pt-6 sm:px-4 sm:pt-4">
+	<div class="grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-[1fr_2fr] lg:gap-12">
+		<div class="space-y-4 sm:space-y-4">
 			<div class="ascii-art mb-2 sm:mb-4">
 > PERSONNEL FILE ACCESS INITIATED...
 > SCANNING DIMENSION C-137 DATABASE...
@@ -167,7 +183,7 @@
 				I'm not <span class="group relative">
 					<button
 						type="button"
-						class="cursor-pointer border-none bg-transparent p-0 font-bold text-terminal-blue hover:text-portal-orange terminal-button"
+						class="cursor-pointer border-none bg-transparent p-1 font-bold text-terminal-blue hover:text-portal-orange terminal-button"
 						onclick={fetchRickSanchez}>Rick Sanchez</button
 					>
 					<span
@@ -179,15 +195,28 @@
 				<strong class="text-neon-purple">pattern-recognition specialist</strong> named
 				<span class="font-bold text-rick-cyan terminal-font"
 					><a
-						href="https://www.linkedin.com/in/abramflansburg/"
+						href="{$identityRevealed ? 'https://www.linkedin.com/in/abramflansburg/' : '/'}#"
 						target="_blank"
-						class="hover:underline hover:text-portal-orange">{myName}</a
+						class="{$identityRevealed ? 'hover:underline hover:text-portal-orange' : 'glitching-text text-terminal-red'}"
+						data-text="{$identityRevealed ? myName : 'ᛒᛏᛈᚹᚱᚨᚦᚢᚠ'}">{$identityRevealed ? myName : 'ᛒᛏᛈᚹᚱᚨᚦᚢᚠ'}</a
 					>.</span
 				>
 			</p>
-			<p class="text-sm opacity-80">
-				> Click the pulsating green question mark to reveal true identity parameters
-			</p>
+			<button
+			class="{$identityRevealed ? 'terminal-button-disabled' : 'terminal-button text-terminal-green cursor-pointer'} px-6 py-3 rounded-md relative font-bold "
+			onclick={() => {
+				if (!$identityRevealed) {
+					revealIdentity();
+				}
+			}}
+			disabled={$identityRevealed}
+			>
+			{#if $identityRevealed}
+				> NOT_ACCESSIBLE
+			{:else}
+				> REVEAL_IDENTITY
+			{/if}
+			</button>
 			<p>This is my <em>(mostly functional)</em> <strong class="text-terminal-green">interdimensional portfolio terminal</strong>.</p>
 			<p>
 				Built using <span class="font-bold text-portal-orange terminal-font"
@@ -232,28 +261,36 @@
 			</div>
 		</div>
 
-		<div class="space-y-3 sm:space-y-4 lg:flex lg:items-start lg:justify-center">
+		<div class="space-y-4 sm:space-y-4 lg:flex lg:items-start lg:justify-center">
 			<div class="w-full max-w-3xl">
-				<div class="ascii-art mb-2 sm:mb-4">
+				<!-- Mobile ASCII Art -->
+				<div class="ascii-art mb-2 sm:mb-4 block sm:hidden text-xs">
+═══════════════════════════════════════════
+    INTERDIMENSIONAL CHARACTER DATABASE
+            ACCESS MODULE
+═══════════════════════════════════════════
+				</div>
+				<!-- Desktop ASCII Art -->
+				<div class="ascii-art mb-2 sm:mb-4 hidden sm:block">
 ════════════════════════════════════════════════════════
    INTERDIMENSIONAL CHARACTER DATABASE ACCESS MODULE
 ════════════════════════════════════════════════════════
 				</div>
-				<p class="pb-4 text-left">
+				<p class="pb-4 text-left mb-4 sm:mb-2">
 					> <strong class="text-terminal-green">SYSTEM FUNCTION:</strong> Random entity data retrieval from multiverse personnel database
 				</p>
-				<p class="pb-2 text-left">
+				<p class="pb-3 sm:pb-2 text-left mb-3 sm:mb-2">
 					<span class="text-terminal-blue">DATA ENHANCEMENT PROTOCOL:</span> Integrated web scraping subsystem deployed
 				</p>
-				<p class="pb-2 text-left">
+				<p class="pb-3 sm:pb-2 text-left mb-3 sm:mb-2">
 					<span class="text-neon-purple">SCRAPING ENGINE:</span> Playwright-based Chromium automation targets
 					Rick & Morty Fandom Wiki for supplemental intelligence gathering
 				</p>
-				<p class="pb-2 text-left">
+				<p class="pb-3 sm:pb-2 text-left mb-3 sm:mb-2">
 					<span class="text-portal-orange">AI ANALYSIS:</span> Raw data processed through GPT-4 neural network
 					for coherent information synthesis
 				</p>
-				<div class="py-2 sm:py-4">
+				<div class="py-4 sm:py-4 border-t border-terminal-green/20 mt-4 sm:mt-2">
 					<div class="flex items-center gap-2 sm:gap-4">
 						<p class="text-sm">
 							<span class="text-terminal-blue">REROLL FUNCTION:</span> Fetch new entity from
@@ -266,6 +303,26 @@
 					</div>
 				</div>
 				<div class="w-full">
+					{#if errorMessage}
+						<div class="mb-4 p-3 rounded-lg bg-red-900/20 border border-red-500/50">
+							<div class="flex items-center gap-2 text-red-400">
+								<span>⚠️</span>
+								<span class="font-semibold">API Error:</span>
+							</div>
+							<p class="text-red-300 text-sm mt-1">{errorMessage}</p>
+						</div>
+					{/if}
+
+					{#if data.error}
+						<div class="mb-4 p-3 rounded-lg bg-yellow-900/20 border border-yellow-500/50">
+							<div class="flex items-center gap-2 text-yellow-400">
+								<span>⚠️</span>
+								<span class="font-semibold">Server Notice:</span>
+							</div>
+							<p class="text-yellow-300 text-sm mt-1">{data.error}</p>
+						</div>
+					{/if}
+
 					{#key data.character.id}
 						<div class="grid w-full grid-cols-1 items-start gap-4 sm:gap-6 xl:grid-cols-2">
 							<div class="flex flex-col items-center gap-3 sm:gap-4">
@@ -375,7 +432,7 @@
 <!-- C-137-INFO Terminal Modal -->
 {#if showModal}
 	<div
-		class="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+		class="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 sm:p-6"
 	>
 		<!-- Dense Matrix Data Stream Effect -->
 		<div class="data-stream" style="left: 5%; animation-delay: 0s;">01001000 01100101 01101100 01110000</div>
@@ -407,26 +464,29 @@
 		></button>
 
 		<div
-			class="animate-slide-up relative z-10 w-full max-w-4xl rounded-lg terminal-border bg-black/98 p-6 terminal-font crt-screen"
+			class="animate-slide-up relative z-10 w-full max-w-4xl rounded-lg terminal-border bg-black/98 p-4 sm:p-6 terminal-font crt-screen max-h-[90vh] overflow-hidden"
 			role="dialog"
 			aria-labelledby="modal-title"
 			aria-modal="true"
 		>
+			<!-- Terminal-style close button - integrated with border -->
 			<button
 				onclick={toggleModal}
-				class="absolute top-4 right-4 cursor-pointer text-green-500/80 hover:text-green-500 focus:ring-0 focus:ring-transparent focus:ring-offset-0 focus:outline-none"
+				class="absolute top-0 left-0 w-8 h-8 bg-black/90 hover:bg-black transition-all duration-200 flex items-center justify-center cursor-pointer focus:ring-0 focus:ring-transparent focus:ring-offset-0 focus:outline-none group border-r border-b border-terminal-green/30"
 				aria-label="Close modal"
+				title="Close terminal"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
-					width="24"
-					height="24"
+					width="14"
+					height="14"
 					viewBox="0 0 24 24"
 					fill="none"
 					stroke="currentColor"
-					stroke-width="2"
+					stroke-width="2.5"
 					stroke-linecap="round"
 					stroke-linejoin="round"
+					class="text-terminal-green group-hover:text-green-400"
 				>
 					<line x1="18" y1="6" x2="6" y2="18"></line>
 					<line x1="6" y1="6" x2="18" y2="18"></line>
@@ -438,11 +498,11 @@
 ║                         CITADEL DATABASE ACCESS                       ║
 ╚═══════════════════════════════════════════════════════════════════════╝
 			</div>
-			<div class="ascii-art block sm:hidden text-center mb-4">
-╔══════════════════════════════════════════╗
-║          C-137-INFO DEEP ANALYSIS        ║
-║        CITADEL DATABASE ACCESS           ║
-╚══════════════════════════════════════════╝
+			<div class="ascii-art block sm:hidden text-center mb-4 text-xs pl-10">
+╔════════════════════════════╗
+║     C-137-INFO TERMINAL    ║
+║     DATABASE ACCESS        ║
+╚════════════════════════════╝
 			</div>
 			<h2
 				id="modal-title"
@@ -657,5 +717,82 @@
 		font-family: 'JetBrains Mono', monospace;
 		line-height: 1.4;
 		overflow-x: auto;
+	}
+
+	/* Glitching text effect */
+	.glitching-text {
+		position: relative;
+		display: inline-block;
+		animation: glitch 2s infinite;
+	}
+
+	.glitching-text::before,
+	.glitching-text::after {
+		content: attr(data-text);
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.glitching-text::before {
+		animation: glitch-1 0.5s infinite;
+		color: #ff0000;
+		z-index: -1;
+	}
+
+	.glitching-text::after {
+		animation: glitch-2 0.5s infinite;
+		color: #00ff00;
+		z-index: -2;
+	}
+
+	@keyframes glitch {
+		0%, 74%, 76%, 100% {
+			transform: translate(0);
+		}
+		75% {
+			transform: translate(-2px, 0);
+		}
+	}
+
+	@keyframes glitch-1 {
+		0%, 7%, 10%, 27%, 50%, 52%, 63%, 100% {
+			transform: translate(0);
+		}
+		8%, 9% {
+			transform: translate(-2px, -1px);
+		}
+		28%, 49% {
+			transform: translate(-1px, 0);
+		}
+		51% {
+			transform: translate(2px, 1px);
+		}
+		64% {
+			transform: translate(-1px, -1px);
+		}
+	}
+
+	@keyframes glitch-2 {
+		0%, 15%, 22%, 36%, 62%, 67%, 100% {
+			transform: translate(0);
+		}
+		16%, 21% {
+			transform: translate(1px, 1px);
+		}
+		37%, 61% {
+			transform: translate(-1px, 0);
+		}
+		68% {
+			transform: translate(1px, -1px);
+		}
+	}
+
+	/* Add data attribute support for glitch effect */
+	.glitching-text[data-text]::before,
+	.glitching-text[data-text]::after {
+		content: attr(data-text);
 	}
 </style>
