@@ -456,9 +456,9 @@
 			>
 				{#if loading}
 					<div class="ascii-art text-xs mb-4">
-╭─ REAL-TIME TERMINAL OUTPUT ─╮
-│ STATUS: PROCESSING           │
-╰──────────────────────────────╯
+╭─  REAL-TIME TERMINAL OUTPUT 	─╮
+│   STATUS: PROCESSING           │
+╰────────────────────────────────╯
 					</div>
 
 					<!-- Terminal logs section -->

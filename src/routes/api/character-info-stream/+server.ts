@@ -233,10 +233,10 @@ async function processCharacterInfo(
                 '- Reference Rick Sanchez exposure and survival rates when applicable\n\n' +
 
                 'CRITICAL: Use EXACTLY this format with proper line breaks between each section:\n\n' +
-                '╔═══════════════════════════════════════════════════════════════╗\n' +
-                '║                 C-137-INFO ENTITY REPORT                     ║\n' +
-                '║                 CLASSIFICATION: [TYPE]                       ║\n' +
-                '╚═══════════════════════════════════════════════════════════════╝\n' +
+                '╔═══════════════════════════════════════════════════╗\n' +
+                '║               C-137-INFO ENTITY REPOR             ║\n' +
+                '║               CLASSIFICATION: [TYPE]              ║\n' +
+                '╚═══════════════════════════════════════════════════╝\n' +
                 '\n' +
                 '> ENTITY_ID: 0x####_XXXX\n' +
                 '> DESIGNATION: [Name]\n' +
@@ -272,7 +272,7 @@ async function processCharacterInfo(
             {
                 role: 'user',
                 content: `╔═══════════════════════════════════════════════╗
-║        ENTITY ANALYSIS REQUEST               ║
+║        ENTITY ANALYSIS REQUEST                ║
 ╚═══════════════════════════════════════════════╝
 
 ENTITY DESIGNATION: "${characterName}"
