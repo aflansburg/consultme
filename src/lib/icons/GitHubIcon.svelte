@@ -7,7 +7,7 @@
 	xmlns="http://www.w3.org/2000/svg"
 	viewBox="0 0 24 24"
 	class={`h-6 w-6 ${className} transition-colors duration-200 hover:fill-violet-700`}
-	fill={$colorMode === 'dark' ? '#ffffff' : '#000000'}
+	fill="#ffffff"
 >
 	<path
 		fill-rule="evenodd"

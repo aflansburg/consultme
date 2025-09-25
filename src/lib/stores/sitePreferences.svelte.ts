@@ -1,12 +1,12 @@
 import { writable } from 'svelte/store';
 
 function createColorModeStore() {
-    // Get initial value from localStorage or default to 'light'
-    const storedMode = typeof localStorage !== 'undefined' 
-        ? localStorage.getItem('colorMode') 
+    // Get initial value from localStorage or default to 'dark'
+    const storedMode = typeof localStorage !== 'undefined'
+        ? localStorage.getItem('colorMode')
         : null;
-    
-    const { subscribe, set, update } = writable(storedMode || 'light');
+
+    const { subscribe, set, update } = writable(storedMode || 'dark');
 
     return {
         subscribe,

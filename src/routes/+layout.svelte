@@ -20,6 +20,9 @@
 	let { children } = $props();
 	let isMenuOpen = $state(false);
 	let konamiActivated = $state(false);
+	let screenGlitching = $state(false);
+	let vhsGlitching = $state(false);
+	let glitchCounter = $state(0); // Counter for 4:1 ratio
 	let avatarProperties = $derived({
 		src: $avatarImage,
 		alt: $name,
@@ -96,6 +99,42 @@
 			return { shouldShow, instructions: 'Use resetBoot() to show it again' };
 		};
 
+		// Random screen glitch function with 4:1 VHS to screen distortion ratio
+		function triggerRandomGlitch() {
+			if (!screenGlitching && !vhsGlitching) {
+				glitchCounter = (glitchCounter + 1) % 5; // 0,1,2,3,4 then reset to 0
+
+				// Use screen distortion every 5th glitch (when counter is 0)
+				if (glitchCounter === 0) {
+					screenGlitching = true;
+					setTimeout(() => {
+						screenGlitching = false;
+					}, 600); // Match the screen glitch animation duration
+				} else {
+					// Use VHS glitch for counts 1,2,3,4
+					vhsGlitching = true;
+					setTimeout(() => {
+						vhsGlitching = false;
+					}, 1800); // Total duration including both scan lines (1.2s + 0.6s)
+				}
+			}
+		}
+
+		// Set up random glitch intervals (every 5-6 seconds)
+		function setupRandomGlitches() {
+			function scheduleNextGlitch() {
+				const randomDelay = 5000 + Math.random() * 1000; // 5-6 seconds
+				setTimeout(() => {
+					triggerRandomGlitch();
+					scheduleNextGlitch(); // Schedule the next one
+				}, randomDelay);
+			}
+			scheduleNextGlitch();
+		}
+
+		// Start random glitches after a short delay
+		setTimeout(setupRandomGlitches, 3000);
+
 		// Konami Code Easter Egg
 		if (konamiDetector) {
 			konamiDetector.onKonamiCode(() => {
@@ -118,11 +157,11 @@
 	<title>{$weirdWord}</title>
 </svelte:head>
 
-<div class="crt-screen {$colorMode}">
+<div class="crt-screen {$colorMode}" class:screen-glitch={screenGlitching}>
 	<nav
-		class="relative flex items-center justify-between px-4 py-3 terminal-border {$colorMode === 'dark'
+		class="relative flex items-center justify-between px-4 py-3 terminal-border {$colorMode === 'light'
 			? 'bg-black/90 text-green-400'
-			: 'bg-zinc-900/95 text-green-300'} shadow-lg backdrop-blur-sm"
+			: 'bg-zinc-950/95 text-green-300'} shadow-lg backdrop-blur-sm"
 	>
 		<div class="absolute -bottom-6 left-4">
 			<img {...avatarProperties} />
@@ -180,7 +219,7 @@
 					aria-label="Toggle theme"
 					onclick={toggleColorMode}
 				>
-					{#if $colorMode === 'dark'}
+					{#if $colorMode === 'light'}
 						<span class="text-amber-300">
 							<SunIcon />
 						</span>
@@ -352,12 +391,17 @@
 
 	<div
 		class="min-h-screen px-4 pt-4 pb-16 sm:px-8 sm:pt-8 sm:pb-32 md:pt-8 md:pb-32 lg:pt-8 lg:pb-36 terminal-font {$colorMode ===
-		'dark'
+		'light'
 			? 'bg-black text-green-400'
-			: 'bg-zinc-900 text-green-300'}"
+			: 'bg-zinc-950 text-green-300'}"
 	>
 		{@render children()}
 	</div>
+
+	<!-- VHS Glitch Overlay -->
+	{#if vhsGlitching}
+		<div class="vhs-glitch-overlay"></div>
+	{/if}
 
 	<!-- Konami Code Matrix Runes Overlay -->
 	{#if konamiActivated}
