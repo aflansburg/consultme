@@ -161,25 +161,42 @@ export const POST: RequestHandler = async ({ request }) => {
                     '- Structure psychological profiles in data blocks with percentages\n' +
                     '- Reference Rick Sanchez exposure and survival rates when applicable\n\n' +
 
-                    'Format output exactly like this structure:\n' +
+                    'CRITICAL: Use EXACTLY this format with proper line breaks between each section:\n\n' +
                     '╔═══════════════════════════════════════════════════════════════╗\n' +
                     '║                 C-137-INFO ENTITY REPORT                     ║\n' +
                     '║                 CLASSIFICATION: [TYPE]                       ║\n' +
-                    '╚═══════════════════════════════════════════════════════════════╝\n\n' +
+                    '╚═══════════════════════════════════════════════════════════════╝\n' +
+                    '\n' +
                     '> ENTITY_ID: 0x####_XXXX\n' +
                     '> DESIGNATION: [Name]\n' +
-                    '> DIMENSIONS: [Status list]\n\n' +
+                    '> DIMENSIONS: [Status list]\n' +
+                    '\n' +
                     '═══ THREAT ASSESSMENT ═══\n' +
                     '> LEVEL: [THREAT LEVEL]\n' +
                     '> COMBAT_CAPABILITY: [Rating]\n' +
-                    '> ANOMALY_EXPOSURE: [Rating]\n\n' +
+                    '> ANOMALY_EXPOSURE: [Rating]\n' +
+                    '\n' +
+                    '═══ DIMENSIONAL STATUS ═══\n' +
+                    '> C-137: [STATUS]\n' +
+                    '> OTHER_DIMENSIONS: [STATUS]\n' +
+                    '\n' +
                     '═══ PSYCHOLOGICAL PROFILE ═══\n' +
-                    '> TRAIT_INDEX: ##%\n' +
-                    '> AUTHORITY_STABILITY: [Status]\n\n' +
+                    '> INSECURITY_INDEX: ##%\n' +
+                    '> AUTHORITY_STABILITY: [Status]\n' +
+                    '> BEHAVIORAL_NOTES: [Brief clinical notes]\n' +
+                    '\n' +
+                    '═══ RICK SANCHEZ EXPOSURE ═══\n' +
+                    '> ENCOUNTERS: [Number/Description]\n' +
+                    '> SURVIVAL_RATE: ##%\n' +
+                    '> IMPACT_LEVEL: [Rating]\n' +
+                    '\n' +
                     '════════════════════════════════════════════════════════════════\n' +
                     'STATUS: ANALYSIS_COMPLETE\n' +
                     'CONFIDENCE: ##.#%\n' +
-                    '════════════════════════════════════════════════════════════════'
+                    'NEXT_UPDATE: [Status]\n' +
+                    '════════════════════════════════════════════════════════════════\n' +
+                    '\n' +
+                    'IMPORTANT: Each section MUST be separated by blank lines. Use \\n\\n between sections.'
                 },
                 {
                     role: 'user',

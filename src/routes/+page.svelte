@@ -405,12 +405,17 @@
 					<line x1="6" y1="6" x2="18" y2="18"></line>
 				</svg>
 			</button>
-
-			<div class="ascii-art text-xs mb-4">
+			<div class="ascii-art hidden sm:block text-center mb-4">
 ╔═══════════════════════════════════════════════════════════════════════╗
 ║                        C-137-INFO DEEP ANALYSIS TERMINAL              ║
 ║                         CITADEL DATABASE ACCESS                       ║
 ╚═══════════════════════════════════════════════════════════════════════╝
+			</div>
+			<div class="ascii-art block sm:hidden text-center mb-4">
+╔══════════════════════════════════════════╗
+║          C-137-INFO DEEP ANALYSIS        ║
+║        CITADEL DATABASE ACCESS           ║
+╚══════════════════════════════════════════╝
 			</div>
 			<h2
 				id="modal-title"
@@ -459,7 +464,7 @@
 > DATA RETRIEVAL: COMPLETE
 > ANALYSIS STATUS: PROCESSED
 					</div>
-					<span class="text-terminal-green">{@html aiResponse}</span>
+					<pre class="text-terminal-green whitespace-pre-wrap font-mono text-sm leading-relaxed">{aiResponse}</pre>
 					<br />
 					<div class="mt-4 text-xs text-rick-cyan italic border-t border-terminal-green/30 pt-2">
 						<strong>DISCLAIMER:</strong> Information accuracy varies across dimensional boundaries.
@@ -615,5 +620,16 @@
 			opacity: 1;
 			transform: translateX(0);
 		}
+	}
+
+	/* AI Response formatting */
+	.terminal-text pre {
+		margin: 0;
+		padding: 0;
+		background: transparent;
+		border: none;
+		font-family: 'JetBrains Mono', monospace;
+		line-height: 1.4;
+		overflow-x: auto;
 	}
 </style>
