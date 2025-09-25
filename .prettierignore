@@ -4,3 +4,14 @@ pnpm-lock.yaml
 yarn.lock
 bun.lock
 bun.lockb
+
+# Ignore specific Svelte files with ASCII art
+src/lib/components/TerminalBootSequence.svelte
+src/routes/+page.svelte
+src/routes/+layout.svelte
+src/routes/work/+page.svelte
+
+# Other build files
+build/
+.svelte-kit/
+dist/

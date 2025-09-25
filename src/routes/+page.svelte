@@ -9,17 +9,24 @@
 	import ClickMeIcon from '$lib/icons/ClickMeIcon.svelte';
 	import GreenCheckIcon from '$lib/icons/GreenCheckIcon.svelte';
 	import { weirdWord } from '$lib/stores/weirdWord.svelte';
+	import TerminalBootSequence from '$lib/components/TerminalBootSequence.svelte';
+	import { bootSequenceStore } from '$lib/stores/bootSequenceStore.svelte';
 
-	export let data: PageData;
-	let aiResponse = '';
-	let loading = false;
-	let fetchStarted = false;
+	interface Props {
+		data: PageData;
+	}
+
+	let { data }: Props = $props();
+	let aiResponse = $state('');
+	let loading = $state(false);
+	let fetchStarted = $state(false);
 	let spinnerFrames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
-	let currentSpinnerFrame = 0;
+	let currentSpinnerFrame = $state(0);
 	let spinnerInterval: ReturnType<typeof setInterval>;
 	const cannedAiErrorResponse = `<span class="text-red-500">Failed to load additional information.`;
 	const myName = PUBLIC_MY_NAME;
-	let showModal = false;
+	let showModal = $state(false);
+	let imageLoaded = $state(false);
 
 	async function fetchCharacterInfo() {
 		loading = true;
@@ -51,6 +58,7 @@
 	async function fetchRandomCharacter() {
 		aiResponse = '';
 		fetchStarted = false;
+		imageLoaded = false; // Reset image loaded state
 		await invalidateAll();
 	}
 
@@ -60,22 +68,11 @@
 			data.character = rick;
 			aiResponse = '';
 			fetchStarted = false;
+			imageLoaded = false; // Reset image loaded state
 		} catch (error) {
 			console.error('Failed to fetch Rick Sanchez:', error);
 		}
 	}
-
-	let name = 'Rick Sanchez';
-	let overview = `
-        Oh yeah, so $$$name$$$ is a scientist who is known for his crazy adventures and his ability to
-        travel through time and space. He is also known for his love of that sweet green juice and his
-        tendency to get into trouble.
-    `;
-
-	let interpolatedFormatting = overview.replace(
-		/\$\$\$name\$\$\$/g,
-		`<span class='relative group inline-block'><span class='text-cyan-700 font-bold'>${name}</span><span class='invisible group-hover:visible absolute -top-20 left-1/2 -translate-x-1/2 px-3 py-2 bg-slate-800 text-white text-sm rounded-md w-[300px] text-center leading-snug'>01100110 01101111 01101111 01100010 01100001 01110010</span></span>`
-	);
 
 	// Add keyboard event handler for modal
 	function handleKeydown(event: KeyboardEvent) {
@@ -92,6 +89,9 @@
 		// Add keyboard event listener
 		window.addEventListener('keydown', handleKeydown);
 
+		// Reset image loaded state on initial load
+		imageLoaded = false;
+
 		return () => {
 			clearInterval(spinnerInterval);
 			window.removeEventListener('keydown', handleKeydown);
@@ -99,130 +99,179 @@
 	});
 
 	function toggleModal() {
-		if (!showModal && !fetchStarted) {
+		if (!showModal && !aiResponse) {
 			fetchCharacterInfo();
 		}
 		showModal = !showModal;
 	}
+
+	function handleReboot() {
+		bootSequenceStore.reset();
+		// Reload the page to show the boot sequence
+		window.location.reload();
+	}
 </script>
 
 <svelte:head>
-	<title>{$weirdWord}</title>
+	<title>{$weirdWord} - C-137-INFO</title>
 </svelte:head>
 
-<div class="container mx-auto px-4 pt-4">
-	<div class="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_2fr] lg:gap-12">
-		<div class="space-y-4">
-			<p>
+<TerminalBootSequence />
+
+<div class="container mx-auto px-2 pt-2 sm:px-4 sm:pt-4">
+	<div class="grid grid-cols-1 gap-4 sm:gap-8 lg:grid-cols-[1fr_2fr] lg:gap-12">
+		<div class="space-y-3 sm:space-y-4">
+			<div class="ascii-art mb-2 sm:mb-4">
+> PERSONNEL FILE ACCESS INITIATED...
+> SCANNING DIMENSION C-137 DATABASE...
+			</div>
+			<p class="glitch-text-slow">
 				I'm not <span class="group relative">
 					<button
 						type="button"
-						class="cursor-pointer border-none bg-transparent p-0 font-bold text-cyan-700 hover:underline"
+						class="cursor-pointer border-none bg-transparent p-0 font-bold text-terminal-blue hover:text-portal-orange terminal-button"
 						onclick={fetchRickSanchez}>Rick Sanchez</button
 					>
 					<span
-						class="invisible absolute -top-8 left-1/2 -translate-x-1/2 rounded-md bg-slate-800 px-2 py-1 text-sm whitespace-nowrap text-white group-hover:visible"
+						class="invisible absolute -top-8 left-1/2 -translate-x-1/2 rounded-md bg-black px-2 py-1 text-xs whitespace-nowrap text-green-400 group-hover:visible terminal-border"
 					>
 						Main character of Rick & Morty
 					</span>
-				</span>- obviously - I'm just a Jack-of-all-trades engineer named
-				<span class="font-bold text-cyan-700"
+				</span> - obviously - I'm just a <strong class="text-terminal-green">cross-paradigm systems architect</strong> and
+				<strong class="text-neon-purple">pattern-recognition specialist</strong> named
+				<span class="font-bold text-rick-cyan terminal-font"
 					><a
 						href="https://www.linkedin.com/in/abramflansburg/"
 						target="_blank"
-						class="hover:underline">{myName}</a
+						class="hover:underline hover:text-portal-orange">{myName}</a
 					>.</span
 				>
-				<br />
 			</p>
-			<p>
-				Honestly if you'd clicked that weird pulsating question mark icon, you'd have seen my real
-				name - although if you can't see the question mark you're probably on a Zune or something.
+			<p class="text-sm opacity-80">
+				> Click the pulsating green question mark to reveal true identity parameters
 			</p>
-			<p>This is my portfolio slash consulting contact slash scheduling site ¯\_(ツ)_/¯.</p>
+			<p>This is my <em>(mostly functional)</em> <strong class="text-terminal-green">interdimensional portfolio terminal</strong>.</p>
 			<p>
-				It's a fairly straightforward SPA application created with <span
-					class="font-bold text-orange-600"
-					><a href="https://kit.svelte.dev/" target="_blank" class="hover:underline">SvelteKit</a
+				Built using <span class="font-bold text-portal-orange terminal-font"
+					><a href="https://kit.svelte.dev/" target="_blank" class="hover:underline hover:text-terminal-green">SvelteKit</a
 					></span
-				>
-				and
-				<span class="font-bold text-sky-600"
-					><a href="https://tailwindcss.com/" target="_blank" class="hover:underline">TailwindCSS</a
+				>,
+				<span class="font-bold text-terminal-blue terminal-font"
+					><a href="https://tailwindcss.com/" target="_blank" class="hover:underline hover:text-neon-purple">TailwindCSS</a
 					></span
-				> and a dash of "AI" (LLM).
-			</p>
-			<p>{@html interpolatedFormatting}</p>
-			<p>
-				By the way, did you know that the color mode for this page is currently <span
-					class={`${$colorMode === 'dark' ? 'text-neutral-50' : 'text-stone-950'} font-bold text-red-500`}
-					>{$colorMode}</span
-				>? SvelteKit has some pretty interesting state management. You can use these writable stores
-				to persist and mutate state across the entire app, and derive values from that state as
-				needed.
+				>, and a dash of <em class="text-rick-cyan">"AI"</em> <span class="text-xs opacity-60">(Large Language Model)</span>.
 			</p>
 			<p>
-				<span
-					class="animate-glow flex items-center gap-2 font-bold {$colorMode === 'dark'
-						? 'text-cyan-500'
-						: 'text-cyan-700'}"
-				>
-					Here's the source if you're interested: <a
+				<span class="animate-glow flex items-center gap-2 font-bold text-terminal-green">
+					> SOURCE CODE REPOSITORY: <a
 						href="https://github.com/aflansburg/consultme"
 						target="_blank"
-						class="{$colorMode === 'dark' ? 'text-white' : 'text-zinc-800'} hover:underline"
+						class="text-rick-cyan hover:underline hover:text-portal-orange terminal-font"
 					>
 						<GitHubIcon />
 					</a>
 				</span>
 			</p>
-			<p>
-				It communicates with a Python <span class="font-bold text-teal-600"
-					><a href="https://fastapi.tiangolo.com/" target="_blank" class="hover:underline"
-						>FastAPI</a
-					></span
-				>
-				backend.
-			</p>
+			<!-- Mobile System Architecture -->
+			<div class="ascii-art block sm:hidden">
+╔═════════════════════════════════════════╗
+║             SYSTEM ARCHITECTURE         ║
+║  • SvelteKit Frontend                   ║
+║  • Playwright Web Scraper               ║
+║  • OpenAI GPT-4 Integration             ║
+║  • Rick & Morty API Consumer            ║
+╚═════════════════════════════════════════╝
+			</div>
+			<!-- Desktop System Architecture -->
+			<div class="ascii-art hidden sm:block">
+╔════════════════════════════════════════════════════════╗
+║  SYSTEM ARCHITECTURE: Microservices + Web Scraping     ║
+║  - SvelteKit Frontend (This Interface)                 ║
+║  - Playwright Web Scraper (Fandom Wiki Access)         ║
+║  - OpenAI GPT-4 Integration (Character Analysis)       ║
+║  - Rick & Morty API Consumer (Character Data)          ║
+╚════════════════════════════════════════════════════════╝
+			</div>
 		</div>
 
-		<div class="space-y-4 lg:flex lg:items-start lg:justify-center">
+		<div class="space-y-3 sm:space-y-4 lg:flex lg:items-start lg:justify-center">
 			<div class="w-full max-w-3xl">
-				<p class="text-left">Anyways, here's a random Rick & Morty Character.</p>
-				<p class="text-left">An LLM generates the additional information for each character.</p>
-				<div class="py-4">
-					<div class="flex items-center gap-4">
-						<p>
-							You can click the reroll button to fetch a new random character from the
-							<span class="font-bold text-cyan-700"
-								><a href="https://rickandmortyapi.com/" target="_blank" class="hover:underline"
+				<div class="ascii-art mb-2 sm:mb-4">
+════════════════════════════════════════════════════════
+   INTERDIMENSIONAL CHARACTER DATABASE ACCESS MODULE
+════════════════════════════════════════════════════════
+				</div>
+				<p class="pb-4 text-left">
+					> <strong class="text-terminal-green">SYSTEM FUNCTION:</strong> Random entity data retrieval from multiverse personnel database
+				</p>
+				<p class="pb-2 text-left">
+					<span class="text-terminal-blue">DATA ENHANCEMENT PROTOCOL:</span> Integrated web scraping subsystem deployed
+				</p>
+				<p class="pb-2 text-left">
+					<span class="text-neon-purple">SCRAPING ENGINE:</span> Playwright-based Chromium automation targets
+					Rick & Morty Fandom Wiki for supplemental intelligence gathering
+				</p>
+				<p class="pb-2 text-left">
+					<span class="text-portal-orange">AI ANALYSIS:</span> Raw data processed through GPT-4 neural network
+					for coherent information synthesis
+				</p>
+				<div class="py-2 sm:py-4">
+					<div class="flex items-center gap-2 sm:gap-4">
+						<p class="text-sm">
+							<span class="text-terminal-blue">REROLL FUNCTION:</span> Fetch new entity from
+							<span class="font-bold text-rick-cyan terminal-font"
+								><a href="https://rickandmortyapi.com/" target="_blank" class="hover:underline hover:text-portal-orange"
 									>Rick & Morty API</a
 								></span
-							>
+							> database
 						</p>
 					</div>
 				</div>
 				<div class="w-full">
 					{#key data.character.id}
-						<div class="grid w-full grid-cols-1 items-start gap-6 xl:grid-cols-2">
-							<div class="flex flex-col items-center gap-4">
-								<img
-									src={data.character.image}
-									alt={data.character.name}
-									class="w-full max-w-sm rounded-lg border-2 border-green-500/30 shadow-lg"
-								/>
+						<div class="grid w-full grid-cols-1 items-start gap-4 sm:gap-6 xl:grid-cols-2">
+							<div class="flex flex-col items-center gap-3 sm:gap-4">
+								<!-- Fixed size container to prevent layout shift -->
+								<div class="relative w-full max-w-sm aspect-square rounded-lg portal-border shadow-lg shadow-terminal-blue/20 overflow-hidden">
+									<!-- Loading placeholder -->
+									{#if !imageLoaded}
+										<div class="absolute inset-0 bg-black/90 flex items-center justify-center">
+											<div class="ascii-art text-center">
+												<div class="animate-pulse text-terminal-green">
+													LOADING...
+												</div>
+												<div class="mt-2 text-xs opacity-60">
+													{spinnerFrames[currentSpinnerFrame]}
+												</div>
+											</div>
+										</div>
+									{/if}
+									<!-- Actual image -->
+									<img
+										src={data.character.image}
+										alt={data.character.name}
+										class="w-full h-full object-cover transition-opacity duration-300 {imageLoaded ? 'opacity-100' : 'opacity-0'}"
+										onload={() => { imageLoaded = true; }}
+										onerror={() => { imageLoaded = true; }}
+									/>
+								</div>
 								<button
-									class="pulse-animation glow-border relative cursor-pointer rounded-md bg-zinc-700 px-4 py-2 text-white hover:bg-lime-400"
+									class="terminal-button px-6 py-3 rounded-md relative cursor-pointer font-bold"
 									onclick={() => {
 										fetchRandomCharacter();
 									}}
 								>
-									reroll
+									> REROLL_ENTITY
 								</button>
 							</div>
 							<dl
-								class="grid w-full overflow-hidden rounded-md border-2 border-green-500/30 bg-black/90 p-4 font-mono text-base shadow-[0_0_15px_rgba(34,197,94,0.2)] backdrop-blur-sm md:p-6 md:text-lg"
+								class="grid w-full overflow-hidden rounded-md terminal-border bg-black/95 p-4 terminal-font text-base backdrop-blur-sm md:p-6 md:text-lg"
 							>
+								<div class="ascii-art text-xs mb-3">
+╭─ ENTITY DATA READOUT ─╮
+│ STATUS: ACTIVE        │
+╰───────────────────────╯
+								</div>
 								<div
 									class="grid auto-rows-auto grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-[minmax(auto,_max-content)_1fr] xl:grid-cols-1"
 								>
@@ -250,7 +299,6 @@
 									<dd class="pr-2 text-center leading-relaxed text-green-400">
 										<button
 											onclick={toggleModal}
-											onkeydown={handleKeydown}
 											class="inline-flex cursor-pointer items-center gap-2 rounded border border-green-500/30 bg-zinc-800 px-3 py-1.5 text-green-400 transition-all hover:border-green-500/50 hover:bg-zinc-700"
 										>
 											{#if fetchStarted && !aiResponse && !showModal}
@@ -273,13 +321,46 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- Reboot Terminal Button -->
+	<div class="flex justify-center mt-8 sm:mt-12">
+		<button
+			onclick={handleReboot}
+			class="reboot-button px-4 py-2 rounded-md terminal-font text-xs opacity-60 hover:opacity-100 transition-all duration-300"
+			title="Reboot C-137-INFO Terminal"
+		>
+			> REBOOT_TERMINAL
+		</button>
+	</div>
 </div>
 
-<!-- Terminal Modal -->
+<!-- C-137-INFO Terminal Modal -->
 {#if showModal}
 	<div
-		class="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+		class="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
 	>
+		<!-- Dense Matrix Data Stream Effect -->
+		<div class="data-stream" style="left: 5%; animation-delay: 0s;">01001000 01100101 01101100 01110000</div>
+		<div class="data-stream" style="left: 12%; animation-delay: 1.2s;">11010010 01001111 01010000</div>
+		<div class="data-stream" style="left: 18%; animation-delay: 2s;">CITADEL_DATABASE_ACCESS</div>
+		<div class="data-stream" style="left: 25%; animation-delay: 0.8s;">10110010 11001010 00111001</div>
+		<div class="data-stream" style="left: 32%; animation-delay: 4s;">RICK_SANCHEZ_C137</div>
+		<div class="data-stream" style="left: 38%; animation-delay: 1s;">01010010 01001001 01000011 01001011</div>
+		<div class="data-stream" style="left: 45%; animation-delay: 3.5s;">MORTY_SMITH_PRIME</div>
+		<div class="data-stream" style="left: 52%; animation-delay: 3s;">PORTAL_GUN_SIGNATURE</div>
+		<div class="data-stream" style="left: 58%; animation-delay: 1.8s;">11100101 10010001 01110100</div>
+		<div class="data-stream" style="left: 65%; animation-delay: 5s;">INTERDIMENSIONAL_TRAVEL</div>
+		<div class="data-stream" style="left: 72%; animation-delay: 6s;">01000011 00110001 00110011 00110111</div>
+		<div class="data-stream" style="left: 78%; animation-delay: 2.2s;">10001001 11010101 00101110</div>
+		<div class="data-stream" style="left: 85%; animation-delay: 2.5s;">SCHWIFTY_PROTOCOL</div>
+		<div class="data-stream" style="left: 92%; animation-delay: 4.5s;">WUBBA_LUBBA_DUB_DUB</div>
+		<div class="data-stream" style="left: 8%; animation-delay: 3.2s;">DIMENSION_SCAN_ACTIVE</div>
+		<div class="data-stream" style="left: 28%; animation-delay: 1.5s;">11001010 01110010 10101001</div>
+		<div class="data-stream" style="left: 42%; animation-delay: 5.5s;">NEURAL_LINK_ESTABLISHED</div>
+		<div class="data-stream" style="left: 68%; animation-delay: 0.5s;">01001101 01001111 01010010 01010100 01011001</div>
+		<div class="data-stream" style="left: 88%; animation-delay: 3.8s;">QUANTUM_FLUX_DETECTED</div>
+		<div class="data-stream" style="left: 15%; animation-delay: 4.2s;">00100000 11010011 10101010</div>
+
 		<!-- Invisible button that covers the backdrop for keyboard accessibility -->
 		<button
 			class="absolute inset-0 h-full w-full cursor-default bg-transparent"
@@ -288,7 +369,7 @@
 		></button>
 
 		<div
-			class="animate-slide-up relative z-10 w-full max-w-3xl rounded-lg border-2 border-green-500/50 bg-black/95 p-6 shadow-[0_0_20px_rgba(34,197,94,0.3)]"
+			class="animate-slide-up relative z-10 w-full max-w-4xl rounded-lg terminal-border bg-black/98 p-6 terminal-font crt-screen"
 			role="dialog"
 			aria-labelledby="modal-title"
 			aria-modal="true"
@@ -314,34 +395,49 @@
 				</svg>
 			</button>
 
+			<div class="ascii-art text-xs mb-4">
+╔═══════════════════════════════════════════════════════════════════════╗
+║                        C-137-INFO DEEP ANALYSIS TERMINAL              ║
+║                         CITADEL DATABASE ACCESS                       ║
+╚═══════════════════════════════════════════════════════════════════════╝
+			</div>
 			<h2
 				id="modal-title"
-				class="mb-4 border-b border-green-500/30 pb-2 text-xl font-bold text-green-500/80"
+				class="mb-4 border-b border-terminal-green/50 pb-2 text-xl font-bold text-terminal-green sci-fi-header"
 			>
-				Additional Information: {data.character.name}
+				ENTITY PROFILE: {data.character.name.toUpperCase()}
 			</h2>
 
 			<div
-				class="terminal-text max-h-[70vh] overflow-y-auto pr-2 font-mono leading-relaxed text-green-400"
+				class="terminal-text max-h-[70vh] overflow-y-auto pr-2 terminal-font leading-relaxed text-terminal-green"
 			>
 				{#if loading}
-					<span>
-						<span class="spinner inline-block">{spinnerFrames[currentSpinnerFrame]}</span>
-						Fetching additional information...
+					<div class="ascii-art text-xs mb-2">
+> ACCESSING CITADEL DATABASES...
+> SCRAPING FANDOM WIKI...
+> PROCESSING NEURAL NETWORK...
+					</div>
+					<span class="glitch-text">
+						<span class="spinner inline-block text-terminal-blue">{spinnerFrames[currentSpinnerFrame]}</span>
+						<strong class="text-portal-orange">ANALYSIS IN PROGRESS...</strong>
 					</span>
 					{#if !aiResponse}
-						<p class="mt-4 text-sm text-green-500/70 italic">
-							You can close this modal and check back later. The information will continue
-							generating in the background.
+						<p class="mt-4 text-sm text-rick-cyan italic">
+							> BACKGROUND PROCESSING ACTIVE: Modal can be closed - data will continue generating
 						</p>
 					{/if}
 				{:else}
-					<span>{@html aiResponse}</span>
+					<div class="ascii-art text-xs mb-2">
+> DATA RETRIEVAL: COMPLETE
+> ANALYSIS STATUS: PROCESSED
+					</div>
+					<span class="text-terminal-green">{@html aiResponse}</span>
 					<br />
-					<span class="mt-4 text-sm text-green-500/70 italic"
-						>>&nbsp;Please note that the information provided may not be canonical across all known
-						dimensions. Some information fetched from the Citadel may be outdated or incorrect.
-					</span>
+					<div class="mt-4 text-xs text-rick-cyan italic border-t border-terminal-green/30 pt-2">
+						<strong>DISCLAIMER:</strong> Information accuracy varies across dimensional boundaries.
+						Citadel databases may contain outdated or dimension-specific data.
+						C-137-INFO system reliability: 94.7%
+					</div>
 				{/if}
 			</div>
 		</div>
@@ -421,5 +517,40 @@
 		border-radius: 0.25rem;
 		background-color: rgba(0, 0, 0, 0.3);
 		border: 1px solid rgba(34, 197, 94, 0.2);
+	}
+
+	.reboot-button {
+		background: linear-gradient(45deg, #1a0a0a, #2a1010);
+		border: 1px solid rgba(220, 38, 38, 0.3);
+		color: rgba(248, 113, 113, 0.8);
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		position: relative;
+		overflow: hidden;
+		transition: all 0.3s ease;
+	}
+
+	.reboot-button::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: -100%;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.1), transparent);
+		transition: left 0.5s ease;
+	}
+
+	.reboot-button:hover::before {
+		left: 100%;
+	}
+
+	.reboot-button:hover {
+		border-color: rgba(220, 38, 38, 0.6);
+		box-shadow:
+			0 0 10px rgba(220, 38, 38, 0.3),
+			inset 0 0 10px rgba(220, 38, 38, 0.1);
+		text-shadow: 0 0 8px rgba(248, 113, 113, 0.5);
+		color: rgb(248, 113, 113);
 	}
 </style>
