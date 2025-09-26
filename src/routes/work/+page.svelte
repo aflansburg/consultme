@@ -105,19 +105,15 @@
 </svelte:head>
 
 <div class="projects-container terminal-font" class:dark={$colorMode === 'dark'}>
-	<!-- Mobile ASCII Header -->
-	<div class="ascii-art mb-4 block sm:hidden">
-╔══════════════════════════════════════════════════╗
-║               EXPERIMENTAL PROTOTYPES            ║
-║               & INVENTIONS DATABASE              ║
-╚══════════════════════════════════════════════════╝
+	<!-- Mobile Header -->
+	<div class="rounded-md border border-terminal-green/50 bg-black/20 px-4 py-3 mb-4 block sm:hidden terminal-font text-xs">
+		<div class="text-terminal-green font-bold text-center mb-1">EXPERIMENTAL PROTOTYPES</div>
+		<div class="text-terminal-green font-bold text-center">& INVENTIONS DATABASE</div>
 	</div>
-	<!-- Desktop ASCII Header -->
-	<div class="ascii-art mb-6 hidden sm:block">
-╔════════════════════════════════════════════════════════════════════════╗
-║                    EXPERIMENTAL PROTOTYPES DATABASE                    ║
-║                     & QUESTIONABLE INVENTIONS LOG                      ║
-╚════════════════════════════════════════════════════════════════════════╝
+	<!-- Desktop Header -->
+	<div class="rounded-md border border-terminal-green/50 bg-black/20 px-6 py-4 mb-6 hidden sm:block terminal-font text-sm">
+		<div class="text-terminal-green font-bold text-center mb-1">EXPERIMENTAL PROTOTYPES DATABASE</div>
+		<div class="text-terminal-green font-bold text-center">& QUESTIONABLE INVENTIONS LOG</div>
 	</div>
 	<h1 class="mb-4 text-2xl font-bold sci-fi-header text-terminal-green">RESEARCH & DEVELOPMENT</h1>
 	<p class="mb-4 text-terminal-green">
@@ -170,19 +166,17 @@
 	</ul>
 </div>
 
-<div class="ascii-art mt-8 text-center">
-════════════════════════════════════════════════════════
-    END OF EXPERIMENTAL PROTOTYPES DATABASE
-    FOR EMPLOYMENT HISTORY:
-	<br/>
-	<a
-        href="https://www.linkedin.com/in/abramflansburg/"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-rick-cyan hover:text-portal-orange underline hover:no-underline transition-colors"
-    >LINKEDIN.COM/IN/ABRAMFLANSBURG</a>
-	<br/>
-════════════════════════════════════════════════════════
+<div class="rounded-md border border-terminal-green/50 bg-black/20 px-6 py-4 mt-8 text-center terminal-font text-sm">
+	<div class="text-terminal-green font-bold mb-2">END OF EXPERIMENTAL PROTOTYPES DATABASE</div>
+	<div class="text-terminal-green/80 mb-3">FOR EMPLOYMENT HISTORY:</div>
+	<div>
+		<a
+	        href="https://www.linkedin.com/in/abramflansburg/"
+	        target="_blank"
+	        rel="noopener noreferrer"
+	        class="text-rick-cyan hover:text-portal-orange underline hover:no-underline transition-colors"
+	    >LINKEDIN.COM/IN/ABRAMFLANSBURG</a>
+	</div>
 </div>
 
 <style>

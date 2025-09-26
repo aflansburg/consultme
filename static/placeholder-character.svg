@@ -1,0 +1,6 @@
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="200" fill="#0a0a0a" stroke="#22c55e" stroke-width="2"/>
+  <circle cx="100" cy="80" r="30" fill="none" stroke="#22c55e" stroke-width="2"/>
+  <rect x="70" y="110" width="60" height="80" fill="none" stroke="#22c55e" stroke-width="2"/>
+  <text x="100" y="170" text-anchor="middle" fill="#22c55e" font-family="monospace" font-size="12">LOADING...</text>
+</svg>

@@ -12,6 +12,7 @@
 	import RickAndMortyIcon from '$lib/icons/RickAndMortyIcon.svelte';
 	import YouTubeModal from '$lib/components/YouTubeModal.svelte';
 	import MatrixLyrics from '$lib/components/MatrixLyrics.svelte';
+	import ChangelogModal from '$lib/components/ChangelogModal.svelte';
 	import { colorMode } from '$lib/stores/sitePreferences.svelte';
 	import { avatarImage } from '$lib/stores/avatarImage.svelte';
 	import { name, firstName, identityRevealed } from '$lib/stores/identity.svelte';
@@ -36,6 +37,7 @@
 	let lyricsTimer: ReturnType<typeof setTimeout>;
 	let youtubeVideoId = $state('https://youtu.be/M1tIH55Bo8k?si=0TQ1EmMIrn4H631I&t=206'); // YouTube video with timestamp
 	let rickAndMortyVideoId = $state('https://www.youtube.com/watch?v=i7RMgPHGSMU'); // Rick and Morty video
+	let showChangelogModal = $state(false);
 	let avatarProperties = $derived({
 		src: $avatarImage,
 		alt: $name,
@@ -104,6 +106,14 @@
 		showMatrixLyrics = false;
 		currentLyrics = "";
 		lyricsMode = "matrix";
+	}
+
+	function openChangelogModal() {
+		showChangelogModal = true;
+	}
+
+	function closeChangelogModal() {
+		showChangelogModal = false;
 	}
 
 	// Developer Console Easter Eggs
@@ -231,7 +241,10 @@
 			<img {...avatarProperties} />
 		</div>
 		<div class="ml-[4.5rem] truncate pl-4 text-lg font-bold tracking-wide sm:ml-20 sm:text-xl">
-			<div class="ascii-art text-xs mb-1">C-137-INFO :: SYS_ID: {$weirdWord.toUpperCase()}</div>
+			<div class="text-xs mb-1 terminal-font text-terminal-green/80 text-left sm:text-left">
+				<div>C-137-INFO</div>
+				<div>SYS_ID: {$weirdWord.toUpperCase()}</div>
+			</div>
 			<span class="xs:inline hidden terminal-font">{$name}</span>
 			<span class="xs:hidden inline terminal-font">{$name}</span>
 		</div>
@@ -312,6 +325,15 @@
 							<MoonIcon />
 						</span>
 					{/if}
+				</button>
+			</li>
+			<li>
+				<button
+					class="font-medium transition-all cursor-pointer transition-all hover:text-cyan-500 hover:text-cyan-500"
+					aria-label="View changelog"
+					onclick={openChangelogModal}
+				>
+					Changelog
 				</button>
 			</li>
 		</ul>
@@ -481,7 +503,7 @@
 					<button
 						class="{$colorMode === 'dark'
 							? 'border-zinc-500/20 bg-zinc-700/70 hover:bg-zinc-600'
-							: 'border-zinc-300/50 bg-zinc-200/70 hover:bg-zinc-300'} 
+							: 'border-zinc-300/50 bg-zinc-200/70 hover:bg-zinc-300'}
 							flex w-full transform items-center gap-3 rounded-md border px-4 py-3
 							shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow active:scale-[0.99]"
 						aria-label="Toggle theme"
@@ -502,13 +524,37 @@
 							{/if}
 						</span>
 					</button>
+					<h3
+						class="mb-2 text-sm font-medium {$colorMode === 'dark'
+							? 'text-zinc-300'
+							: 'text-zinc-600'}"
+					>
+						Info
+					</h3>
+					<button
+						onclick={() => {
+							openChangelogModal();
+							toggleMenu();
+						}}
+						class="{$colorMode === 'dark' ? 'text-zinc-500/60' : 'text-zinc-400/80'}
+							flex w-full transform items-center gap-3 rounded-md border px-4 py-3
+							shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow active:scale-[0.99]"
+						aria-label="View changelog"
+					>
+						<div class="text-terminal-green">
+							<QuestionMarkIcon />
+						</div>
+						<span class="font-medium {$colorMode === 'dark' ? 'text-zinc-200' : 'text-zinc-800'}"
+							>Changelog</span
+						>
+					</button>
 				</div>
 			</div>
 		</div>
 	{/if}
 
 	<div
-		class="min-h-screen px-4 pt-4 pb-16 sm:px-8 sm:pt-8 sm:pb-32 md:pt-8 md:pb-32 lg:pt-8 lg:pb-36 terminal-font {$colorMode ===
+		class="min-h-screen overflow-x-hidden px-4 pt-4 pb-16 sm:px-8 sm:pt-8 sm:pb-32 md:pt-8 md:pb-32 lg:pt-8 lg:pb-36 terminal-font {$colorMode ===
 		'light'
 			? 'bg-black text-green-400'
 			: 'bg-zinc-950 text-green-300'}"
@@ -565,6 +611,12 @@
 
 	<!-- Matrix Lyrics Overlay -->
 	<MatrixLyrics isActive={showMatrixLyrics} lyrics={currentLyrics} mode={lyricsMode} />
+
+	<!-- Changelog Modal -->
+	<ChangelogModal
+		isOpen={showChangelogModal}
+		onClose={closeChangelogModal}
+	/>
 </div>
 
 <style>

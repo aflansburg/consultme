@@ -19,16 +19,23 @@
 	}
 
 	let { data }: Props = $props();
+	let character = $state(data.character);
 	let aiResponse = $state('');
 	let loading = $state(false);
 	let fetchStarted = $state(false);
+	let characterLoading = $state(true);
 	let spinnerFrames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
 	let currentSpinnerFrame = $state(0);
 	let spinnerInterval: ReturnType<typeof setInterval>;
 	const cannedAiErrorResponse = `Failed to load additional information.`;
 	const myName = PUBLIC_MY_NAME;
 	let showModal = $state(false);
+
+	// Mobile collapsible sections
+	let showIdentitySection = $state(false);
+	let showArchitectureSection = $state(false);
 	let imageLoaded = $state(false);
+	let imageError = $state(false);
 	let terminalLogs = $state<string[]>([]);
 	let logsContainer = $state<HTMLDivElement | undefined>();
 
@@ -48,7 +55,7 @@
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					characterName: data.character.name
+					characterName: character.name
 				})
 			});
 
@@ -95,11 +102,30 @@
 		}
 	}
 
+	async function loadRandomCharacter() {
+		characterLoading = true;
+		imageLoaded = false;
+		imageError = false;
+
+		try {
+			const response = await fetch('/api/random-character');
+			if (response.ok) {
+				const newCharacter = await response.json();
+				character = newCharacter;
+			} else {
+				console.error('Failed to fetch random character');
+			}
+		} catch (error) {
+			console.error('Error loading random character:', error);
+		} finally {
+			characterLoading = false;
+		}
+	}
+
 	async function fetchRandomCharacter() {
 		aiResponse = '';
 		fetchStarted = false;
-		imageLoaded = false; // Reset image loaded state
-		await invalidateAll();
+		await loadRandomCharacter();
 	}
 
 	let errorMessage = $state('');
@@ -110,10 +136,11 @@
 
 		try {
 			const rick = await getCharacter(1);
-			data.character = rick;
+			character = rick;
 			aiResponse = '';
 			fetchStarted = false;
 			imageLoaded = false; // Reset image loaded state
+			imageError = false; // Reset image error state
 			loading = false;
 		} catch (error) {
 			console.error('Failed to fetch Rick Sanchez:', error);
@@ -135,7 +162,7 @@
 		identityRevealed.set(true);
 	}
 
-	onMount(() => {
+	onMount(async () => {
 		spinnerInterval = setInterval(() => {
 			currentSpinnerFrame = (currentSpinnerFrame + 1) % spinnerFrames.length;
 		}, 80);
@@ -143,8 +170,8 @@
 		// Add keyboard event listener
 		window.addEventListener('keydown', handleKeydown);
 
-		// Reset image loaded state on initial load
-		imageLoaded = false;
+		// Load character data on mount
+		await loadRandomCharacter();
 
 		return () => {
 			clearInterval(spinnerInterval);
@@ -172,109 +199,163 @@
 
 <TerminalBootSequence />
 
-<div class="container mx-auto px-2 pt-6 sm:px-4 sm:pt-4">
-	<div class="grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-[1fr_2fr] lg:gap-12">
-		<div class="space-y-4 sm:space-y-4">
-			<div class="ascii-art mb-2 sm:mb-4">
+<div class="container mx-auto px-2 pt-2 sm:px-4 sm:pt-2 pb-8">
+	<div class="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-[1fr_2fr] lg:gap-8">
+		<div class="space-y-2 sm:space-y-3">
+			<div class="ascii-art my-6">
 > PERSONNEL FILE ACCESS INITIATED...
 > SCANNING DIMENSION C-137 DATABASE...
 			</div>
-			<p class="glitch-text-slow">
-				I'm not <span class="group relative">
-					<button
-						type="button"
-						class="cursor-pointer border-none bg-transparent p-1 font-bold text-terminal-blue hover:text-portal-orange terminal-button"
-						onclick={fetchRickSanchez}>Rick Sanchez</button
-					>
-					<span
-						class="invisible absolute -top-8 left-1/2 -translate-x-1/2 rounded-md bg-black px-2 py-1 text-xs whitespace-nowrap text-green-400 group-hover:visible terminal-border"
-					>
-						Main character of Rick & Morty
-					</span>
-				</span> - obviously - I'm just a <strong class="text-terminal-green">cross-paradigm systems architect</strong> and
-				<strong class="text-neon-purple">pattern-recognition specialist</strong> named
-				<span class="font-bold text-rick-cyan terminal-font"
-					><a
-						href="{$identityRevealed ? 'https://www.linkedin.com/in/abramflansburg/' : '/'}#"
-						target="_blank"
-						class="{$identityRevealed ? 'hover:underline hover:text-portal-orange' : 'glitching-text text-terminal-red'}"
-						data-text="{$identityRevealed ? myName : 'ᛒᛏᛈᚹᚱᚨᚦᚢᚠ'}">{$identityRevealed ? myName : 'ᛒᛏᛈᚹᚱᚨᚦᚢᚠ'}</a
-					>.</span
+			
+			<!-- Mobile Identity Section -->
+			<div class="block">
+				<button
+				type="button"
+				class="w-full flex items-center justify-between terminal-button px-4 py-3 rounded-md mb-2 terminal-font text-sm"
+				onclick={() => showIdentitySection = !showIdentitySection}
 				>
-			</p>
-			<button
-			class="{$identityRevealed ? 'terminal-button-disabled' : 'terminal-button text-terminal-green cursor-pointer'} px-6 py-3 rounded-md relative font-bold "
-			onclick={() => {
-				if (!$identityRevealed) {
-					revealIdentity();
-				}
-			}}
-			disabled={$identityRevealed}
-			>
-			{#if $identityRevealed}
-				> NOT_ACCESSIBLE
-			{:else}
-				> REVEAL_IDENTITY
-			{/if}
+				<span class="text-terminal-green font-bold">IDENTITY & PROJECT INFO</span>
+				<span class="text-terminal-green transform transition-transform {showIdentitySection ? 'rotate-90' : ''}">▶</span>
 			</button>
-			<p>This is my <em>(mostly functional)</em> <strong class="text-terminal-green">interdimensional portfolio terminal</strong>.</p>
-			<p>
-				Built using <span class="font-bold text-portal-orange terminal-font"
-					><a href="https://kit.svelte.dev/" target="_blank" class="hover:underline hover:text-terminal-green">SvelteKit</a
-					></span
-				>,
-				<span class="font-bold text-terminal-blue terminal-font"
-					><a href="https://tailwindcss.com/" target="_blank" class="hover:underline hover:text-neon-purple">TailwindCSS</a
-					></span
-				>, and a dash of <em class="text-rick-cyan">"AI"</em> <span class="text-xs opacity-60">(Large Language Model)</span>.
-			</p>
-			<p>
-				<span class="animate-glow flex items-center gap-2 font-bold text-terminal-green">
-					> SOURCE CODE REPOSITORY: <a
-						href="https://github.com/aflansburg/consultme"
-						target="_blank"
-						class="text-rick-cyan hover:underline hover:text-portal-orange terminal-font"
-					>
-						<GitHubIcon />
-					</a>
-				</span>
-			</p>
-			<!-- Mobile System Architecture -->
-			<div class="ascii-art block sm:hidden">
-╔═════════════════════════════════════════╗
-║             SYSTEM ARCHITECTURE         ║
-║  • SvelteKit Frontend                   ║
-║  • Playwright Web Scraper               ║
-║  • OpenAI GPT-4 Integration             ║
-║  • Rick & Morty API Consumer            ║
-╚═════════════════════════════════════════╝
+			{#if showIdentitySection}
+					<p class="glitch-text-slow">
+						I'm not <span class="group relative">
+							<button
+								type="button"
+								class="cursor-pointer border-none bg-transparent p-1 font-bold text-terminal-blue hover:text-portal-orange terminal-button"
+								onclick={fetchRickSanchez}>Rick Sanchez</button
+							>
+							<span
+								class="invisible absolute -top-8 left-1/2 -translate-x-1/2 rounded-md bg-black px-2 py-1 text-xs whitespace-nowrap text-green-400 group-hover:visible terminal-border"
+							>
+								Main character of Rick & Morty
+							</span>
+						</span> - obviously - I'm just a <strong class="text-terminal-green">cross-paradigm systems architect</strong> and
+						<strong class="text-neon-purple">pattern-recognition specialist</strong> named
+						<span class="font-bold text-rick-cyan terminal-font"
+							><a
+								href="{$identityRevealed ? 'https://www.linkedin.com/in/abramflansburg/' : '/'}#"
+								target="_blank"
+								class="{$identityRevealed ? 'hover:underline hover:text-portal-orange' : 'glitching-text text-terminal-red'}"
+								data-text="{$identityRevealed ? myName : 'ᛒᛏᛈᚹᚱᚨᚦᚢᚠ'}">{$identityRevealed ? myName : 'ᛒᛏᛈᚹᚱᚨᚦᚢᚠ'}</a
+							>.</span
+						>
+					</p>
+					<div class="flex justify-center">
+						<button
+						class="{$identityRevealed ? 'terminal-button-disabled' : 'terminal-button text-terminal-green cursor-pointer'} px-4 py-2 my-4 rounded-md relative font-bold "
+						onclick={() => {
+							if (!$identityRevealed) {
+								revealIdentity();
+							}
+						}}
+						disabled={$identityRevealed}
+						>
+						{#if $identityRevealed}
+							> NOT_ACCESSIBLE
+						{:else}
+							> REVEAL_IDENTITY
+						{/if}
+						</button>
+					</div>
+					<div class="space-y-2 mb-3 animate-slide-up">
+						<p>This is my <em>(mostly functional)</em> <strong class="text-terminal-green">interdimensional portfolio terminal</strong>.</p>
+						<p>
+							Built using <span class="font-bold text-portal-orange terminal-font"
+								><a href="https://kit.svelte.dev/" target="_blank" class="hover:underline hover:text-terminal-green">SvelteKit</a
+								></span
+							>,
+							<span class="font-bold text-terminal-blue terminal-font"
+								><a href="https://tailwindcss.com/" target="_blank" class="hover:underline hover:text-neon-purple">TailwindCSS</a
+								></span
+							>, and a dash of <em class="text-rick-cyan">"AI"</em> <span class="text-xs opacity-60">(Large Language Model)</span>.
+						</p>
+						<p>
+							<span class="animate-glow flex items-center gap-2 font-bold text-terminal-green">
+								> SOURCE CODE REPOSITORY: <a
+									href="https://github.com/aflansburg/consultme"
+									target="_blank"
+									class="text-rick-cyan hover:underline hover:text-portal-orange terminal-font"
+								>
+									<GitHubIcon />
+								</a>
+							</span>
+						</p>
+					</div>
+				{/if}
+			</div>
+
+			<!-- Desktop Identity Section (always visible) -->
+			<div class="hidden block space-y-2">
+				<p>This is my <em>(mostly functional)</em> <strong class="text-terminal-green">interdimensional portfolio terminal</strong>.</p>
+				<p>
+					Built using <span class="font-bold text-portal-orange terminal-font"
+						><a href="https://kit.svelte.dev/" target="_blank" class="hover:underline hover:text-terminal-green">SvelteKit</a
+						></span
+					>,
+					<span class="font-bold text-terminal-blue terminal-font"
+						><a href="https://tailwindcss.com/" target="_blank" class="hover:underline hover:text-neon-purple">TailwindCSS</a
+						></span
+					>, and a dash of <em class="text-rick-cyan">"AI"</em> <span class="text-xs opacity-60">(Large Language Model)</span>.
+				</p>
+				<p>
+					<span class="animate-glow flex items-center gap-2 font-bold text-terminal-green">
+						> SOURCE CODE REPOSITORY: <a
+							href="https://github.com/aflansburg/consultme"
+							target="_blank"
+							class="text-rick-cyan hover:underline hover:text-portal-orange terminal-font"
+						>
+							<GitHubIcon />
+						</a>
+					</span>
+				</p>
+			</div>
+			<!-- Mobile Architecture Section -->
+			<div class="block sm:hidden">
+				<button
+					type="button"
+					class="w-full flex items-center justify-between terminal-button px-4 py-3 rounded-md mb-2 terminal-font text-sm"
+					onclick={() => showArchitectureSection = !showArchitectureSection}
+				>
+					<span class="text-terminal-green font-bold">SYSTEM ARCHITECTURE</span>
+					<span class="text-terminal-green transform transition-transform {showArchitectureSection ? 'rotate-90' : ''}">▶</span>
+				</button>
+				{#if showArchitectureSection}
+					<div class="animate-slide-up mb-4">
+						<div class="rounded-md border border-terminal-green/50 bg-black/20 px-4 py-3 terminal-font text-xs">
+							<div class="text-terminal-green font-bold text-center mb-2">SYSTEM ARCHITECTURE</div>
+							<div class="text-terminal-green/80">
+								<div>• SvelteKit Frontend</div>
+								<div>• Playwright Web Scraper</div>
+								<div>• OpenAI GPT-4 Integration</div>
+								<div>• Rick & Morty API Consumer</div>
+							</div>
+						</div>
+					</div>
+				{/if}
 			</div>
 			<!-- Desktop System Architecture -->
-			<div class="ascii-art hidden sm:block">
-╔════════════════════════════════════════════════════════╗
-║  SYSTEM ARCHITECTURE: Microservices + Web Scraping     ║
-║  - SvelteKit Frontend (This Interface)                 ║
-║  - Playwright Web Scraper (Fandom Wiki Access)         ║
-║  - OpenAI GPT-4 Integration (Character Analysis)       ║
-║  - Rick & Morty API Consumer (Character Data)          ║
-╚════════════════════════════════════════════════════════╝
+			<div class="rounded-md border border-terminal-green/50 bg-black/20 px-4 py-2 hidden sm:block terminal-font text-xs">
+				<div class="text-terminal-green font-bold text-center mb-2">SYSTEM ARCHITECTURE</div>
+				<div class="text-terminal-green/80 space-y-0.5 text-xs">
+					<div>• SvelteKit Frontend</div>
+					<div>• Playwright Web Scraper</div>
+					<div>• OpenAI GPT-4 Integration</div>
+					<div>• Rick & Morty API Consumer</div>
+				</div>
 			</div>
 		</div>
 
-		<div class="space-y-4 sm:space-y-4 lg:flex lg:items-start lg:justify-center">
+		<div class="space-y-3 sm:space-y-4 lg:flex lg:items-start lg:justify-center">
 			<div class="w-full max-w-3xl">
-				<!-- Mobile ASCII Art -->
-				<div class="ascii-art mb-2 sm:mb-4 block sm:hidden text-xs">
-═══════════════════════════════════════════
-    INTERDIMENSIONAL CHARACTER DATABASE
-            ACCESS MODULE
-═══════════════════════════════════════════
+				<!-- Mobile Header -->
+				<div class="rounded-md border border-terminal-green/50 bg-black/20 px-4 py-3 mb-2 sm:mb-4 block sm:hidden terminal-font text-xs">
+					<div class="text-terminal-green font-bold text-center mb-1">INTERDIMENSIONAL CHARACTER DATABASE</div>
+					<div class="text-terminal-green font-bold text-center">ACCESS MODULE</div>
 				</div>
-				<!-- Desktop ASCII Art -->
-				<div class="ascii-art mb-2 sm:mb-4 hidden sm:block">
-════════════════════════════════════════════════════════
-   INTERDIMENSIONAL CHARACTER DATABASE ACCESS MODULE
-════════════════════════════════════════════════════════
+				<!-- Desktop Header -->
+				<div class="rounded-md border border-terminal-green/50 bg-black/20 px-6 py-3 mb-2 sm:mb-4 hidden sm:block terminal-font text-sm">
+					<div class="text-terminal-green font-bold text-center">INTERDIMENSIONAL CHARACTER DATABASE ACCESS MODULE</div>
 				</div>
 				<p class="pb-4 text-left mb-4 sm:mb-2">
 					> <strong class="text-terminal-green">SYSTEM FUNCTION:</strong> Random entity data retrieval from multiverse personnel database
@@ -290,7 +371,7 @@
 					<span class="text-portal-orange">AI ANALYSIS:</span> Raw data processed through GPT-4 neural network
 					for coherent information synthesis
 				</p>
-				<div class="py-4 sm:py-4 border-t border-terminal-green/20 mt-4 sm:mt-2">
+				<div class="py-2 sm:py-3 border-t border-terminal-green/20 mt-2 sm:mt-2">
 					<div class="flex items-center gap-2 sm:gap-4">
 						<p class="text-sm">
 							<span class="text-terminal-blue">REROLL FUNCTION:</span> Fetch new entity from
@@ -302,7 +383,7 @@
 						</p>
 					</div>
 				</div>
-				<div class="w-full">
+				<div class="w-full mt-4">
 					{#if errorMessage}
 						<div class="mb-4 p-3 rounded-lg bg-red-900/20 border border-red-500/50">
 							<div class="flex items-center gap-2 text-red-400">
@@ -323,17 +404,17 @@
 						</div>
 					{/if}
 
-					{#key data.character.id}
-						<div class="grid w-full grid-cols-1 items-start gap-4 sm:gap-6 xl:grid-cols-2">
+					{#key character.id}
+						<div class="grid w-full grid-cols-1 items-start gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-2">
 							<div class="flex flex-col items-center gap-3 sm:gap-4">
 								<!-- Fixed size container to prevent layout shift -->
-								<div class="relative w-full max-w-sm aspect-square rounded-lg portal-border shadow-lg shadow-terminal-blue/20 overflow-hidden">
+								<div class="relative w-full max-w-xs mx-auto aspect-square rounded-lg portal-border shadow-lg shadow-terminal-blue/20 overflow-hidden">
 									<!-- Loading placeholder -->
-									{#if !imageLoaded}
+									{#if characterLoading || !imageLoaded}
 										<div class="absolute inset-0 bg-black/90 flex items-center justify-center">
 											<div class="ascii-art text-center">
 												<div class="animate-pulse text-terminal-green">
-													LOADING...
+													{characterLoading ? 'LOADING CHARACTER...' : 'LOADING...'}
 												</div>
 												<div class="mt-2 text-xs opacity-60">
 													{spinnerFrames[currentSpinnerFrame]}
@@ -341,36 +422,45 @@
 											</div>
 										</div>
 									{/if}
-									<!-- Actual image -->
-									<img
-										src={data.character.image}
-										alt={data.character.name}
-										class="w-full h-full object-cover transition-opacity duration-300 {imageLoaded ? 'opacity-100' : 'opacity-0'}"
-										onload={() => { imageLoaded = true; }}
-										onerror={() => { imageLoaded = true; }}
-									/>
+									<!-- Actual image or question mark placeholder -->
+									{#if !characterLoading}
+										{#if imageError}
+											<div class="w-full h-full flex items-center justify-center bg-black/90 p-4">
+												<span class="glitching-text text-terminal-red text-center text-sm font-mono leading-tight" data-text="Trouble fetching entity image from Citadel datastore.">Trouble fetching entity image from Citadel datastore.</span>
+											</div>
+										{:else}
+											<img
+												src={character.image}
+												alt={character.name}
+												class="w-full h-full object-cover transition-opacity duration-300 {imageLoaded ? 'opacity-100' : 'opacity-0'}"
+												onload={() => { imageLoaded = true; }}
+												onerror={() => { imageError = true; imageLoaded = true; }}
+											/>
+										{/if}
+									{/if}
 								</div>
 								<button
-									class="terminal-button px-6 py-3 rounded-md relative cursor-pointer font-bold"
+									class="{characterLoading ? 'terminal-button-disabled' : 'terminal-button'} px-6 py-3 rounded-md relative font-bold"
 									onclick={() => {
-										fetchRandomCharacter();
+										if (!characterLoading) {
+											fetchRandomCharacter();
+										}
 									}}
+									disabled={characterLoading}
 								>
-									> REROLL_ENTITY
+									{characterLoading ? '> LOADING...' : '> REROLL_ENTITY'}
 								</button>
 							</div>
 							<dl
-								class="grid w-full overflow-hidden rounded-md terminal-border bg-black/95 p-4 terminal-font text-base backdrop-blur-sm md:p-6 md:text-lg"
+								class="grid w-full overflow-hidden rounded-md terminal-border bg-black/95 p-3 terminal-font text-sm backdrop-blur-sm sm:p-4 sm:text-base md:p-6 md:text-lg"
 							>
-								<div class="ascii-art text-xs mb-3">
-╭─ ENTITY DATA READOUT ─╮
-│ STATUS: ACTIVE        │
-╰───────────────────────╯
+								<div class="rounded-md border border-terminal-green/50 bg-black/20 px-2 py-1 mb-2 text-xs terminal-font">
+									<div class="text-terminal-green font-bold text-center">ENTITY DATA • STATUS: ACTIVE</div>
 								</div>
 								<div
-									class="grid auto-rows-auto grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-[minmax(auto,_max-content)_1fr] xl:grid-cols-1"
+									class="grid auto-rows-auto grid-cols-1 gap-x-4 gap-y-2 sm:gap-x-6 sm:gap-y-3 sm:grid-cols-[minmax(auto,_max-content)_1fr] xl:grid-cols-1"
 								>
-									{#each Object.entries(data.character).filter(([key]) => !['id', 'image', 'url', 'created', 'episode', 'Additional Info'].includes(key)) as [key, value], i}
+									{#each Object.entries(character).filter(([key]) => !['id', 'image', 'url', 'created', 'episode', 'Additional Info'].includes(key)) as [key, value], i}
 										<div
 											class="contents sm:grid sm:grid-cols-[minmax(auto,_max-content)_1fr] sm:gap-x-4 xl:grid-cols-1"
 										>
@@ -378,7 +468,7 @@
 												{key.charAt(0).toUpperCase() + key.slice(1)}:
 											</dt>
 											<dd
-												class={`${key === 'status' && data.character.status === 'Dead' ? 'text-red-500' : 'text-green-400'} break-words xl:pl-4`}
+												class={`${key === 'status' && character.status === 'Deceased' ? 'text-red-500' : 'text-green-400'} break-words xl:pl-4`}
 											>
 												{#if typeof value === 'object'}
 													{value.name}
@@ -418,10 +508,10 @@
 	</div>
 
 	<!-- Reboot Terminal Button -->
-	<div class="flex justify-center mt-8 sm:mt-12">
+	<div class="flex justify-center mt-2 sm:mt-3">
 		<button
 			onclick={handleReboot}
-			class="reboot-button px-4 py-2 rounded-md terminal-font text-xs opacity-60 hover:opacity-100 transition-all duration-300"
+			class="reboot-button px-3 py-1 mt-2 rounded-md terminal-font text-xs opacity-60 hover:opacity-100 transition-all duration-300"
 			title="Reboot C-137-INFO Terminal"
 		>
 			> REBOOT_TERMINAL
@@ -492,33 +582,28 @@
 					<line x1="6" y1="6" x2="18" y2="18"></line>
 				</svg>
 			</button>
-			<div class="ascii-art hidden sm:block text-center mb-4">
-╔═══════════════════════════════════════════════════════════════════════╗
-║                        C-137-INFO DEEP ANALYSIS TERMINAL              ║
-║                         CITADEL DATABASE ACCESS                       ║
-╚═══════════════════════════════════════════════════════════════════════╝
+			<div class="rounded-md border border-terminal-green/50 bg-black/20 px-6 py-4 hidden sm:block text-center mb-4 terminal-font text-sm">
+				<div class="text-terminal-green font-bold text-center mb-1">C-137-INFO DEEP ANALYSIS TERMINAL</div>
+				<div class="text-terminal-green font-bold text-center">CITADEL DATABASE ACCESS</div>
 			</div>
-			<div class="ascii-art block sm:hidden text-center mb-4 text-xs pl-10">
-╔════════════════════════════╗
-║     C-137-INFO TERMINAL    ║
-║     DATABASE ACCESS        ║
-╚════════════════════════════╝
+			<div class="rounded-md border border-terminal-green/50 bg-black/20 px-4 py-3 block sm:hidden text-center mb-4 terminal-font text-xs">
+				<div class="text-terminal-green font-bold text-center mb-1">C-137-INFO TERMINAL</div>
+				<div class="text-terminal-green font-bold text-center">DATABASE ACCESS</div>
 			</div>
 			<h2
 				id="modal-title"
 				class="mb-4 border-b border-terminal-green/50 pb-2 text-xl font-bold text-terminal-green sci-fi-header"
 			>
-				ENTITY PROFILE: {data.character.name.toUpperCase()}
+				ENTITY PROFILE: {character.name.toUpperCase()}
 			</h2>
 
 			<div
 				class="terminal-text max-h-[70vh] overflow-y-auto pr-2 terminal-font leading-relaxed text-terminal-green"
 			>
 				{#if loading}
-					<div class="ascii-art text-xs mb-4">
-╭─  REAL-TIME TERMINAL OUTPUT 	─╮
-│   STATUS: PROCESSING           │
-╰────────────────────────────────╯
+					<div class="rounded-md border border-terminal-green/50 bg-black/20 px-3 py-2 mb-4 text-xs terminal-font">
+						<div class="text-terminal-green font-bold mb-1">REAL-TIME TERMINAL OUTPUT</div>
+						<div class="text-terminal-green/80">STATUS: PROCESSING</div>
 					</div>
 
 					<!-- Terminal logs section -->

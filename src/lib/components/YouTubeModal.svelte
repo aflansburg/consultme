@@ -102,11 +102,9 @@
 		>
 			<!-- Terminal-style header -->
 			<div class="youtube-header mb-4 text-center">
-				<div class="ascii-art text-terminal-green text-xs sm:text-sm mb-2">
-╔═══════════════════════════════════════════════════════════════════╗
-║                    C-137-INFO VIDEO TERMINAL                      ║
-║                      INTERDIMENSIONAL FEED                        ║
-╚═══════════════════════════════════════════════════════════════════╝
+				<div class="rounded-md border border-terminal-green/50 bg-black/20 px-4 py-3 mb-2 terminal-font text-xs sm:text-sm">
+					<div class="text-terminal-green font-bold text-center mb-1">C-137-INFO VIDEO TERMINAL</div>
+					<div class="text-terminal-green font-bold text-center">INTERDIMENSIONAL FEED</div>
 				</div>
 				<h2 id="youtube-modal-title" class="text-terminal-green font-bold text-lg sm:text-xl terminal-font">
 					> ACCESSING_VIDEO_STREAM...
@@ -116,7 +114,7 @@
 			<!-- Close button -->
 			<button
 				onclick={onClose}
-				class="absolute -top-12 right-0 z-10 terminal-button-close w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
+				class="absolute -top-6 right-0 z-10 terminal-button-close w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
 				aria-label="Close video"
 				title="Close video (ESC)"
 			>
@@ -154,8 +152,8 @@
 
 			<!-- Terminal-style footer info -->
 			<div class="youtube-footer mt-4 text-center">
-				<div class="ascii-art text-terminal-green/60 text-xs">
-> STREAM_STATUS: ACTIVE | QUALITY: AUTO | ESC_TO_CLOSE
+				<div class="rounded-md border border-terminal-green/30 bg-black/10 px-3 py-2 terminal-font text-xs">
+					<div class="text-terminal-green/60">STREAM_STATUS: ACTIVE | QUALITY: AUTO | ESC_TO_CLOSE</div>
 				</div>
 			</div>
 		</div>
@@ -242,17 +240,8 @@
 
 	/* Mobile responsiveness */
 	@media (max-width: 640px) {
-		.ascii-art {
-			font-size: 0.5rem;
-			line-height: 1.2;
-		}
-
 		.youtube-header h2 {
 			font-size: 1rem;
-		}
-
-		.youtube-footer .ascii-art {
-			font-size: 0.45rem;
 		}
 
 		.terminal-button-close {

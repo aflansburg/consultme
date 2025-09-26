@@ -53,20 +53,16 @@
 {#if showBootSequence}
 	<div class="fixed inset-0 bg-black z-[9999] flex items-center justify-center terminal-font">
 		<div class="w-full max-w-4xl p-3 sm:p-8">
-			<!-- Mobile ASCII Header -->
-			<div class="ascii-art text-center mb-4 block sm:hidden">
-╔══════════════════════════════════════════╗
-║           C-137-INFO SYSTEM              ║
-║      Data Access Terminal v2.4.1         ║
-╚══════════════════════════════════════════╝
+			<!-- Mobile Header -->
+			<div class="rounded-md border border-terminal-green/50 bg-black/20 px-4 py-3 mb-4 block sm:hidden terminal-font text-xs">
+				<div class="text-terminal-green font-bold text-center mb-1">C-137-INFO SYSTEM</div>
+				<div class="text-terminal-green font-bold text-center">Data Access Terminal v2.4.1</div>
 			</div>
-			<!-- Desktop ASCII Header -->
-			<div class="ascii-art text-center mb-8 hidden sm:block">
-╔═══════════════════════════════════════════════════════════╗
-║                    C-137-INFO SYSTEM                      ║
-║           Interdimensional Data Access Terminal           ║
-║                     Version 2.4.1                         ║
-╚═══════════════════════════════════════════════════════════╝
+			<!-- Desktop Header -->
+			<div class="rounded-md border border-terminal-green/50 bg-black/20 px-6 py-4 mb-8 hidden sm:block terminal-font text-sm">
+				<div class="text-terminal-green font-bold text-center mb-2">C-137-INFO SYSTEM</div>
+				<div class="text-terminal-green font-bold text-center mb-1">Interdimensional Data Access Terminal</div>
+				<div class="text-terminal-green font-bold text-center">Version 2.4.1</div>
 			</div>
 			<div class="text-green-400 space-y-1 flex flex-col items-center">
 				<div class="text-left">
