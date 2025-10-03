@@ -396,7 +396,7 @@
 							: 'hover:bg-zinc-100/70'} rounded-md"
 						onclick={toggleMenu}
 					>
-						Work
+						My Work
 					</a>
 					<a
 						href="/contact"

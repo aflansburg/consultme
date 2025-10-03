@@ -65,32 +65,41 @@
 
 			const reader = response.body.getReader();
 			const decoder = new TextDecoder();
+			let buffer = '';
 
 			while (true) {
 				const { done, value } = await reader.read();
 				if (done) break;
 
-				const chunk = decoder.decode(value);
-				const lines = chunk.split('\n');
+				const chunk = decoder.decode(value, { stream: true });
+				buffer += chunk;
+				const lines = buffer.split('\n');
+
+				// Keep the last incomplete line in the buffer
+				buffer = lines.pop() || '';
 
 				for (const line of lines) {
 					if (line.startsWith('data: ')) {
-						const data = JSON.parse(line.slice(6));
+						try {
+							const data = JSON.parse(line.slice(6));
 
-						if (data.type === 'log') {
-							terminalLogs = [...terminalLogs, `[${data.timestamp}] ${data.message}`];
-							// Auto-scroll to bottom
-							setTimeout(() => {
-								if (logsContainer) {
-									logsContainer.scrollTop = logsContainer.scrollHeight;
-								}
-							}, 50);
-						} else if (data.type === 'complete') {
-							aiResponse = data.data.info;
-							loading = false;
-						} else if (data.type === 'error') {
-							aiResponse = `**Error:**\n${cannedAiErrorResponse} ${data.message}`;
-							loading = false;
+							if (data.type === 'log') {
+								terminalLogs = [...terminalLogs, `[${data.timestamp}] ${data.message}`];
+								// Auto-scroll to bottom
+								setTimeout(() => {
+									if (logsContainer) {
+										logsContainer.scrollTop = logsContainer.scrollHeight;
+									}
+								}, 50);
+							} else if (data.type === 'complete') {
+								aiResponse = data.data.info;
+								loading = false;
+							} else if (data.type === 'error') {
+								aiResponse = `**Error:**\n${cannedAiErrorResponse} ${data.message}`;
+								loading = false;
+							}
+						} catch (parseError) {
+							console.warn('Failed to parse SSE data:', line, parseError);
 						}
 					}
 				}
@@ -382,6 +391,12 @@
 							> database
 						</p>
 					</div>
+				</div>
+				<div class="py-2 sm:py-3 border-t border-terminal-green/20 mt-2 sm:mt-2">
+					<p class="text-xs text-terminal-green/70 italic">
+						<span class="text-terminal-red">⚠ DISCLAIMER:</span> Apologies for any crude or untoward information displayed.
+						All data is sourced directly from Citadel database systems - we have no control over entity records.
+					</p>
 				</div>
 				<div class="w-full mt-4">
 					{#if errorMessage}

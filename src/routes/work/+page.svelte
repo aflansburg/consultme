@@ -2,94 +2,163 @@
 	import { onMount } from 'svelte';
 	import { weirdWord } from '$lib/stores/weirdWord.svelte';
 	import { colorMode } from '$lib/stores/sitePreferences.svelte';
+	import { PUBLIC_MY_NAME, PUBLIC_AVATAR_IMG_PATH } from '$env/static/public';
+	import { avatarImage } from '$lib/stores/avatarImage.svelte';
+	import { name, identityRevealed } from '$lib/stores/identity.svelte';
 
-	import {
-		generateRandomCombination,
-		type AdjectiveType,
-		type NounType
-	} from '$lib/utils/nameGenerator';
-	import ClickMeIcon from '$lib/icons/ClickMeIcon.svelte';
-
-	let randomCombination = $state('');
-	let loading = $state(false);
 	let spinnerFrames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
 	let currentSpinnerFrame = $state(0);
 	let spinnerInterval: ReturnType<typeof setInterval>;
+	let activeTrack = $state<string | null>(null);
 
-	const handleGenerateRandomCombination = () => {
-		loading = true;
-		const adjectives = ['celestial', 'serious', 'humorous'];
-		const nouns = ['cat', 'animal', 'star'];
+	interface Track {
+		title: string;
+		date: string;
+		embedUrl: string;
+		classification: string;
+	}
 
-		const selectedAdjective = adjectives[
-			Math.floor(Math.random() * adjectives.length)
-		] as AdjectiveType;
-		const selectedNoun = nouns[Math.floor(Math.random() * nouns.length)] as NounType;
+	const myName = PUBLIC_MY_NAME;
 
-		try {
-			randomCombination = generateRandomCombination(selectedAdjective, selectedNoun);
-		} catch (error) {
-			console.error('Error generating random combination:', error);
-			randomCombination = 'Error generating combination';
-		} finally {
-			loading = false;
-		}
-	};
-
-	const projects = [
+	const tracks: Track[] = [
 		{
-			name: 'Spicy Donkey',
-			link: 'https://www.npmjs.com/package/spicy-donkey',
-			additionalHtmlContent: [
-				`
-                <p class="text-md text-gray-200 py-2">
-                    Spicy Donkey is a random name generating project nobody asked for with support for CommonJS, ES6 Module, and browser script
-                </p>
-            `
-			]
+			title: 'Hope clouds observation',
+			date: '2024-03-19',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/hope-clouds-observation&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_P-127'
 		},
 		{
-			name: 'This website',
-			link: '/',
-			additionalHtmlContent: [
-				`
-                <p class="text-md text-gray-200 py-2">
-                    This website is a SvelteKit web application that I use to publish projects, thoughts, contact info, etc.
-					<br>
-					You can find the source code for this website <a href="https://github.com/aflansburg/consultme" target="_blank">here</a>.
-                </p>
-				<p class="text-md text-gray-200 py-2 font-bold">
-					About this project
-				</p>
-				<ul class="list-disc list-inside text-md">
-					<li>
-						Deployed to Google Cloud Run
-					</li>
-					<li>
-						Uses Playwright & a minimal Chromium lib to scrape data from the Rick & Morty Fandom Wiki which is then provided to an LLM (see below)
-					</li>
-					<li>
-						Uses OpenAI's GPT-4 to generate additional information about R&M characters
-					</li>
-            `
-			]
+			title: 'Dialectic Dessert',
+			date: '2023-11-18',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/dialectic-dessert&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_Q-404'
 		},
 		{
-			name: 'Contributor: ScrapeGraphAI',
-			link: 'https://github.com/ScrapeGraphAI/Scrapegraph-ai',
-			additionalHtmlContent: [
-				`
-				<p class="text-md text-gray-200 py-2">
-					ScrapeGraphAI offers seamless integration with popular frameworks and tools to enhance your scraping capabilities. Whether you're building with Python or Node.js, using LLM frameworks, or working with no-code platforms, we've got you covered with our comprehensive integration options.
-				</p>
-			`
-			]
+			title: 'Curse of Dimensionality',
+			date: '2023',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/curse-of-dimensionality&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_X-999'
+		},
+		{
+			title: 'TimeLux',
+			date: '2023',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/timelux&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_T-777'
+		},
+		{
+			title: 'Good Morning Starshine',
+			date: '2023',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/good-morning-starshine-by&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_G-555'
+		},
+		{
+			title: 'New concept w/ Suhr SE100',
+			date: '2025-09-05',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/new-concept-w-suhr-se100&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_C-742'
+		},
+		{
+			title: 'A 3-Hour Thanksgiving',
+			date: '2024-11-30',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/a-3-hour-thanksgiving&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_K-83'
+		},
+		{
+			title: 'Masterpiece Arcade',
+			date: '2023',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/masterpiece-arcade&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_M-888'
+		},
+		{
+			title: 'Cirrus',
+			date: '2023-11-11',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/cirrus&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_R-212'
+		},
+		{
+			title: 'Heartbeats',
+			date: '2023-09-24',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/heartbeats&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_M-66'
+		},
+		{
+			title: 'Windy Road (Draft 2)',
+			date: '2022-07-22',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/windy-road-draft-2&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_W-314'
+		},
+		{
+			title: 'Aborted cover of Tomorrow',
+			date: '2023',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/aborted-cover-of-tomorrow-by&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_A-101'
+		},
+		{
+			title: 'A Little Digital Something',
+			date: '2023',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/a-little-digital-something&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_D-202'
+		},
+		{
+			title: 'Glory to God (GTG)',
+			date: '2023',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/glory-to-god-gtg&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_G-777'
+		},
+		{
+			title: 'Classical Steinway Harpsichord',
+			date: '2023',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/classical-steinway-harpsichord&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_S-303'
+		},
+		{
+			title: 'Way Too Happy',
+			date: '2023',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/way-too-happy&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_H-404'
+		},
+		{
+			title: 'A Musical Offering',
+			date: '2023',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/a-musical-offering&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_B-505'
+		},
+		{
+			title: 'Deep Chip Rush',
+			date: '2023',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/deep-chip-rush&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_C-808'
+		},
+		{
+			title: 'Sunset Driven',
+			date: '2023',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/sunset-driven&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_S-606'
+		},
+		{
+			title: 'Writers Block',
+			date: '2023',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/writers-block&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_W-909'
+		},
+		{
+			title: 'Trancey McTrancePants',
+			date: '2023',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/tranceymctrancepants-mp3&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_T-303'
 		}
 	];
 
+	const toggleTrack = (title: string) => {
+		activeTrack = activeTrack === title ? null : title;
+	};
 
 	onMount(() => {
-		console.log('Work page mounted');
+		// Reveal identity by default on this page
+		avatarImage.set('/' + PUBLIC_AVATAR_IMG_PATH);
+		name.set(PUBLIC_MY_NAME);
+		identityRevealed.set(true);
+
 		spinnerInterval = setInterval(() => {
 			currentSpinnerFrame = (currentSpinnerFrame + 1) % spinnerFrames.length;
 		}, 80);
@@ -101,150 +170,187 @@
 </script>
 
 <svelte:head>
-	<title>{$weirdWord} Projects</title>
+	<title>{$weirdWord} - Interdimensional Music</title>
 </svelte:head>
 
-<div class="projects-container terminal-font" class:dark={$colorMode === 'dark'}>
+<div class="music-container terminal-font" class:dark={$colorMode === 'dark'}>
 	<!-- Mobile Header -->
 	<div class="rounded-md border border-terminal-green/50 bg-black/20 px-4 py-3 mb-4 block sm:hidden terminal-font text-xs">
-		<div class="text-terminal-green font-bold text-center mb-1">EXPERIMENTAL PROTOTYPES</div>
-		<div class="text-terminal-green font-bold text-center">& INVENTIONS DATABASE</div>
+		<div class="text-terminal-green font-bold text-center mb-1">INTERDIMENSIONAL AUDIO</div>
+		<div class="text-terminal-green font-bold text-center">TRANSMISSION DATABASE</div>
 	</div>
 	<!-- Desktop Header -->
 	<div class="rounded-md border border-terminal-green/50 bg-black/20 px-6 py-4 mb-6 hidden sm:block terminal-font text-sm">
-		<div class="text-terminal-green font-bold text-center mb-1">EXPERIMENTAL PROTOTYPES DATABASE</div>
-		<div class="text-terminal-green font-bold text-center">& QUESTIONABLE INVENTIONS LOG</div>
+		<div class="text-terminal-green font-bold text-center">INTERDIMENSIONAL AUDIO TRANSMISSION DATABASE</div>
 	</div>
-	<h1 class="mb-4 text-2xl font-bold sci-fi-header text-terminal-green">RESEARCH & DEVELOPMENT</h1>
-	<p class="mb-4 text-terminal-green">
-		> <strong class="text-portal-orange">STATUS REPORT:</strong> Most prototypes serve minimal practical purpose but provided valuable learning experiences.
-		Previously focused on proprietary corporate systems. <strong class="text-rick-cyan">CURRENT DIRECTIVE:</strong> Increased open-source contribution protocols initiated.
-	</p>
-	<ul role="list" class="divide-y divide-terminal-green/20">
-		{#each projects as project}
-			<li class="py-4 terminal-border rounded-md p-4 mb-4">
-				<a href={project.link} class="font-medium text-rick-cyan hover:text-portal-orange transition-all terminal-font" target="_blank"
-					>▶ PROTOTYPE: {project.name.toUpperCase()}</a
-				>
-				{#each project.additionalHtmlContent as content}
-					{@html content}
-				{/each}
-				{#if project.name === 'Spicy Donkey'}
-					<div class="flex items-center gap-4">
+
+	<div class="ascii-art mb-6">
+> AUDIO_FREQUENCY_SCANNER: ACTIVE
+> MULTIVERSE_MUSIC_PROTOCOL: ENGAGED
+	</div>
+
+	<h1 class="mb-4 text-2xl font-bold sci-fi-header text-terminal-green">SONIC EXPERIMENTS ARCHIVE</h1>
+
+	<div class="mb-6 p-4 terminal-border rounded-md bg-black/20">
+		<p class="text-terminal-green mb-2">
+			> <strong class="text-portal-orange">CITADEL NOTICE:</strong> All audio transmissions composed and performed solo by the entity known as {myName.toUpperCase().split(' ')[0]}.
+		</p>
+		<p class="text-terminal-blue mb-2">
+			> <strong class="text-rick-cyan">COMPOSITION METHOD:</strong> 100% organic humanoid creativity - zero AI/collaboration assistance.
+		</p>
+		<p class="text-terminal-green mb-2">
+			> <strong class="text-neon-purple">PERFORMANCE STATUS:</strong> Solo instrumentation and production across all dimensional frequencies.
+		</p>
+		<p class="text-neon-purple">
+			> <strong class="text-portal-orange">FULL ARCHIVE ACCESS:</strong> <a href="https://soundcloud.com/user-271844266" target="_blank" class="text-rick-cyan hover:text-portal-orange underline hover:no-underline transition-colors">SOUNDCLOUD.COM/USER-271844266</a>
+		</p>
+	</div>
+
+	<div class="tracks-list space-y-4">
+		{#each tracks as track, index}
+			<div class="track-item terminal-border rounded-md bg-black/90 p-4 hover:bg-black/95 transition-all">
+				<div class="flex items-start justify-between gap-4">
+					<div class="flex-1">
+						<div class="flex items-center gap-2 mb-2">
+							<span class="text-terminal-green text-xs">●</span>
+							<span class="text-terminal-green/60 text-xs terminal-font">{track.classification}</span>
+						</div>
 						<button
 							type="button"
-							class="inline-flex cursor-pointer items-center gap-2 rounded border border-green-500/30 {$colorMode ===
-							'dark'
-								? 'bg-zinc-800'
-								: 'bg-zinc-200'} px-3 py-1.5 text-green-400 transition-all hover:border-green-500/50 hover:{$colorMode ===
-							'dark'
-								? 'bg-zinc-700'
-								: 'bg-zinc-300'}"
-							onclick={handleGenerateRandomCombination}
-							aria-label="Generate Random Combination"
+							onclick={() => toggleTrack(track.title)}
+							class="text-left w-full group"
+							aria-label="Toggle track player for {track.title}"
 						>
-							<ClickMeIcon
-								className={$colorMode === 'dark' ? 'text-green-300' : 'text-green-600'}
-							/>
-							{loading ? 'Loading...' : ''}
+							<h3 class="text-lg font-bold text-rick-cyan group-hover:text-portal-orange transition-colors terminal-font mb-1">
+								▶ {track.title.toUpperCase()}
+							</h3>
+							<div class="text-terminal-green/70 text-sm">
+								> TRANSMISSION_DATE: {track.date}
+							</div>
 						</button>
-						<p
-							class="pulse-animation text-sm text-green-400 {randomCombination
-								? 'glow-border'
-								: ''}"
-						>
-							{#if !randomCombination}
-								<span class="spinner inline-block">{spinnerFrames[currentSpinnerFrame]}</span>
-							{:else}
-								{randomCombination}
-							{/if}
-						</p>
+					</div>
+					<button
+						type="button"
+						onclick={() => toggleTrack(track.title)}
+						class="terminal-button px-3 py-1 rounded text-xs"
+						aria-label="{activeTrack === track.title ? 'Hide' : 'Show'} player"
+					>
+						{activeTrack === track.title ? '⊟ HIDE' : '⊞ LOAD'}
+					</button>
+				</div>
+
+				{#if activeTrack === track.title}
+					<div class="mt-4 animate-slide-up">
+						<div class="rounded-md border border-terminal-green/30 p-2 bg-black/90">
+							<iframe
+								title="{track.title} SoundCloud Player"
+								width="100%"
+								height="166"
+								scrolling="no"
+								frameborder="no"
+								allow="autoplay"
+								src={track.embedUrl.replace('auto_play=false', 'auto_play=true').replace('color=%2300ff41', 'color=%2300cc33')}
+								class="w-full"
+							></iframe>
+						</div>
 					</div>
 				{/if}
-			</li>
+			</div>
 		{/each}
-	</ul>
-</div>
+	</div>
 
-<div class="rounded-md border border-terminal-green/50 bg-black/20 px-6 py-4 mt-8 text-center terminal-font text-sm">
-	<div class="text-terminal-green font-bold mb-2">END OF EXPERIMENTAL PROTOTYPES DATABASE</div>
-	<div class="text-terminal-green/80 mb-3">FOR EMPLOYMENT HISTORY:</div>
-	<div>
-		<a
-	        href="https://www.linkedin.com/in/abramflansburg/"
-	        target="_blank"
-	        rel="noopener noreferrer"
-	        class="text-rick-cyan hover:text-portal-orange underline hover:no-underline transition-colors"
-	    >LINKEDIN.COM/IN/ABRAMFLANSBURG</a>
+	<div class="rounded-md border border-terminal-green/50 bg-black/20 px-6 py-4 mt-8 text-center terminal-font text-sm">
+		<div class="text-terminal-green font-bold mb-2">END OF AUDIO TRANSMISSION DATABASE</div>
+		<div class="text-terminal-green/80 mb-3">
+			<span class="spinner inline-block text-terminal-blue">{spinnerFrames[currentSpinnerFrame]}</span>
+			SCANNING FOR NEW TRANSMISSIONS...
+		</div>
+		<div class="text-xs text-terminal-green/60 mb-4">
+			> SYSTEM_STATUS: All audio files authenticated as human-generated
+		</div>
+		<div class="border-t border-terminal-green/20 pt-4 mt-4">
+			<div class="text-terminal-green/70 text-xs mb-2">
+				> Music is my passion, but my day-to-day work is quite intriguing.
+				<br>
+				If you'd like to know more, you can peep my LinkedIn or contact me directly.
+			</div>
+			<a
+				href="https://www.linkedin.com/in/abramflansburg/"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="text-rick-cyan hover:text-portal-orange underline hover:no-underline transition-colors"
+			>LINKEDIN.COM/IN/ABRAMFLANSBURG</a>
+		</div>
 	</div>
 </div>
 
 <style>
-	.pulse-animation {
-		animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-	}
-
-	.glow-border {
-		border: 2px solid rgba(34, 197, 94, 0.5);
-		box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
-		padding: 0.5rem 1rem;
-		border-radius: 0.375rem;
-	}
-
 	.spinner {
 		width: 1em;
 		margin-right: 0.5em;
 	}
 
-	@keyframes pulse {
-		0%,
-		100% {
+	@keyframes slideUp {
+		from {
+			transform: translateY(10px);
+			opacity: 0;
+		}
+		to {
+			transform: translateY(0);
 			opacity: 1;
-			text-shadow: 0 0 15px rgba(34, 197, 94, 0.8);
-		}
-		50% {
-			opacity: 0.7;
-			text-shadow: 0 0 5px rgba(34, 197, 94, 0.4);
 		}
 	}
 
-	@keyframes glow {
-		0%,
-		100% {
-			text-shadow: 0 0 0px var(--glow-color, #67e8f9);
-		}
-		50% {
-			text-shadow: 0 0 15px var(--glow-color, #67e8f9);
-		}
+	.animate-slide-up {
+		animation: slideUp 0.3s ease-out forwards;
 	}
 
-	/* Color mode styles */
-	.projects-container {
-		color: var(--text-color, #1e293b); /* Default to a dark slate color */
+	/* Override terminal colors for light mode readability */
+	:global(.music-container .text-terminal-green) {
+		color: #00cc33 !important;
 	}
 
-	.projects-container.dark {
-		--text-color: #f8fafc; /* Light text for dark mode */
+	:global(.dark .music-container .text-terminal-green) {
+		color: var(--terminal-green) !important;
 	}
 
-	:global(.dark) .glow-border {
-		--glow-color: #22c55e;
+	:global(.music-container .text-terminal-blue) {
+		color: #2563eb !important;
 	}
 
-	/* Force text color based on color mode */
-	:global(.projects-container *) {
-		color: #1e293b !important; /* Default text color for light mode */
+	:global(.dark .music-container .text-terminal-blue) {
+		color: var(--terminal-blue) !important;
 	}
 
-	:global(.dark .projects-container *) {
-		color: #f8fafc !important; /* Light text for dark mode */
+	:global(.music-container .text-rick-cyan) {
+		color: #0891b2 !important;
 	}
 
-	/* Exceptions for links and special elements */
-	:global(.projects-container a),
-	:global(.projects-container button),
-	:global(.projects-container .text-green-400),
-	:global(.projects-container .text-cyan-400) {
-		color: inherit !important; /* Allow these elements to keep their specific colors */
+	:global(.dark .music-container .text-rick-cyan) {
+		color: var(--rick-cyan) !important;
+	}
+
+	:global(.music-container .text-portal-orange) {
+		color: #ea580c !important;
+	}
+
+	:global(.dark .music-container .text-portal-orange) {
+		color: var(--portal-orange) !important;
+	}
+
+	:global(.music-container .text-neon-purple) {
+		color: #9333ea !important;
+	}
+
+	:global(.dark .music-container .text-neon-purple) {
+		color: var(--neon-purple) !important;
+	}
+
+	.track-item {
+		transition: all 0.3s ease;
+	}
+
+	.track-item:hover {
+		box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
 	}
 </style>
