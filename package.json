@@ -45,6 +45,7 @@
 		"vitest": "^3.0.0"
 	},
 	"dependencies": {
+		"@aflansburg/terminal-ui": ">=0.2.0",
 		"@sparticuz/chromium": "^133.0.0",
 		"openai": "^4.98.0",
 		"playwright-core": "^1.52.0",

@@ -5,6 +5,11 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
+	server: {
+		fs: {
+			allow: ['packages', 'src', 'node_modules']
+		}
+	},
 	define: {
 		'process.env.PUBLIC_MY_NAME': JSON.stringify(process.env.PUBLIC_MY_NAME || 'Morty Smith'),
 		'process.env.PUBLIC_MY_EMAIL': JSON.stringify(process.env.PUBLIC_MY_EMAIL || 'foo@bar.com'),

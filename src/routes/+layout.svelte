@@ -1,17 +1,19 @@
 <script lang="ts">
 	import '../app.css';
-	import SunIcon from '$lib/icons/SunIcon.svelte';
-	import MoonIcon from '$lib/icons/MoonIcon.svelte';
-	import GitHubIcon from '$lib/icons/GitHubIcon.svelte';
-	import LinkedInIcon from '$lib/icons/LinkedInIcon.svelte';
-	import QuestionMarkIcon from '$lib/icons/QuestionMarkIcon.svelte';
-	import MenuIcon from '$lib/icons/MenuIcon.svelte';
-	import CloseIcon from '$lib/icons/CloseIcon.svelte';
-	import YouTubeIcon from '$lib/icons/YouTubeIcon.svelte';
-	import SkullIcon from '$lib/icons/SkullIcon.svelte';
-	import RickAndMortyIcon from '$lib/icons/RickAndMortyIcon.svelte';
+	import {
+		SunIcon,
+		MoonIcon,
+		GitHubIcon,
+		LinkedInIcon,
+		QuestionMarkIcon,
+		MenuIcon,
+		CloseIcon,
+		YouTubeIcon,
+		SkullIcon,
+		RickAndMortyIcon,
+		MatrixLyrics
+	} from '@aflansburg/terminal-ui';
 	import YouTubeModal from '$lib/components/YouTubeModal.svelte';
-	import MatrixLyrics from '$lib/components/MatrixLyrics.svelte';
 	import ChangelogModal from '$lib/components/ChangelogModal.svelte';
 	import { colorMode } from '$lib/stores/sitePreferences.svelte';
 	import { avatarImage } from '$lib/stores/avatarImage.svelte';

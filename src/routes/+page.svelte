@@ -7,11 +7,13 @@
 	import { PUBLIC_MY_NAME, PUBLIC_AVATAR_IMG_PATH } from '$env/static/public';
 	import { avatarImage } from '$lib/stores/avatarImage.svelte';
 	import { name, identityRevealed } from '$lib/stores/identity.svelte';
-	import GitHubIcon from '$lib/icons/GitHubIcon.svelte';
-	import ClickMeIcon from '$lib/icons/ClickMeIcon.svelte';
-	import GreenCheckIcon from '$lib/icons/GreenCheckIcon.svelte';
+	import {
+		GitHubIcon,
+		ClickMeIcon,
+		GreenCheckIcon,
+		TerminalBootSequence
+	} from '@aflansburg/terminal-ui';
 	import { weirdWord } from '$lib/stores/weirdWord.svelte';
-	import TerminalBootSequence from '$lib/components/TerminalBootSequence.svelte';
 	import { bootSequenceStore } from '$lib/stores/bootSequenceStore.svelte';
 
 	interface Props {
@@ -206,7 +208,11 @@
 	<title>{$weirdWord} - C-137-INFO</title>
 </svelte:head>
 
-<TerminalBootSequence />
+<TerminalBootSequence
+	shouldShow={bootSequenceStore.shouldShowBootSequence}
+	systemDesignation="C-137-INFO"
+	onComplete={() => bootSequenceStore.markAsViewed()}
+/>
 
 <div class="container mx-auto px-2 pt-2 sm:px-4 sm:pt-2 pb-8">
 	<div class="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-[1fr_2fr] lg:gap-8">
