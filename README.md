@@ -6,6 +6,37 @@ Has a weird obsession with Rick & Morty lore. ¯\_(ツ)_/¯
 You can check out my deployed version on Google Cloud run at:
 https://engabe.com
 
+## Terminal UI Component Library
+
+This project uses [@aflansburg/terminal-ui](https://www.npmjs.com/package/@aflansburg/terminal-ui), a terminal-themed sci-fi UI component library for Svelte 5.
+
+**Links:**
+- [npm package](https://www.npmjs.com/package/@aflansburg/terminal-ui)
+- [GitHub repository](https://github.com/aflansburg/terminal-ui)
+
+### Quick Usage Examples
+
+```svelte
+<script>
+  import { TerminalBootSequence, MatrixLyrics } from '@aflansburg/terminal-ui';
+  import '@aflansburg/terminal-ui/styles';
+</script>
+
+<!-- Boot sequence with system designation -->
+<TerminalBootSequence
+  shouldShow={true}
+  systemDesignation="C-137-INFO"
+  onComplete={() => console.log('Boot complete!')}
+/>
+
+<!-- Matrix-style lyrics overlay -->
+<MatrixLyrics
+  isActive={true}
+  lyrics="Your lyrics here"
+  mode="matrix"
+/>
+```
+
 ## Prerequisites
 
 This project uses Node.js v22.15.0. We recommend using NVM (Node Version Manager) to manage your Node.js versions.
