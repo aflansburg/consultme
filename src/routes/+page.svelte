@@ -15,6 +15,7 @@
 	} from '@aflansburg/terminal-ui';
 	import { weirdWord } from '$lib/stores/weirdWord.svelte';
 	import { bootSequenceStore } from '$lib/stores/bootSequenceStore.svelte';
+	import ThreeJsPortal from '$lib/components/ThreeJsPortal.svelte';
 
 	interface Props {
 		data: PageData;
@@ -359,6 +360,9 @@
 					<div>• Rick & Morty API Consumer</div>
 				</div>
 			</div>
+
+			<!-- Three.js Portal Animation -->
+			<ThreeJsPortal />
 		</div>
 
 		<div class="space-y-3 sm:space-y-4 lg:flex lg:items-start lg:justify-center">

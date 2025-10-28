@@ -49,6 +49,7 @@
 		"@sparticuz/chromium": "^133.0.0",
 		"openai": "^4.98.0",
 		"playwright-core": "^1.52.0",
-		"spicy-donkey": "^1.3.2"
+		"spicy-donkey": "^1.3.2",
+		"three": "^0.180.0"
 	}
 }
