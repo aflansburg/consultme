@@ -206,9 +206,10 @@
 		scene = new THREE.Scene();
 		scene.background = null; // Ensure transparent background
 
-		// Camera
-		camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 10000);
-		camera.position.set(0, 0, 3);
+		// Camera - adjust for proper aspect ratio
+		const aspect = width / height;
+		camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 10000);
+		camera.position.set(0, 0, 3.2); // Slightly further back for better framing
 
 		// Renderer
 		renderer = new THREE.WebGLRenderer({
@@ -285,9 +286,12 @@
 			vertexShader
 		});
 
-		// Geometry - smaller plane to match portal size better
-		const planeGeometry = new THREE.PlaneGeometry(3.5, 3.5, 1, 1);
+		// Geometry - maintain square aspect ratio
+		// Calculate size to fill viewport properly
+		const planeSize = 3.8;
+		const planeGeometry = new THREE.PlaneGeometry(planeSize, planeSize, 1, 1);
 		plane = new THREE.Mesh(planeGeometry, material);
+		plane.position.set(0, 0, 0); // Center the plane
 		scene.add(plane);
 
 		// Post-processing
@@ -366,12 +370,24 @@
 
 	// Re-initialize or resize if shown on mobile
 	$effect(() => {
-		if (showAnimation && renderer && containerEl) {
+		if (showAnimation && renderer && containerEl && camera) {
 			const width = containerEl.clientWidth || 500;
 			const height = 280;
+			const aspect = width / height;
+
+			// Update camera aspect ratio
+			camera.aspect = aspect;
+			camera.updateProjectionMatrix();
+
+			// Update renderer and composer sizes
 			renderer.setSize(width, height);
 			if (composer) {
 				composer.setSize(width, height);
+			}
+
+			// Update resolution uniform
+			if (material && material.uniforms.resolution) {
+				material.uniforms.resolution.value.set(width, height);
 			}
 		}
 	});
@@ -526,13 +542,17 @@
 		z-index: 1;
 		cursor: pointer;
 		transition: transform 0.3s ease;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.threejs-container :global(canvas) {
 		display: block;
 		width: 100% !important;
-		height: auto !important;
+		height: 100% !important;
 		background: none !important;
+		object-fit: contain;
 	}
 
 	/* Dark Entity Face */
