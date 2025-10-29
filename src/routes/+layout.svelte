@@ -278,7 +278,12 @@
 			<li>
 				<a
 					href="/this-route-def-does-not-exist"
-					class="font-medium transition-all hover:text-red-500">Whoops</a
+					class="flex items-center justify-center w-7 h-7 rounded border-2 border-red-600 bg-red-600/20 transition-all group hover:bg-red-600/40 hover:border-red-500 active:scale-95"
+				title="Don't click this!"
+			style="box-shadow: 0 0 15px rgba(239, 68, 68, 0.5), inset 0 2px 4px rgba(0, 0, 0, 0.3);"
+			>
+				<span class="text-red-500 text-xl group-hover:scale-110 transition-transform font-bold" style="text-shadow: 0 0 10px #ef4444, 0 0 20px #ef4444, 0 0 30px #ef4444; filter: brightness(1.5); animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;">✗</span>
+			</a
 				>
 			</li>
 			<li>
@@ -412,13 +417,12 @@
 					</a>
 					<a
 						href="/this-route-def-does-not-exist"
-						class="block px-4 py-3 text-lg font-medium text-red-500 transition-all {$colorMode ===
-						'dark'
-							? 'hover:bg-zinc-700/70'
-							: 'hover:bg-zinc-100/70'} rounded-md"
+					class="flex items-center justify-center w-full py-2 rounded-lg border-4 border-red-600 bg-red-600/20 transition-all group hover:bg-red-600/40 hover:border-red-500 active:scale-95"
+					title="Don't click this!"
+					style="box-shadow: 0 0 20px rgba(239, 68, 68, 0.6), inset 0 2px 4px rgba(0, 0, 0, 0.3);"
 						onclick={toggleMenu}
 					>
-						Whoops
+						<span class="text-red-500 text-2xl group-hover:scale-110 transition-transform font-bold" style="text-shadow: 0 0 10px #ef4444, 0 0 20px #ef4444, 0 0 30px #ef4444; filter: brightness(2.5) contrast(2.5) saturate(2.5)); animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;">Don't press this button</span>
 					</a>
 					<h3
 						class="mb-2 text-sm font-medium {$colorMode === 'dark'
