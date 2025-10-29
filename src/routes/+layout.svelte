@@ -267,7 +267,7 @@
 		<!-- Desktop navigation -->
 		<ul class="hidden gap-3 text-sm md:flex md:gap-6 md:text-base">
 			<li>
-				<a href="/" class="font-medium transition-all hover:text-cyan-500">About</a>
+				<a href="/about" class="font-medium transition-all hover:text-cyan-500">About Me</a>
 			</li>
 			<li>
 				<a href="/work" class="font-medium transition-all hover:text-cyan-500">Work</a>
@@ -381,14 +381,14 @@
 
 				<div class="space-y-4">
 					<a
-						href="/"
+						href="/about"
 						class="block px-4 py-3 text-lg font-medium transition-all hover:text-cyan-500 {$colorMode ===
 						'dark'
 							? 'hover:bg-zinc-700/70'
 							: 'hover:bg-zinc-100/70'} rounded-md"
 						onclick={toggleMenu}
 					>
-						About
+						About Me
 					</a>
 					<a
 						href="/work"

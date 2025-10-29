@@ -70,6 +70,49 @@ This project uses Node.js v22.15.0. We recommend using NVM (Node Version Manager
 
 Note: In production, you will ned to set the env var.
 
+## About Page Content
+
+The About page (`/about`) loads its content from a `about-content.yaml` file in the project root.
+
+1. Create the `about-content.yaml` file:
+   ```yaml
+   introduction: |
+     Your introduction text here...
+
+   academic: |
+     Your academic background...
+
+   professional: |
+     Your professional journey...
+
+   musical: |
+     Your musical interests...
+
+   family: |
+     Your family story...
+
+   beliefs:
+     intro: |
+       Your beliefs introduction...
+     values:
+       - Value 1
+       - Value 2
+     additional:
+       - Additional point 1
+       - Additional point 2
+
+   closing: |
+     Your closing message...
+
+   quick_info:
+     - Quick fact 1
+     - Quick fact 2
+   ```
+
+2. The file is gitignored by default to keep your personal content private
+
+3. If the file doesn't exist, the About page will display placeholder content with lyrics from "Who Are You" by The Who
+
 ## Setting Up the Project
 
 1. Clone the repository
