@@ -21,6 +21,7 @@ WORKDIR /app
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/package.json .
 COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/about-content.yaml ./about-content.yaml
 
 # Install dependencies for Chromium
 RUN apt-get update && apt-get install -y \
