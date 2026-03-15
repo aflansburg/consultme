@@ -28,6 +28,12 @@
 			classification: 'DIMENSION_P-127'
 		},
 		{
+			title: "Rift (Demo)",
+			date: '2026-03-15',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/rift-demo&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			classification: 'DIMENSION_R-6767'
+		},
+		{
 			title: 'Dialectic Dessert',
 			date: '2023-11-18',
 			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/dialectic-dessert&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
