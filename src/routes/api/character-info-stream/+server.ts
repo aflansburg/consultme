@@ -13,8 +13,12 @@ export const POST: RequestHandler = async ({ request }) => {
             const encoder = new TextEncoder();
 
             const sendEvent = (data: any) => {
-                const message = `data: ${JSON.stringify(data)}\n\n`;
-                controller.enqueue(encoder.encode(message));
+                try {
+                    const message = `data: ${JSON.stringify(data)}\n\n`;
+                    controller.enqueue(encoder.encode(message));
+                } catch {
+                    // Client disconnected, stream already closed
+                }
             };
 
             const addLog = (message: string) => {
@@ -117,101 +121,117 @@ async function processCharacterInfo(
     addLog('> ENTITY_FOUND: Proceeding with data extraction');
 
     addLog('> INITIALIZING_CHROMIUM_BROWSER...');
-    const browser = await playwright.chromium.launch({
-        executablePath: await chromium.executablePath(),
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-accelerated-2d-canvas',
-            '--no-first-run',
-            '--no-zygote',
-            '--disable-gpu'
-        ],
-        headless: true,
-    });
+    const launchTimeout = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Chromium launch timed out after 30s')), 30000)
+    );
+    const browser = await Promise.race([
+        playwright.chromium.launch({
+            executablePath: await chromium.executablePath(),
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-accelerated-2d-canvas',
+                '--no-first-run',
+                '--no-zygote',
+                '--disable-gpu'
+            ],
+            headless: true,
+        }),
+        launchTimeout
+    ]);
 
-    addLog('> BROWSER_LAUNCHED: Creating context');
-    const context = await browser.newContext();
-
-    addLog('> CONTEXT_CREATED: Initializing page');
-    const page = await context.newPage();
-
-    addLog('> PAGE_READY: Navigating to target');
+    let truncatedContent = '';
 
     try {
-        await page.goto(url, {
-            waitUntil: 'domcontentloaded',
-            timeout: 45000 // 45 second timeout
-        });
-        addLog('> NAVIGATION_COMPLETE: Extracting data');
-    } catch (error: any) {
-        if (error.message.includes('Timeout')) {
-            addLog('> NAVIGATION_TIMEOUT: Retrying with reduced timeout...');
-            try {
-                await page.goto(url, {
-                    waitUntil: 'load',
-                    timeout: 20000 // 20 second timeout for retry
-                });
-                addLog('> NAVIGATION_RETRY_SUCCESS: Extracting data');
-            } catch (retryError: any) {
-                addLog('> NAVIGATION_FAILED: Attempting data extraction anyway...');
-                // Continue anyway - sometimes we can still extract data
+        addLog('> BROWSER_LAUNCHED: Creating context');
+        const context = await browser.newContext();
+
+        addLog('> CONTEXT_CREATED: Initializing page');
+        const page = await context.newPage();
+
+        addLog('> PAGE_READY: Navigating to target');
+
+        try {
+            await page.goto(url, {
+                waitUntil: 'domcontentloaded',
+                timeout: 45000
+            });
+            addLog('> NAVIGATION_COMPLETE: Extracting data');
+        } catch (error: any) {
+            if (error.message.includes('Timeout')) {
+                addLog('> NAVIGATION_TIMEOUT: Retrying with reduced timeout...');
+                try {
+                    await page.goto(url, {
+                        waitUntil: 'load',
+                        timeout: 20000
+                    });
+                    addLog('> NAVIGATION_RETRY_SUCCESS: Extracting data');
+                } catch (retryError: any) {
+                    addLog('> NAVIGATION_FAILED: Attempting data extraction anyway...');
+                }
+            } else {
+                throw error;
             }
-        } else {
-            throw error;
+        }
+
+        let relevantContent = '';
+
+        try {
+            relevantContent = await page.evaluate(() => {
+                const contentDiv = document.getElementById('mw-content-text');
+                if (!contentDiv) return 'Could not find content on the page';
+
+                const relevantElements = contentDiv.querySelectorAll('h2, p, ul');
+
+                let extractedText = '';
+                relevantElements.forEach(el => {
+                    if (el.tagName === 'H2') {
+                        extractedText += '\n## ' + el.textContent + '\n\n';
+                    }
+                    else if (el.tagName === 'P') {
+                        extractedText += el.textContent + '\n\n';
+                    }
+                    else if (el.tagName === 'A') {
+                        extractedText += el.textContent + '\n\n';
+                    }
+                    else if (el.tagName === 'UL') {
+                        const items = el.querySelectorAll('li');
+                        items.forEach(item => {
+                            extractedText += '• ' + item.textContent + '\n';
+                        });
+                        extractedText += '\n';
+                    }
+                });
+
+                return extractedText;
+            });
+        } catch (extractError) {
+            addLog('> DATA_EXTRACTION_ERROR: Using fallback method...');
+            relevantContent = `Character name: ${characterName}\nData extraction failed due to page loading issues.`;
+        }
+
+        addLog(`> DATA_EXTRACTED: ${relevantContent.length} characters retrieved`);
+
+        const estimatedTokens = Math.ceil(relevantContent.length / 4);
+        addLog(`> TOKEN_ESTIMATION: ~${estimatedTokens} tokens`);
+
+        truncatedContent = relevantContent;
+        if (estimatedTokens > 8000) {
+            truncatedContent = relevantContent.substring(0, 32000) + "\n\n[Content truncated to fit token limit]";
+            addLog('> CONTENT_TRUNCATED: Optimizing for token limits');
+        }
+    } finally {
+        addLog('> CLOSING_BROWSER: Cleanup complete');
+        try {
+            await Promise.race([
+                browser.close(),
+                new Promise<void>(resolve => setTimeout(resolve, 5000))
+            ]);
+        } catch {
+            // Browser close failed, move on
         }
     }
-
-    let relevantContent = '';
-
-    try {
-        relevantContent = await page.evaluate(() => {
-            const contentDiv = document.getElementById('mw-content-text');
-            if (!contentDiv) return 'Could not find content on the page';
-
-            const relevantElements = contentDiv.querySelectorAll('h2, p, ul');
-
-            let extractedText = '';
-            relevantElements.forEach(el => {
-                if (el.tagName === 'H2') {
-                    extractedText += '\n## ' + el.textContent + '\n\n';
-                }
-                else if (el.tagName === 'P') {
-                    extractedText += el.textContent + '\n\n';
-                }
-                else if (el.tagName === 'A') {
-                    extractedText += el.textContent + '\n\n';
-                }
-                else if (el.tagName === 'UL') {
-                    const items = el.querySelectorAll('li');
-                    items.forEach(item => {
-                        extractedText += '• ' + item.textContent + '\n';
-                    });
-                    extractedText += '\n';
-                }
-            });
-
-            return extractedText;
-        });
-    } catch (extractError) {
-        addLog('> DATA_EXTRACTION_ERROR: Using fallback method...');
-        relevantContent = `Character name: ${characterName}\nData extraction failed due to page loading issues.`;
-    }
-
-    addLog(`> DATA_EXTRACTED: ${relevantContent.length} characters retrieved`);
-
-    const estimatedTokens = Math.ceil(relevantContent.length / 4);
-    addLog(`> TOKEN_ESTIMATION: ~${estimatedTokens} tokens`);
-
-    let truncatedContent = relevantContent;
-    if (estimatedTokens > 8000) {
-        truncatedContent = relevantContent.substring(0, 32000) + "\n\n[Content truncated to fit token limit]";
-        addLog('> CONTENT_TRUNCATED: Optimizing for token limits');
-    }
-
-    addLog('> CLOSING_BROWSER: Cleanup complete');
-    await browser.close();
 
     addLog('> INITIALIZING_AI_ANALYSIS...');
     addLog('> MODEL: GPT-4o-2024-08-06');
