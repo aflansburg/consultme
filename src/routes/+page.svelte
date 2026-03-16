@@ -235,18 +235,7 @@
 			</button>
 			{#if showIdentitySection}
 					<p class="glitch-text-slow">
-						I'm not <span class="group relative">
-							<button
-								type="button"
-								class="cursor-pointer border-none bg-transparent p-1 font-bold text-terminal-blue hover:text-portal-orange terminal-button"
-								onclick={fetchRickSanchez}>Rick Sanchez</button
-							>
-							<span
-								class="invisible absolute -top-8 left-1/2 -translate-x-1/2 rounded-md bg-black px-2 py-1 text-xs whitespace-nowrap text-green-400 group-hover:visible terminal-border"
-							>
-								Main character of Rick & Morty
-							</span>
-						</span> - obviously - I'm just a <strong class="text-terminal-green">cross-paradigm systems architect</strong> and
+						<stropng>Hi - I'm a <strong class="text-terminal-green">cross-paradigm systems architect</strong> and
 						<strong class="text-neon-purple">pattern-recognition specialist</strong> named
 						<span class="font-bold text-rick-cyan terminal-font"
 							><a
@@ -275,7 +264,7 @@
 						</button>
 					</div>
 					<div class="space-y-2 mb-3 animate-slide-up">
-						<p>This is my <em>(mostly functional)</em> <strong class="text-terminal-green">interdimensional portfolio terminal</strong>.</p>
+						<p>This is my <em>Rick & Morty</em> themed <strong class="text-terminal-green">interdimensional portfolio terminal</strong>.</p>
 						<p>
 							Built using <span class="font-bold text-portal-orange terminal-font"
 								><a href="https://kit.svelte.dev/" target="_blank" class="hover:underline hover:text-terminal-green">SvelteKit</a
