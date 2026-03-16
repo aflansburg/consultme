@@ -41,8 +41,13 @@
 	let imageError = $state(false);
 	let terminalLogs = $state<string[]>([]);
 	let logsContainer = $state<HTMLDivElement | undefined>();
+	let streamAbortController: AbortController | undefined;
 
 	async function fetchCharacterInfo() {
+		// Cancel any previous in-flight request
+		streamAbortController?.abort();
+		streamAbortController = new AbortController();
+
 		loading = true;
 		fetchStarted = true;
 		aiResponse = '';
@@ -59,7 +64,8 @@
 				},
 				body: JSON.stringify({
 					characterName: character.name
-				})
+				}),
+				signal: streamAbortController.signal
 			});
 
 			if (!response.body) {
@@ -107,7 +113,8 @@
 					}
 				}
 			}
-		} catch (error) {
+		} catch (error: any) {
+			if (error?.name === 'AbortError') return;
 			aiResponse = `**Error:**\n${cannedAiErrorResponse} ${error}`;
 			terminalLogs = [...terminalLogs, '> ERROR: CONNECTION_TO_CITADEL_LOST'];
 			loading = false;
@@ -188,6 +195,7 @@
 		return () => {
 			clearInterval(spinnerInterval);
 			window.removeEventListener('keydown', handleKeydown);
+			streamAbortController?.abort();
 		};
 	});
 
