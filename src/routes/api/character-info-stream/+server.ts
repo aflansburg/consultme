@@ -87,7 +87,8 @@ async function processCharacterInfo(
         };
     }
 
-    const url = `https://rickandmorty.fandom.com/wiki/${characterName}`;
+    const encodedName = encodeURIComponent(characterName).replace(/%20/g, '_');
+    const url = `https://rickandmorty.fandom.com/wiki/${encodedName}`;
     addLog(`> TARGET_URL: ${url}`);
 
     if (!env.OPENAI_API_KEY) {
@@ -95,9 +96,23 @@ async function processCharacterInfo(
     }
 
     addLog('> VALIDATING_TARGET_ENTITY...');
-    const response = await fetch(url);
-    if (!response.ok) {
-        throw new Error('Could not find that entity in the Citadel personnel and known entities data stores. :(');
+    const validationController = new AbortController();
+    const validationTimeout = setTimeout(() => validationController.abort(), 15000);
+    try {
+        const response = await fetch(url, {
+            signal: validationController.signal,
+            headers: { 'User-Agent': 'Mozilla/5.0 (compatible; ConsultMe/1.0)' }
+        });
+        clearTimeout(validationTimeout);
+        if (!response.ok) {
+            throw new Error('Could not find that entity in the Citadel personnel and known entities data stores. :(');
+        }
+    } catch (error: any) {
+        clearTimeout(validationTimeout);
+        if (error.name === 'AbortError') {
+            throw new Error('Target entity validation timed out. The interdimensional relay may be experiencing interference.');
+        }
+        throw error;
     }
     addLog('> ENTITY_FOUND: Proceeding with data extraction');
 
