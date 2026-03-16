@@ -100,25 +100,7 @@ async function processCharacterInfo(
     }
 
     addLog('> VALIDATING_TARGET_ENTITY...');
-    const validationController = new AbortController();
-    const validationTimeout = setTimeout(() => validationController.abort(), 15000);
-    try {
-        const response = await fetch(url, {
-            signal: validationController.signal,
-            headers: { 'User-Agent': 'Mozilla/5.0 (compatible; ConsultMe/1.0)' }
-        });
-        clearTimeout(validationTimeout);
-        if (!response.ok) {
-            throw new Error('Could not find that entity in the Citadel personnel and known entities data stores. :(');
-        }
-    } catch (error: any) {
-        clearTimeout(validationTimeout);
-        if (error.name === 'AbortError') {
-            throw new Error('Target entity validation timed out. The interdimensional relay may be experiencing interference.');
-        }
-        throw error;
-    }
-    addLog('> ENTITY_FOUND: Proceeding with data extraction');
+    addLog('> ENTITY_VALIDATION: Deferred to browser extraction (bypassing bot detection)');
 
     addLog('> INITIALIZING_CHROMIUM_BROWSER...');
     const launchTimeout = new Promise<never>((_, reject) =>
@@ -152,8 +134,9 @@ async function processCharacterInfo(
 
         addLog('> PAGE_READY: Navigating to target');
 
+        let navigationResponse;
         try {
-            await page.goto(url, {
+            navigationResponse = await page.goto(url, {
                 waitUntil: 'domcontentloaded',
                 timeout: 45000
             });
@@ -162,7 +145,7 @@ async function processCharacterInfo(
             if (error.message.includes('Timeout')) {
                 addLog('> NAVIGATION_TIMEOUT: Retrying with reduced timeout...');
                 try {
-                    await page.goto(url, {
+                    navigationResponse = await page.goto(url, {
                         waitUntil: 'load',
                         timeout: 20000
                     });
@@ -174,6 +157,21 @@ async function processCharacterInfo(
                 throw error;
             }
         }
+
+        // Check if the page actually exists (Fandom returns 404 for missing wiki pages)
+        const status = navigationResponse?.status();
+        if (status && status === 404) {
+            throw new Error('Could not find that entity in the Citadel personnel and known entities data stores. :(');
+        }
+
+        // Also check for Fandom's "page doesn't exist" indicator
+        const pageExists = await page.evaluate(() => {
+            return !document.querySelector('.noarticletext');
+        });
+        if (!pageExists) {
+            throw new Error('Could not find that entity in the Citadel personnel and known entities data stores. :(');
+        }
+        addLog('> ENTITY_CONFIRMED: Wiki page exists');
 
         let relevantContent = '';
 
