@@ -3,7 +3,8 @@
 	import type { PageData } from './$types';
 	import { invalidateAll } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { getCharacter } from '$lib/rickandmorty/character';
+	import { getCharacter, searchCharacters } from '$lib/rickandmorty/character';
+	import SearchIcon from '$lib/components/SearchIcon.svelte';
 	import { PUBLIC_MY_NAME, PUBLIC_AVATAR_IMG_PATH } from '$env/static/public';
 	import { avatarImage } from '$lib/stores/avatarImage.svelte';
 	import { name, identityRevealed } from '$lib/stores/identity.svelte';
@@ -27,6 +28,9 @@
 	let loading = $state(false);
 	let fetchStarted = $state(false);
 	let characterLoading = $state(true);
+	let showSearchInput = $state(false);
+	let searchQuery = $state('');
+	let searchLoading = $state(false);
 	let spinnerFrames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
 	let currentSpinnerFrame = $state(0);
 	let spinnerInterval: ReturnType<typeof setInterval>;
@@ -145,6 +149,28 @@
 		aiResponse = '';
 		fetchStarted = false;
 		await loadRandomCharacter();
+	}
+
+	async function handleSearch() {
+		if (!searchQuery.trim()) return;
+		searchLoading = true;
+		characterLoading = true;
+		imageLoaded = false;
+		imageError = false;
+		aiResponse = '';
+		fetchStarted = false;
+
+		try {
+			const results = await searchCharacters(searchQuery);
+			if (results.results && results.results.length > 0) {
+				character = results.results[0];
+			}
+		} catch (error) {
+			console.error('Search failed:', error);
+		} finally {
+			searchLoading = false;
+			characterLoading = false;
+		}
 	}
 
 	let errorMessage = $state('');
@@ -472,6 +498,31 @@
 								>
 									{characterLoading ? '> LOADING...' : '> REROLL_ENTITY'}
 								</button>
+								<button
+									class="terminal-button px-3 py-3 rounded-md relative"
+									onclick={() => { showSearchInput = !showSearchInput; }}
+									title="Search for a character"
+								>
+									<SearchIcon className="size-5" />
+								</button>
+								{#if showSearchInput}
+									<div class="flex gap-2 w-full max-w-xs">
+										<input
+											type="text"
+											bind:value={searchQuery}
+											placeholder="Entity name..."
+											class="flex-1 px-3 py-2 rounded-md bg-black/90 border border-terminal-green/50 text-terminal-green terminal-font text-sm focus:outline-none focus:border-terminal-green"
+											onkeydown={(e) => { if (e.key === 'Enter') handleSearch(); }}
+										/>
+										<button
+											class="{searchLoading ? 'terminal-button-disabled' : 'terminal-button'} px-3 py-2 rounded-md terminal-font text-sm"
+											onclick={handleSearch}
+											disabled={searchLoading}
+										>
+											{searchLoading ? '...' : 'GO'}
+										</button>
+									</div>
+								{/if}
 							</div>
 							<dl
 								class="grid w-full overflow-hidden rounded-md terminal-border bg-black/95 p-3 terminal-font text-sm backdrop-blur-sm sm:p-4 sm:text-base md:p-6 md:text-lg"

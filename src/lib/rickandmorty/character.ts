@@ -1,3 +1,5 @@
+import { CharacterFilteredError } from '$lib/types/errors';
+
 interface Character {
     id: number;
     name: string;
@@ -28,6 +30,10 @@ interface CharacterResponse {
     };
     results: Character[];
 }
+
+const FILTERED_CHARACTER_NAMES = [
+    'fascist'
+]
 
 const API_BASE_URL = 'https://rickandmortyapi.com/api';
 const MAX_RETRIES = 3;
@@ -88,8 +94,16 @@ export async function getCharacterCount(): Promise<number> {
 export async function getCharacter(id: number): Promise<Character> {
     try {
         const response = await fetchWithRetry(`${API_BASE_URL}/character/${id}`);
-        return await response.json();
+        const data: Character = await response.json();
+        if (FILTERED_CHARACTER_NAMES.some((name: string) => data.name.toLowerCase().includes(name))) {
+            console.warn(`Character ${data.name} is filtered`);
+            throw new CharacterFilteredError(`Character ${data.name} is filtered`);
+        }
+        return data;
     } catch (error) {
+        if (error instanceof CharacterFilteredError) {
+            throw error;
+        }
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         console.error(`Error fetching character ${id}:`, errorMessage);
         throw new Error(`Failed to fetch character with ID ${id}: ${errorMessage}`);
@@ -110,7 +124,12 @@ export async function getCharacters(page: number = 1): Promise<CharacterResponse
 export async function searchCharacters(name: string): Promise<CharacterResponse> {
     try {
         const response = await fetchWithRetry(`${API_BASE_URL}/character/?name=${encodeURIComponent(name)}`);
-        return await response.json();
+        const data: CharacterResponse = await response.json();
+        data.results = data.results.filter(
+            (c) => !FILTERED_CHARACTER_NAMES.some((name: string) => c.name.toLowerCase().includes(name))
+        );
+        console.log(`Filtered characters: ${data.results.map((c) => c.name).join(', ')}`);
+        return data;
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         console.error(`Error searching characters with name "${name}":`, errorMessage);
@@ -120,13 +139,26 @@ export async function searchCharacters(name: string): Promise<CharacterResponse>
 
 const FALLBACK_CHARACTER_IDS = [1, 2, 3, 4, 5]; // Rick, Morty, Summer, Beth, Jerry
 
+const MAX_FILTER_RETRIES = 3;
+
 export async function getRandomCharacter(): Promise<Character> {
     try {
         const characterCount = await getCharacterCount();
-        const randomId = Math.floor(Math.random() * characterCount) + 1;
-        const character = await getCharacter(randomId);
-        console.log(character);
-        return character;
+        for (let i = 0; i < MAX_FILTER_RETRIES; i++) {
+            try {
+                const randomId = Math.floor(Math.random() * characterCount) + 1;
+                const character = await getCharacter(randomId);
+                console.log(character);
+                return character;
+            } catch (error) {
+                if (error instanceof CharacterFilteredError) {
+                    console.warn(`Filtered character hit, retrying (${i + 1}/${MAX_FILTER_RETRIES})`);
+                    continue;
+                }
+                throw error;
+            }
+        }
+        throw new Error('All random character attempts hit filtered characters');
     } catch (error) {
         console.warn('Failed to get random character, trying fallback characters:', error);
 
