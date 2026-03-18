@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import MatrixRain from '$lib/components/MatrixRain.svelte';
 
 	interface Props {
 		showModal: boolean;
@@ -24,149 +24,6 @@
 	}: Props = $props();
 
 	let logsContainer = $state<HTMLDivElement | undefined>();
-	let canvas: HTMLCanvasElement | undefined;
-	let animationId: number;
-
-	// Matrix rain character sets
-	const RUNES = 'ᛒᛏᛈᚹᚱᚨᚦᚢᚠᚷᚺᛃᛇᛉᛊᛋᛚᛗᛜᛝᛞᛟ';
-	const KATAKANA = 'アイウエオカキクケコサシスセソタチツテト';
-	const BINARY = '01';
-	const KEYWORDS = ['C137', 'RICK', 'MORTY', 'PORTAL'];
-	const ALL_CHARS = RUNES + KATAKANA + BINARY;
-
-	interface Column {
-		x: number;
-		y: number;
-		speed: number;
-		chars: string[];
-		trailLength: number;
-	}
-
-	let columns: Column[] = [];
-
-	function randomChar(): string {
-		// Occasionally use a keyword character sequence
-		if (Math.random() < 0.02) {
-			const kw = KEYWORDS[Math.floor(Math.random() * KEYWORDS.length)];
-			return kw[0];
-		}
-		return ALL_CHARS[Math.floor(Math.random() * ALL_CHARS.length)];
-	}
-
-	function initColumns(width: number, height: number) {
-		const fontSize = 14;
-		const colSpacing = 10; // tighter than fontSize (14) for denser columns
-		const colCount = Math.floor(width / colSpacing);
-		columns = [];
-		for (let i = 0; i < colCount; i++) {
-			const trailLength = 8 + Math.floor(Math.random() * 16);
-			const chars: string[] = [];
-			for (let j = 0; j < trailLength; j++) {
-				chars.push(randomChar());
-			}
-			columns.push({
-				x: i * colSpacing,
-				y: Math.random() * -height,
-				speed: 1 + Math.random() * 3,
-				chars,
-				trailLength
-			});
-		}
-	}
-
-	function drawMatrix() {
-		if (!canvas) return;
-		const ctx = canvas.getContext('2d');
-		if (!ctx) return;
-
-		const width = canvas.width;
-		const height = canvas.height;
-		const fontSize = 14;
-
-		// Clear fully each frame — no accumulation smearing
-		ctx.clearRect(0, 0, width, height);
-		ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
-		ctx.fillRect(0, 0, width, height);
-
-		ctx.font = `${fontSize}px 'JetBrains Mono', 'Courier New', monospace`;
-		ctx.shadowBlur = 0;
-		ctx.shadowColor = 'transparent';
-
-		for (const col of columns) {
-			for (let i = 0; i < col.chars.length; i++) {
-				const charY = col.y - i * fontSize;
-				if (charY < -fontSize || charY > height + fontSize) continue;
-
-				// Randomly swap characters as they fall
-				if (Math.random() < 0.03) {
-					col.chars[i] = randomChar();
-				}
-
-				if (i === 0) {
-					// Head: bright white
-					ctx.fillStyle = '#ffffff';
-				} else if (i < 3) {
-					// Near head: bright green, fully legible
-					ctx.fillStyle = 'rgba(0, 255, 65, 0.85)';
-				} else {
-					// Trail: gradual fade, still readable in upper portion
-					const progress = i / col.trailLength;
-					const alpha = Math.max(0.08, (1 - progress) * 0.65);
-					ctx.fillStyle = `rgba(0, 255, 65, ${alpha})`;
-				}
-
-				ctx.fillText(col.chars[i], col.x, charY);
-			}
-
-			// Move column down
-			col.y += col.speed;
-
-			// Reset when fully off screen
-			if (col.y - col.trailLength * fontSize > height) {
-				col.y = Math.random() * -200;
-				col.speed = 1 + Math.random() * 3;
-				// Refresh characters
-				for (let j = 0; j < col.chars.length; j++) {
-					col.chars[j] = randomChar();
-				}
-			}
-		}
-
-		animationId = requestAnimationFrame(drawMatrix);
-	}
-
-	function startMatrix() {
-		if (!canvas) return;
-		canvas.width = window.innerWidth;
-		canvas.height = window.innerHeight;
-
-		const ctx = canvas.getContext('2d');
-		if (ctx) {
-			ctx.fillStyle = 'rgba(0, 0, 0, 1)';
-			ctx.fillRect(0, 0, canvas.width, canvas.height);
-		}
-
-		initColumns(canvas.width, canvas.height);
-		drawMatrix();
-	}
-
-	function handleResize() {
-		if (!canvas) return;
-		canvas.width = window.innerWidth;
-		canvas.height = window.innerHeight;
-		initColumns(canvas.width, canvas.height);
-	}
-
-	$effect(() => {
-		if (showModal && canvas) {
-			startMatrix();
-			window.addEventListener('resize', handleResize);
-		}
-		return () => {
-			if (animationId) cancelAnimationFrame(animationId);
-			window.removeEventListener('resize', handleResize);
-		};
-	});
 
 	// Auto-scroll terminal logs
 	$effect(() => {
@@ -181,10 +38,7 @@
 		class="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 sm:p-6"
 	>
 		<!-- Canvas Matrix Rain -->
-		<canvas
-			bind:this={canvas}
-			class="fixed inset-0 pointer-events-none z-0"
-		></canvas>
+		<MatrixRain active={showModal} zClass="z-0" />
 
 		<!-- Invisible button that covers the backdrop for keyboard accessibility -->
 		<button

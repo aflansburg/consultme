@@ -15,6 +15,7 @@
 	} from '@aflansburg/terminal-ui';
 	import YouTubeModal from '$lib/components/YouTubeModal.svelte';
 	import ChangelogModal from '$lib/components/ChangelogModal.svelte';
+	import MatrixRain from '$lib/components/MatrixRain.svelte';
 	import { colorMode } from '$lib/stores/sitePreferences.svelte';
 	import { avatarImage } from '$lib/stores/avatarImage.svelte';
 	import { name, firstName, identityRevealed } from '$lib/stores/identity.svelte';
@@ -40,6 +41,7 @@
 	let youtubeVideoId = $state('https://youtu.be/M1tIH55Bo8k?si=0TQ1EmMIrn4H631I&t=206'); // YouTube video with timestamp
 	let rickAndMortyVideoId = $state('https://www.youtube.com/watch?v=i7RMgPHGSMU'); // Rick and Morty video
 	let showChangelogModal = $state(false);
+	let showMatrixRain = $state(false);
 	let avatarProperties = $derived({
 		src: $avatarImage,
 		alt: $name,
@@ -293,6 +295,17 @@
 				>
 			</li>
 			<li>
+				<button
+					class="flex items-center justify-center w-7 h-7 rounded border-2 border-green-500 bg-green-500/20 transition-all group hover:bg-green-500/40 hover:border-green-400 active:scale-95 cursor-pointer"
+					title="Enter the Matrix"
+					style="box-shadow: 0 0 15px rgba(34, 197, 94, 0.5), inset 0 2px 4px rgba(0, 0, 0, 0.3);"
+					onclick={() => showMatrixRain = true}
+					aria-label="Enter the Matrix"
+				>
+					<span class="text-green-400 text-sm group-hover:scale-110 transition-transform font-bold terminal-font" style="text-shadow: 0 0 10px #22c55e, 0 0 20px #22c55e; filter: brightness(1.5); animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;">M</span>
+				</button>
+			</li>
+			<li>
 				<a
 					href="https://github.com/aflansburg"
 					target="_blank"
@@ -504,6 +517,23 @@
 								>In the City</span
 							>
 						</button>
+						<button
+							onclick={() => {
+								showMatrixRain = true;
+								toggleMenu();
+							}}
+							class="{$colorMode === 'dark' ? 'text-zinc-500/60' : 'text-zinc-400/80'}
+								flex w-full transform items-center gap-3 rounded-md border px-4 py-3
+								shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow active:scale-[0.99]"
+							aria-label="Enter the Matrix"
+						>
+							<div class="text-green-400">
+								<span class="text-lg font-bold terminal-font" style="text-shadow: 0 0 10px #22c55e;">M</span>
+							</div>
+							<span class="font-medium {$colorMode === 'dark' ? 'text-zinc-200' : 'text-zinc-800'}"
+								>Enter the Matrix</span
+							>
+						</button>
 					</div>
 					<h3
 						class="mb-2 text-sm font-medium {$colorMode === 'dark'
@@ -629,6 +659,9 @@
 		isOpen={showChangelogModal}
 		onClose={closeChangelogModal}
 	/>
+
+	<!-- Matrix Rain Overlay -->
+	<MatrixRain active={showMatrixRain} onClose={() => showMatrixRain = false} showImages />
 </div>
 
 <style>
