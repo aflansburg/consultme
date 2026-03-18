@@ -21,6 +21,9 @@ Thumbs.db
 # Personal content
 # about-content.yaml
 
+# SEO Plan (internal reference, not for repo)
+SEO_IMPROVEMENT_PLAN.md
+
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*

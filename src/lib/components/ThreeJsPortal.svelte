@@ -18,6 +18,42 @@
 	let targetScale = 1.0;
 	let currentScale = 1.0;
 
+	// Dialogue transcript from the pixel art GIF
+	const dialogueLines: { speaker: 'rick' | 'morty' | 'narration'; text: string }[] = [
+		{ speaker: 'narration', text: '*Rick drinks from flask*' },
+		{ speaker: 'morty', text: 'Aw jeez Rick!' },
+		{ speaker: 'morty', text: 'What\'s this place?' },
+		{ speaker: 'morty', text: 'It\'s full of some weird words and styling and I feel panicked.' },
+		{ speaker: 'rick', text: 'We\'re on Abe\'s app Morty!' },
+		{ speaker: 'rick', text: 'Don\'t step on b-bugs and don\'t accept cookies from strangers.' },
+		{ speaker: 'rick', text: 'Come on, let\'s grab some quartz and get out of here.' },
+	];
+	let currentLine = $state(0);
+	let dialogueInterval: ReturnType<typeof setInterval> | null = null;
+	let showDialogue = $state(false);
+
+	$effect(() => {
+		if (isActive) {
+			currentLine = 0;
+			showDialogue = true;
+			dialogueInterval = setInterval(() => {
+				currentLine = (currentLine + 1) % dialogueLines.length;
+			}, 1700);
+		} else {
+			showDialogue = false;
+			if (dialogueInterval) {
+				clearInterval(dialogueInterval);
+				dialogueInterval = null;
+			}
+		}
+		return () => {
+			if (dialogueInterval) {
+				clearInterval(dialogueInterval);
+				dialogueInterval = null;
+			}
+		};
+	});
+
 	const options = {
 		exposure: 2.8,
 		bloomStrength: 2.6,
@@ -417,22 +453,35 @@
 		<div
 			bind:this={containerEl}
 			class="threejs-container"
-			onmouseenter={() => isActive = true}
-			onmouseleave={() => isActive = false}
-			ontouchstart={handleTouch}
+			onclick={() => isActive = !isActive}
 			role="button"
 			tabindex="0"
 		>
-			<!-- Dark Entity Face -->
-			<div class="entity-face" class:active={isActive}>
-				<!-- Eyes -->
-				<div class="entity-eye entity-eye-left"></div>
-				<div class="entity-eye entity-eye-right"></div>
-				<!-- Smile -->
-				<div class="entity-smile"></div>
-			</div>
+			<!-- Pixel Art Overlay -->
+			<img
+				src="/rick-morty-pixelart.gif"
+				alt="Rick and Morty pixel art by babarbie"
+				class="pixel-art-overlay"
+				class:active={isActive}
+			/>
 		</div>
 	</div>
+	<div class="attribution">
+		pixel art by <a href="https://www.deviantart.com/babarbie/gallery" target="_blank" rel="noopener noreferrer">babarbie</a> on DeviantArt
+	</div>
+	{#if showDialogue}
+		{@const line = dialogueLines[currentLine]}
+		<div class="dialogue-container">
+			{#key currentLine}
+				<p class="dialogue-line {line.speaker}">
+					{#if line.speaker !== 'narration'}
+						<span class="dialogue-speaker">{line.speaker === 'rick' ? 'Rick' : 'Morty'}:</span>
+					{/if}
+					{line.text}
+				</p>
+			{/key}
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -555,80 +604,88 @@
 		object-fit: contain;
 	}
 
-	/* Dark Entity Face */
-	.entity-face {
+	/* Pixel Art Overlay */
+	.pixel-art-overlay {
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
-		width: 200px;
-		height: 200px;
+		max-width: 100%;
+		max-height: 100%;
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
 		opacity: 0;
-		transition: opacity 0.8s ease;
+		transition: opacity 0.3s ease-in;
 		pointer-events: none;
 		z-index: 10;
+		image-rendering: pixelated;
 	}
 
-	.entity-face.active {
-		opacity: 0.7;
-		animation: entity-breathe 3s ease-in-out infinite;
+	.pixel-art-overlay.active {
+		opacity: 1;
+		transition: opacity 0.3s ease-in;
 	}
 
-	/* Eyes */
-	.entity-eye {
-		position: absolute;
-		width: 20px;
-		height: 20px;
-		background: #000000;
-		border-radius: 50%;
-		top: 40%;
-		box-shadow:
-			0 0 10px rgba(0, 255, 0, 0.6),
-			inset 0 0 5px rgba(0, 255, 0, 0.4);
-		animation: entity-blink 4s ease-in-out infinite;
+	.pixel-art-overlay:not(.active) {
+		transition: opacity 0.5s ease-out;
 	}
 
-	.entity-eye-left {
-		left: 35%;
+	.attribution {
+		text-align: center;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.6rem;
+		color: rgba(34, 197, 94, 0.3);
+		margin-top: 0.5rem;
 	}
 
-	.entity-eye-right {
-		right: 35%;
+	.attribution a {
+		color: rgba(34, 197, 94, 0.4);
+		text-decoration: none;
+		transition: color 0.2s ease;
 	}
 
-	/* Smile */
-	.entity-smile {
-		position: absolute;
-		width: 80px;
-		height: 40px;
-		bottom: 35%;
-		left: 50%;
-		transform: translateX(-50%);
-		border: 3px solid rgba(0, 0, 0, 0.9);
-		border-top: none;
-		border-radius: 0 0 80px 80px;
-		box-shadow:
-			0 0 10px rgba(0, 255, 0, 0.4),
-			inset 0 -5px 10px rgba(0, 255, 0, 0.2);
+	.attribution a:hover {
+		color: rgba(34, 197, 94, 0.7);
+		text-decoration: underline;
 	}
 
-	/* Animations */
-	@keyframes entity-breathe {
-		0%, 100% {
-			transform: translate(-50%, -50%) scale(1);
-		}
-		50% {
-			transform: translate(-50%, -50%) scale(1.05);
-		}
+	.dialogue-container {
+		text-align: center;
+		min-height: 2rem;
+		margin-top: 0.25rem;
 	}
 
-	@keyframes entity-blink {
-		0%, 45%, 55%, 100% {
-			height: 20px;
-		}
-		50% {
-			height: 2px;
-		}
+	.dialogue-line {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.85rem;
+		font-style: italic;
+		animation: dialogue-fade 1.2s ease-in-out;
+	}
+
+	.dialogue-line.rick {
+		color: #67e8f9;
+	}
+
+	.dialogue-line.morty {
+		color: #fbbf24;
+	}
+
+	.dialogue-line.narration {
+		color: rgba(34, 197, 94, 0.5);
+	}
+
+	.dialogue-speaker {
+		font-weight: bold;
+		font-style: normal;
+		margin-right: 0.25rem;
+	}
+
+	@keyframes dialogue-fade {
+		0% { opacity: 0; transform: translateY(4px); }
+		15% { opacity: 1; transform: translateY(0); }
+		85% { opacity: 1; }
+		100% { opacity: 0.7; }
 	}
 
 	/* Mobile responsiveness */
@@ -640,21 +697,6 @@
 
 		.threejs-container {
 			height: 220px;
-		}
-
-		.entity-face {
-			width: 160px;
-			height: 160px;
-		}
-
-		.entity-eye {
-			width: 16px;
-			height: 16px;
-		}
-
-		.entity-smile {
-			width: 60px;
-			height: 30px;
 		}
 
 		.mobile-hidden {
