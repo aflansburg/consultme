@@ -40,6 +40,7 @@ const FILTERED_CHARACTER_IDS = new Set([
     140,  // Genital Washer
     145,  // Glenn (type: "Eat shiter-Person")
     153,  // Hamster In Butt
+    157,  // Hole in the Wall Where The Men Can See It All
     238,  // Mr. Booby Buyer
     271,  // Principal Vagina
     272,  // Principal Vagina
@@ -62,7 +63,7 @@ const FILTERED_CHARACTER_IDS = new Set([
     597,  // Abradolf Lincler
     672,  // Mr. Nimbus (type: "Sexy Aquaman")
     726,  // Sticky (type: "Super Sperm Monster")
-    750,  // Mousetrap Nipples
+    750,  // Mousetrap Nipples,
 ]);
 
 // Fallback pattern matching for any new characters added to the API
