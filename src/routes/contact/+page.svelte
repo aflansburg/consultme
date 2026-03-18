@@ -1,13 +1,18 @@
 <script lang="ts">
 	import { PUBLIC_MY_EMAIL, PUBLIC_MY_LINKED_IN_URL } from '$env/static/public';
 	import { weirdWord } from '$lib/stores/weirdWord.svelte';
+	import SEO from '$lib/components/SEO.svelte';
 </script>
 
-<svelte:head>
-	<title>{$weirdWord} Contact</title>
-</svelte:head>
+<SEO
+	title="Contact Abe Flansburg | Solutions Architect & Musician — Houston, TX"
+	description="Get in touch with Abe Flansburg — Solutions Architect, AI Architect, and Musician based in Houston, TX. Email and LinkedIn contact information."
+	canonical="https://engabe.com/contact"
+/>
 
 <div class="flex flex-col items-center gap-3 py-4 terminal-font">
+	<h1 class="text-2xl font-bold text-terminal-green terminal-font mb-2">CONTACT</h1>
+	<p class="text-sm text-terminal-green/70 mb-4">Based in Houston, TX — available for collaboration and consulting.</p>
 	<p>Wow this page is really something else.</p>
 	<p>Click to copy my email address to your clipboard.</p>
 	<button

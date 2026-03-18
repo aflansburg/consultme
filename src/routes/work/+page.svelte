@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { weirdWord } from '$lib/stores/weirdWord.svelte';
+	import SEO from '$lib/components/SEO.svelte';
 	import { colorMode } from '$lib/stores/sitePreferences.svelte';
 	import { PUBLIC_MY_NAME, PUBLIC_AVATAR_IMG_PATH } from '$env/static/public';
 	import { avatarImage } from '$lib/stores/avatarImage.svelte';
@@ -175,8 +176,30 @@
 	});
 </script>
 
+<SEO
+	title="Music by Abe Flansburg | Original Songs & Compositions"
+	description="Listen to original music by Abe Flansburg — solo compositions spanning multiple genres. All tracks composed, performed, and produced independently."
+	canonical="https://engabe.com/work"
+/>
+
 <svelte:head>
-	<title>{$weirdWord} - Interdimensional Music</title>
+	{@html `<script type="application/ld+json">${JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "ItemList",
+		"name": "Music by Abe Flansburg",
+		"description": "Original solo compositions by Abe Flansburg",
+		"numberOfItems": tracks.length,
+		"itemListElement": tracks.map((track, i) => ({
+			"@type": "ListItem",
+			"position": i + 1,
+			"item": {
+				"@type": "MusicRecording",
+				"name": track.title,
+				"datePublished": track.date,
+				"byArtist": { "@type": "Person", "name": "Abe Flansburg" }
+			}
+		}))
+	})}</script>`}
 </svelte:head>
 
 <div class="music-container terminal-font" class:dark={$colorMode === 'dark'}>
@@ -195,7 +218,7 @@
 > MULTIVERSE_MUSIC_PROTOCOL: ENGAGED
 	</div>
 
-	<h1 class="mb-4 text-2xl font-bold sci-fi-header text-terminal-green">SONIC EXPERIMENTS ARCHIVE</h1>
+	<h1 class="mb-4 text-2xl font-bold sci-fi-header text-terminal-green">SONIC EXPERIMENTS ARCHIVE — Music by Abe Flansburg</h1>
 
 	<div class="mb-6 p-4 terminal-border rounded-md bg-black/20">
 		<p class="text-terminal-green mb-2">
@@ -208,7 +231,7 @@
 			> <strong class="text-neon-purple">PERFORMANCE STATUS:</strong> Solo instrumentation and production across all dimensional frequencies.
 		</p>
 		<p class="text-neon-purple">
-			> <strong class="text-portal-orange">FULL ARCHIVE ACCESS:</strong> <a href="https://soundcloud.com/user-271844266" target="_blank" class="text-rick-cyan hover:text-portal-orange underline hover:no-underline transition-colors">SOUNDCLOUD.COM/USER-271844266</a>
+			> <strong class="text-portal-orange">FULL ARCHIVE ACCESS:</strong> <a href="https://soundcloud.com/user-271844266" target="_blank" rel="noopener noreferrer" class="text-rick-cyan hover:text-portal-orange underline hover:no-underline transition-colors">SOUNDCLOUD.COM/USER-271844266</a>
 		</p>
 	</div>
 

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { PUBLIC_MY_NAME, PUBLIC_AVATAR_IMG_PATH } from '$env/static/public';
 	import { weirdWord } from '$lib/stores/weirdWord.svelte';
+	import SEO from '$lib/components/SEO.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -14,13 +15,13 @@
 	}
 </script>
 
-<svelte:head>
-	<title>{$weirdWord} - About</title>
-	<meta
-		name="description"
-		content="Learn about Abram Flansburg - a musically inclined technologist, Principal Engineer, and lifelong learner."
-	/>
-</svelte:head>
+<SEO
+	title="About Abe Flansburg | Solutions Architect, AI Architect & Musician"
+	description="Learn about Abe Flansburg — a Solutions Architect, AI Architect, Software Developer, and Musician based in Houston, TX. Background, skills, and passions."
+	canonical="https://engabe.com/about"
+/>
+
+<h1 class="sr-only">About Abe Flansburg — Solutions Architect, AI Architect, Software Developer & Musician</h1>
 
 <div class="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
 	<!-- ASCII Art Header -->
@@ -46,7 +47,7 @@
 			>
 				<img
 					src={'/' + PUBLIC_AVATAR_IMG_PATH}
-					alt={PUBLIC_MY_NAME}
+					alt="Abe Flansburg — Solutions Architect, AI Architect & Musician"
 					class="h-auto w-full max-w-[300px]"
 				/>
 			</div>

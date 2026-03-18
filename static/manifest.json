@@ -1,6 +1,7 @@
 {
-  "name": "ConsultMe",
-  "short_name": "ConsultMe",
+  "name": "Abe Flansburg | Solutions Architect & Musician",
+  "short_name": "Abe Flansburg",
+  "description": "Portfolio of Abe Flansburg — Solutions Architect, AI Architect, Software Developer, and Musician based in Houston, TX.",
   "icons": [
     {
       "src": "/favicon16x16.png",
@@ -29,6 +30,6 @@
     }
   ],
   "theme_color": "#39ff14",
-  "background_color": "#ffffff",
+  "background_color": "#000000",
   "display": "standalone"
-} 
+}

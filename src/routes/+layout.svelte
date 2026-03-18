@@ -230,7 +230,13 @@
 </script>
 
 <svelte:head>
-	<title>{$weirdWord}</title>
+	{@html `<script type="application/ld+json">${JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "WebSite",
+		"name": "Abe Flansburg | Solutions Architect & Musician",
+		"url": "https://engabe.com",
+		"description": "Portfolio of Abe Flansburg — Solutions Architect, AI Architect, Software Developer, and Musician based in Houston, TX."
+	})}</script>`}
 </svelte:head>
 
 <div class="crt-screen {$colorMode}" class:screen-glitch={screenGlitching}>

@@ -16,6 +16,7 @@
 	} from '@aflansburg/terminal-ui';
 	import { weirdWord } from '$lib/stores/weirdWord.svelte';
 	import { bootSequenceStore } from '$lib/stores/bootSequenceStore.svelte';
+	import SEO from '$lib/components/SEO.svelte';
 	import ThreeJsPortal from '$lib/components/ThreeJsPortal.svelte';
 	import CharacterInfoModal from '$lib/components/CharacterInfoModal.svelte';
 
@@ -257,9 +258,39 @@
 	}
 </script>
 
+<SEO
+	title="Abe Flansburg | Solutions Architect, AI Architect & Musician — Houston, TX"
+	description="Abe Flansburg — Solutions Architect, AI Architect, Software Developer, and Musician based in Houston, TX. Building innovative solutions with modern web technologies."
+	canonical="https://engabe.com"
+/>
+
 <svelte:head>
-	<title>{$weirdWord} - C-137-INFO</title>
+	{@html `<script type="application/ld+json">${JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "Person",
+		"name": "Abe Flansburg",
+		"url": "https://engabe.com",
+		"image": "https://engabe.com/af-profile-sm.png",
+		"jobTitle": "Solutions Architect",
+		"worksFor": { "@type": "Organization", "name": "Self-Employed" },
+		"sameAs": [
+			"https://github.com/aflansburg",
+			"https://www.linkedin.com/in/abramflansburg/",
+			"https://soundcloud.com/user-271844266"
+		],
+		"address": {
+			"@type": "PostalAddress",
+			"addressLocality": "Houston",
+			"addressRegion": "TX",
+			"addressCountry": "US"
+		}
+	})}</script>`}
 </svelte:head>
+
+<section class="sr-only" aria-label="About Abe Flansburg">
+	<h1>Abe Flansburg — Solutions Architect, AI Architect, Software Developer & Musician in Houston, TX</h1>
+	<p>Abe Flansburg is a Solutions Architect, AI Architect, and Software Developer based in Houston, Texas. He is also a musician who composes and produces original music independently.</p>
+</section>
 
 <TerminalBootSequence
 	shouldShow={bootSequenceStore.shouldShowBootSequence}
@@ -293,6 +324,7 @@
 							><a
 								href="{$identityRevealed ? 'https://www.linkedin.com/in/abramflansburg/' : '/'}#"
 								target="_blank"
+								rel="noopener noreferrer"
 								class="{$identityRevealed ? 'hover:underline hover:text-portal-orange' : 'glitching-text text-terminal-red'}"
 								data-text="{$identityRevealed ? myName : 'ᛒᛏᛈᚹᚱᚨᚦᚢᚠ'}">{$identityRevealed ? myName : 'ᛒᛏᛈᚹᚱᚨᚦᚢᚠ'}</a
 							>.</span
@@ -319,11 +351,11 @@
 						<p>This is my <em>Rick & Morty</em> themed <strong class="text-terminal-green">interdimensional portfolio terminal</strong>.</p>
 						<p>
 							Built using <span class="font-bold text-portal-orange terminal-font"
-								><a href="https://kit.svelte.dev/" target="_blank" class="hover:underline hover:text-terminal-green">SvelteKit</a
+								><a href="https://kit.svelte.dev/" target="_blank" rel="noopener noreferrer" class="hover:underline hover:text-terminal-green">SvelteKit</a
 								></span
 							>,
 							<span class="font-bold text-terminal-blue terminal-font"
-								><a href="https://tailwindcss.com/" target="_blank" class="hover:underline hover:text-neon-purple">TailwindCSS</a
+								><a href="https://tailwindcss.com/" target="_blank" rel="noopener noreferrer" class="hover:underline hover:text-neon-purple">TailwindCSS</a
 								></span
 							>, and a dash of <em class="text-rick-cyan">"AI"</em> <span class="text-xs opacity-60">(Large Language Model)</span>.
 						</p>
@@ -332,6 +364,7 @@
 								> SOURCE CODE REPOSITORY: <a
 									href="https://github.com/aflansburg/consultme"
 									target="_blank"
+									rel="noopener noreferrer"
 									class="text-rick-cyan hover:underline hover:text-portal-orange terminal-font"
 								>
 									<GitHubIcon />
@@ -347,11 +380,11 @@
 				<p>This is my <em>(mostly functional)</em> <strong class="text-terminal-green">interdimensional portfolio terminal</strong>.</p>
 				<p>
 					Built using <span class="font-bold text-portal-orange terminal-font"
-						><a href="https://kit.svelte.dev/" target="_blank" class="hover:underline hover:text-terminal-green">SvelteKit</a
+						><a href="https://kit.svelte.dev/" target="_blank" rel="noopener noreferrer" class="hover:underline hover:text-terminal-green">SvelteKit</a
 						></span
 					>,
 					<span class="font-bold text-terminal-blue terminal-font"
-						><a href="https://tailwindcss.com/" target="_blank" class="hover:underline hover:text-neon-purple">TailwindCSS</a
+						><a href="https://tailwindcss.com/" target="_blank" rel="noopener noreferrer" class="hover:underline hover:text-neon-purple">TailwindCSS</a
 						></span
 					>, and a dash of <em class="text-rick-cyan">"AI"</em> <span class="text-xs opacity-60">(Large Language Model)</span>.
 				</p>
@@ -360,6 +393,7 @@
 						> SOURCE CODE REPOSITORY: <a
 							href="https://github.com/aflansburg/consultme"
 							target="_blank"
+							rel="noopener noreferrer"
 							class="text-rick-cyan hover:underline hover:text-portal-orange terminal-font"
 						>
 							<GitHubIcon />
@@ -437,6 +471,7 @@
 							<span class="text-terminal-blue">REROLL FUNCTION:</span> Fetch new entity from
 							<span class="font-bold text-rick-cyan terminal-font"
 								><a href="https://rickandmortyapi.com/" target="_blank" class="hover:underline hover:text-portal-orange"
+								rel="noopener noreferrer"
 									>Rick & Morty API</a
 								></span
 							> database

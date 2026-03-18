@@ -8,7 +8,14 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
-		adapter: adapter()
+		adapter: adapter(),
+		prerender: {
+			handleHttpError: ({ path }) => {
+				// Intentional 404 easter egg link in the layout
+				if (path === '/this-route-def-does-not-exist') return;
+				throw new Error(`${path} not found`);
+			}
+		}
 	}
 };
 
