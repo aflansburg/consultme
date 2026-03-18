@@ -31,6 +31,9 @@
 	let showSearchInput = $state(false);
 	let searchQuery = $state('');
 	let searchLoading = $state(false);
+	let searchMessage = $state('');
+	let searchResults: { id: number; name: string; status: string; species: string; type: string; gender: string; origin: { name: string; url: string }; location: { name: string; url: string }; image: string; episode: string[]; url: string; created: string }[] = $state([]);
+	let searchTimer: ReturnType<typeof setTimeout> | null = null;
 	let spinnerFrames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
 	let currentSpinnerFrame = $state(0);
 	let spinnerInterval: ReturnType<typeof setInterval>;
@@ -151,25 +154,46 @@
 		await loadRandomCharacter();
 	}
 
-	async function handleSearch() {
-		if (!searchQuery.trim()) return;
-		searchLoading = true;
-		characterLoading = true;
+	function selectSearchResult(result: typeof character) {
+		searchResults = [];
+		searchMessage = '';
+		character = result;
+		characterLoading = false;
 		imageLoaded = false;
 		imageError = false;
 		aiResponse = '';
 		fetchStarted = false;
+	}
+
+	async function handleSearch() {
+		if (!searchQuery.trim()) return;
+		searchLoading = true;
+		searchMessage = '';
+		searchResults = [];
+
+		searchTimer = setTimeout(() => {
+			searchMessage = '> HANG ON, STILL SEARCHING...';
+		}, 2000);
 
 		try {
 			const results = await searchCharacters(searchQuery);
-			if (results.results && results.results.length > 0) {
-				character = results.results[0];
+			if (results.results && results.results.length > 1) {
+				searchResults = results.results;
+				searchMessage = '';
+			} else if (results.results && results.results.length === 1) {
+				selectSearchResult(results.results[0]);
+			} else {
+				searchMessage = '> ENTITY NOT FOUND IN CITADEL DATABASE';
 			}
 		} catch (error) {
 			console.error('Search failed:', error);
+			searchMessage = '> ENTITY NOT FOUND IN CITADEL DATABASE';
 		} finally {
+			if (searchTimer) {
+				clearTimeout(searchTimer);
+				searchTimer = null;
+			}
 			searchLoading = false;
-			characterLoading = false;
 		}
 	}
 
@@ -487,25 +511,44 @@
 										{/if}
 									{/if}
 								</div>
-								<button
-									class="{characterLoading ? 'terminal-button-disabled' : 'terminal-button'} px-6 py-3 rounded-md relative font-bold"
-									onclick={() => {
-										if (!characterLoading) {
-											fetchRandomCharacter();
-										}
-									}}
-									disabled={characterLoading}
-								>
-									{characterLoading ? '> LOADING...' : '> REROLL_ENTITY'}
-								</button>
-								<button
-									class="terminal-button px-3 py-3 rounded-md relative"
-									onclick={() => { showSearchInput = !showSearchInput; }}
-									title="Search for a character"
-								>
-									<SearchIcon className="size-5" />
-								</button>
+								<div class="flex items-center justify-center gap-2">
+									<button
+										class="{characterLoading ? 'terminal-button-disabled' : 'terminal-button'} px-6 py-3 rounded-md relative font-bold"
+										onclick={() => {
+											if (!characterLoading) {
+												fetchRandomCharacter();
+											}
+										}}
+										disabled={characterLoading}
+									>
+										{characterLoading ? '> LOADING...' : '> REROLL_ENTITY'}
+									</button>
+									<button
+										class="{showSearchInput ? 'terminal-button-disabled' : 'terminal-button'} px-3 py-3 rounded-md relative"
+										onclick={() => {
+											showSearchInput = !showSearchInput;
+											if (!showSearchInput) {
+												searchMessage = '';
+												searchResults = [];
+											}
+										}}
+										title={showSearchInput ? 'Close search' : 'Search for a character'}
+									>
+										{#if showSearchInput}
+											<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+												<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+											</svg>
+										{:else}
+											<SearchIcon className="size-5" />
+										{/if}
+									</button>
+								</div>
 								{#if showSearchInput}
+									{#if searchMessage}
+										<div class="w-full max-w-xs text-center terminal-font text-xs {searchMessage.includes('NOT FOUND') ? 'text-terminal-red' : 'text-terminal-green'} opacity-80">
+											{searchMessage}
+										</div>
+									{/if}
 									<div class="flex gap-2 w-full max-w-xs">
 										<input
 											type="text"
@@ -515,13 +558,27 @@
 											onkeydown={(e) => { if (e.key === 'Enter') handleSearch(); }}
 										/>
 										<button
-											class="{searchLoading ? 'terminal-button-disabled' : 'terminal-button'} px-3 py-2 rounded-md terminal-font text-sm"
+											class="{searchLoading ? 'terminal-button-disabled' : 'terminal-button'} px-4 py-2 rounded-md terminal-font"
 											onclick={handleSearch}
 											disabled={searchLoading}
 										>
-											{searchLoading ? '...' : 'GO'}
+											<span style="font-size: 1.5rem;">
+												{searchLoading ? '...' : '\u23CE'}
+											</span>
 										</button>
 									</div>
+									{#if searchResults.length > 1}
+										<div class="w-full max-w-xs rounded-md terminal-border bg-black/95 overflow-hidden max-h-48 overflow-y-auto">
+											{#each searchResults as result}
+												<button
+													class="w-full px-3 py-2 text-left terminal-font text-xs text-terminal-green hover:bg-terminal-green/10 transition-colors duration-150 border-b border-terminal-green/20 last:border-b-0"
+													onclick={() => selectSearchResult(result)}
+												>
+													{result.name} <span class="opacity-60">({result.status} • {result.species})</span>
+												</button>
+											{/each}
+										</div>
+									{/if}
 								{/if}
 							</div>
 							<dl

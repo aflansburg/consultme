@@ -31,9 +31,46 @@ interface CharacterResponse {
     results: Character[];
 }
 
-const FILTERED_CHARACTER_NAMES = [
-    'fascist'
-]
+// Character IDs confirmed inappropriate via audit (see inappropriate-characters-audit.json)
+const FILTERED_CHARACTER_IDS = new Set([
+    7,    // Abradolf Lincler
+    97,   // Gonorrhea
+    98,   // Hepatitis A
+    99,   // Hepatitis C
+    140,  // Genital Washer
+    145,  // Glenn (type: "Eat shiter-Person")
+    153,  // Hamster In Butt
+    238,  // Mr. Booby Buyer
+    271,  // Principal Vagina
+    272,  // Principal Vagina
+    275,  // Randy Dicknose
+    309,  // Scrotian
+    359,  // Tortured Morty
+    436,  // Giant Testicle Monster
+    498,  // Fascist Rick
+    499,  // Fascist Morty
+    500,  // Fascist Mr. President
+    501,  // Fascist Rick's Clone
+    503,  // Fascist Shrimp Rick
+    504,  // Fascist Shrimp Rick's Clone
+    505,  // Fascist Shrimp Morty
+    506,  // Fascist Shrimp SS
+    507,  // Fascist Teddy Bear Rick
+    508,  // Fascist Teddy Bear Rick's Clone
+    568,  // Slut Dragon
+    573,  // Snake Hitler
+    597,  // Abradolf Lincler
+    672,  // Mr. Nimbus (type: "Sexy Aquaman")
+    726,  // Sticky (type: "Super Sperm Monster")
+    750,  // Mousetrap Nipples
+]);
+
+// Fallback pattern matching for any new characters added to the API
+const FILTERED_NAME_PATTERNS = [
+    'fascist', 'hitler', 'gonorrhea', 'hepatitis', 'syphilis',
+    'herpes', 'chlamydia', 'genital', 'vagina', 'dicknose',
+    'testicle', 'scrot', 'nipple', 'slut', 'sperm',
+];
 
 const API_BASE_URL = 'https://rickandmortyapi.com/api';
 const MAX_RETRIES = 3;
@@ -91,11 +128,29 @@ export async function getCharacterCount(): Promise<number> {
     }
 }
 
+function isCharacterFiltered(character: Character): boolean {
+    // Fast path: check ID blocklist
+    if (FILTERED_CHARACTER_IDS.has(character.id)) {
+        return true;
+    }
+
+    // Fallback: pattern match across all text fields for new/unknown characters
+    const fields = [
+        character.name,
+        character.type,
+        character.species,
+        character.origin?.name,
+        character.location?.name,
+    ].filter(Boolean).join(' ').toLowerCase();
+
+    return FILTERED_NAME_PATTERNS.some((pattern) => fields.includes(pattern));
+}
+
 export async function getCharacter(id: number): Promise<Character> {
     try {
         const response = await fetchWithRetry(`${API_BASE_URL}/character/${id}`);
         const data: Character = await response.json();
-        if (FILTERED_CHARACTER_NAMES.some((name: string) => data.name.toLowerCase().includes(name))) {
+        if (isCharacterFiltered(data)) {
             console.warn(`Character ${data.name} is filtered`);
             throw new CharacterFilteredError(`Character ${data.name} is filtered`);
         }
@@ -125,9 +180,7 @@ export async function searchCharacters(name: string): Promise<CharacterResponse>
     try {
         const response = await fetchWithRetry(`${API_BASE_URL}/character/?name=${encodeURIComponent(name)}`);
         const data: CharacterResponse = await response.json();
-        data.results = data.results.filter(
-            (c) => !FILTERED_CHARACTER_NAMES.some((name: string) => c.name.toLowerCase().includes(name))
-        );
+        data.results = data.results.filter((c) => !isCharacterFiltered(c));
         console.log(`Filtered characters: ${data.results.map((c) => c.name).join(', ')}`);
         return data;
     } catch (error) {
