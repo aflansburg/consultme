@@ -202,7 +202,7 @@
 			<!-- Terminal-style close button - integrated with border -->
 			<button
 				onclick={onClose}
-				class="absolute top-0 left-0 w-8 h-8 bg-black/90 hover:bg-black transition-all duration-200 flex items-center justify-center cursor-pointer focus:ring-0 focus:ring-transparent focus:ring-offset-0 focus:outline-none group border-r border-b border-terminal-green/30"
+				class="absolute top-0 left-0 w-8 h-8 bg-black hover:bg-black transition-all duration-200 flex items-center justify-center cursor-pointer focus:ring-0 focus:ring-transparent focus:ring-offset-0 focus:outline-none group border-r border-b border-terminal-green/30 z-10"
 				aria-label="Close modal"
 				title="Close terminal"
 			>
@@ -222,13 +222,19 @@
 					<line x1="6" y1="6" x2="18" y2="18"></line>
 				</svg>
 			</button>
-			<div class="rounded-md border border-terminal-green/50 bg-black/20 px-6 py-4 hidden sm:block text-center mb-4 terminal-font text-sm">
-				<div class="text-terminal-green font-bold text-center mb-1">C-137-INFO DEEP ANALYSIS TERMINAL</div>
-				<div class="text-terminal-green font-bold text-center">CITADEL DATABASE ACCESS</div>
+			<div class="relative rounded-md border border-terminal-green/50 bg-black/20 px-6 py-4 hidden sm:flex items-center justify-center mb-4 terminal-font text-sm">
+				<div class="text-center">
+					<div class="text-terminal-green font-bold mb-1">C-137-INFO DEEP ANALYSIS TERMINAL</div>
+					<div class="text-terminal-green font-bold">CITADEL DATABASE ACCESS</div>
+				</div>
+				<div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2 max-w-[220px]">
+					<p class="text-white/80 text-[10px] leading-tight terminal-font italic text-right">R-really? You're j-j-just gonna do a <span class="text-portal-orange">*b-uuuuurp*</span> matrix thing here? That's pre Y2K lame. Sheesh.</p>
+					<img src="/rick-matrix-quote.png" alt="Rick Sanchez" class="w-10 h-14 flex-shrink-0 opacity-90" />
+				</div>
 			</div>
 			<div class="rounded-md border border-terminal-green/50 bg-black/20 px-4 py-3 block sm:hidden text-center mb-4 terminal-font text-xs">
-				<div class="text-terminal-green font-bold text-center mb-1">C-137-INFO TERMINAL</div>
-				<div class="text-terminal-green font-bold text-center">DATABASE ACCESS</div>
+				<div class="text-terminal-green font-bold mb-1">C-137-INFO TERMINAL</div>
+				<div class="text-terminal-green font-bold">DATABASE ACCESS</div>
 			</div>
 			<h2
 				id="modal-title"
@@ -283,6 +289,12 @@
 						C-137-INFO system reliability: 94.7%
 					</div>
 				{/if}
+			</div>
+
+			<!-- Rick quote - mobile only, full text at bottom -->
+			<div class="flex sm:hidden items-center gap-2 mt-4 pt-3 border-t border-terminal-green/20">
+				<img src="/rick-matrix-quote.png" alt="Rick Sanchez" class="w-10 h-14 flex-shrink-0 opacity-90" />
+				<p class="text-white/80 text-[10px] leading-tight terminal-font italic">R-really? You're j-j-just gonna do a <span class="text-portal-orange">*b-uuuuurp*</span> matrix thing here? That's pre Y2K lame. Sheesh.</p>
 			</div>
 		</div>
 	</div>

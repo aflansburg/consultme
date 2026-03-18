@@ -123,6 +123,7 @@
 		<div class="alert-light absolute bottom-4 left-4 {showAlert ? '' : 'light-on'}"></div>
 		<div class="alert-light absolute right-4 bottom-4 {showAlert ? 'light-on' : ''}"></div>
 	</div>
+	<div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs text-rick-green">You should have used BigInt</div>
 </div>
 
 <style>
