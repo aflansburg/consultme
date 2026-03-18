@@ -17,6 +17,7 @@
 	import { weirdWord } from '$lib/stores/weirdWord.svelte';
 	import { bootSequenceStore } from '$lib/stores/bootSequenceStore.svelte';
 	import ThreeJsPortal from '$lib/components/ThreeJsPortal.svelte';
+	import CharacterInfoModal from '$lib/components/CharacterInfoModal.svelte';
 
 	interface Props {
 		data: PageData;
@@ -47,7 +48,6 @@
 	let imageLoaded = $state(false);
 	let imageError = $state(false);
 	let terminalLogs = $state<string[]>([]);
-	let logsContainer = $state<HTMLDivElement | undefined>();
 	let streamAbortController: AbortController | undefined;
 
 	async function fetchCharacterInfo() {
@@ -101,12 +101,6 @@
 
 							if (data.type === 'log') {
 								terminalLogs = [...terminalLogs, `[${data.timestamp}] ${data.message}`];
-								// Auto-scroll to bottom
-								setTimeout(() => {
-									if (logsContainer) {
-										logsContainer.scrollTop = logsContainer.scrollHeight;
-									}
-								}, 50);
 							} else if (data.type === 'complete') {
 								aiResponse = data.data.info;
 								loading = false;
@@ -650,133 +644,16 @@
 </div>
 
 <!-- C-137-INFO Terminal Modal -->
-{#if showModal}
-	<div
-		class="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 sm:p-6"
-	>
-		<!-- Dense Matrix Data Stream Effect -->
-		<div class="data-stream" style="left: 5%; animation-delay: 0s;">01001000 01100101 01101100 01110000</div>
-		<div class="data-stream" style="left: 12%; animation-delay: 1.2s;">11010010 01001111 01010000</div>
-		<div class="data-stream" style="left: 18%; animation-delay: 2s;">CITADEL_DATABASE_ACCESS</div>
-		<div class="data-stream" style="left: 25%; animation-delay: 0.8s;">10110010 11001010 00111001</div>
-		<div class="data-stream" style="left: 32%; animation-delay: 4s;">RICK_SANCHEZ_C137</div>
-		<div class="data-stream" style="left: 38%; animation-delay: 1s;">01010010 01001001 01000011 01001011</div>
-		<div class="data-stream" style="left: 45%; animation-delay: 3.5s;">MORTY_SMITH_PRIME</div>
-		<div class="data-stream" style="left: 52%; animation-delay: 3s;">PORTAL_GUN_SIGNATURE</div>
-		<div class="data-stream" style="left: 58%; animation-delay: 1.8s;">11100101 10010001 01110100</div>
-		<div class="data-stream" style="left: 65%; animation-delay: 5s;">INTERDIMENSIONAL_TRAVEL</div>
-		<div class="data-stream" style="left: 72%; animation-delay: 6s;">01000011 00110001 00110011 00110111</div>
-		<div class="data-stream" style="left: 78%; animation-delay: 2.2s;">10001001 11010101 00101110</div>
-		<div class="data-stream" style="left: 85%; animation-delay: 2.5s;">SCHWIFTY_PROTOCOL</div>
-		<div class="data-stream" style="left: 92%; animation-delay: 4.5s;">WUBBA_LUBBA_DUB_DUB</div>
-		<div class="data-stream" style="left: 8%; animation-delay: 3.2s;">DIMENSION_SCAN_ACTIVE</div>
-		<div class="data-stream" style="left: 28%; animation-delay: 1.5s;">11001010 01110010 10101001</div>
-		<div class="data-stream" style="left: 42%; animation-delay: 5.5s;">NEURAL_LINK_ESTABLISHED</div>
-		<div class="data-stream" style="left: 68%; animation-delay: 0.5s;">01001101 01001111 01010010 01010100 01011001</div>
-		<div class="data-stream" style="left: 88%; animation-delay: 3.8s;">QUANTUM_FLUX_DETECTED</div>
-		<div class="data-stream" style="left: 15%; animation-delay: 4.2s;">00100000 11010011 10101010</div>
-
-		<!-- Invisible button that covers the backdrop for keyboard accessibility -->
-		<button
-			class="absolute inset-0 h-full w-full cursor-default bg-transparent"
-			onclick={toggleModal}
-			aria-label="Close modal by clicking backdrop"
-		></button>
-
-		<div
-			class="animate-slide-up relative z-10 w-full max-w-4xl rounded-lg terminal-border bg-black/98 p-4 sm:p-6 terminal-font crt-screen max-h-[90vh] overflow-hidden"
-			role="dialog"
-			aria-labelledby="modal-title"
-			aria-modal="true"
-		>
-			<!-- Terminal-style close button - integrated with border -->
-			<button
-				onclick={toggleModal}
-				class="absolute top-0 left-0 w-8 h-8 bg-black/90 hover:bg-black transition-all duration-200 flex items-center justify-center cursor-pointer focus:ring-0 focus:ring-transparent focus:ring-offset-0 focus:outline-none group border-r border-b border-terminal-green/30"
-				aria-label="Close modal"
-				title="Close terminal"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="14"
-					height="14"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2.5"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					class="text-terminal-green group-hover:text-green-400"
-				>
-					<line x1="18" y1="6" x2="6" y2="18"></line>
-					<line x1="6" y1="6" x2="18" y2="18"></line>
-				</svg>
-			</button>
-			<div class="rounded-md border border-terminal-green/50 bg-black/20 px-6 py-4 hidden sm:block text-center mb-4 terminal-font text-sm">
-				<div class="text-terminal-green font-bold text-center mb-1">C-137-INFO DEEP ANALYSIS TERMINAL</div>
-				<div class="text-terminal-green font-bold text-center">CITADEL DATABASE ACCESS</div>
-			</div>
-			<div class="rounded-md border border-terminal-green/50 bg-black/20 px-4 py-3 block sm:hidden text-center mb-4 terminal-font text-xs">
-				<div class="text-terminal-green font-bold text-center mb-1">C-137-INFO TERMINAL</div>
-				<div class="text-terminal-green font-bold text-center">DATABASE ACCESS</div>
-			</div>
-			<h2
-				id="modal-title"
-				class="mb-4 border-b border-terminal-green/50 pb-2 text-xl font-bold text-terminal-green sci-fi-header"
-			>
-				ENTITY PROFILE: {character.name.toUpperCase()}
-			</h2>
-
-			<div
-				class="terminal-text max-h-[70vh] overflow-y-auto pr-2 terminal-font leading-relaxed text-terminal-green"
-			>
-				{#if loading}
-					<div class="rounded-md border border-terminal-green/50 bg-black/20 px-3 py-2 mb-4 text-xs terminal-font">
-						<div class="text-terminal-green font-bold mb-1">REAL-TIME TERMINAL OUTPUT</div>
-						<div class="text-terminal-green/80">STATUS: PROCESSING</div>
-					</div>
-
-					<!-- Terminal logs section -->
-					<div bind:this={logsContainer} class="terminal-logs-container mb-4 max-h-40 overflow-y-auto bg-black/50 p-3 rounded border border-terminal-green/30">
-						{#each terminalLogs as log}
-							<div class="terminal-log-line text-xs text-terminal-green font-mono">
-								<span>{log}</span>
-							</div>
-						{/each}
-						{#if terminalLogs.length === 0}
-							<div class="terminal-log-line text-xs text-terminal-green/60 font-mono">
-								<span class="opacity-60">[{new Date().toLocaleTimeString()}]</span>
-								<span class="ml-2">> INITIALIZING_SYSTEM...</span>
-							</div>
-						{/if}
-					</div>
-
-					<span class="glitch-text">
-						<span class="spinner inline-block text-terminal-blue">{spinnerFrames[currentSpinnerFrame]}</span>
-						<strong class="text-portal-orange">DEEP ANALYSIS IN PROGRESS...</strong>
-					</span>
-					{#if !aiResponse}
-						<p class="mt-4 text-sm text-rick-cyan italic">
-							> BACKGROUND PROCESSING ACTIVE: Modal can be closed - data will continue generating
-						</p>
-					{/if}
-				{:else}
-					<div class="ascii-art text-xs mb-2">
-> DATA RETRIEVAL: COMPLETE
-> ANALYSIS STATUS: PROCESSED
-					</div>
-					<pre class="text-terminal-green whitespace-pre-wrap font-mono text-sm leading-relaxed">{aiResponse}</pre>
-					<br />
-					<div class="mt-4 text-xs text-rick-cyan italic border-t border-terminal-green/30 pt-2">
-						<strong>DISCLAIMER:</strong> Information accuracy varies across dimensional boundaries.
-						Citadel databases may contain outdated or dimension-specific data.
-						C-137-INFO system reliability: 94.7%
-					</div>
-				{/if}
-			</div>
-		</div>
-	</div>
-{/if}
+<CharacterInfoModal
+	{showModal}
+	{character}
+	{loading}
+	{aiResponse}
+	{terminalLogs}
+	{spinnerFrames}
+	{currentSpinnerFrame}
+	onClose={toggleModal}
+/>
 
 <style>
 	.blink {
@@ -816,43 +693,6 @@
 		}
 	}
 
-	/* Animation for modal */
-	.animate-fade-in {
-		animation: fadeIn 0.2s ease-out forwards;
-	}
-
-	.animate-slide-up {
-		animation: slideUp 0.3s ease-out forwards;
-	}
-
-	@keyframes fadeIn {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
-
-	@keyframes slideUp {
-		from {
-			transform: translateY(20px);
-			opacity: 0;
-		}
-		to {
-			transform: translateY(0);
-			opacity: 1;
-		}
-	}
-
-	.terminal-text {
-		line-height: 1.6;
-		padding: 1rem;
-		border-radius: 0.25rem;
-		background-color: rgba(0, 0, 0, 0.3);
-		border: 1px solid rgba(34, 197, 94, 0.2);
-	}
-
 	.reboot-button {
 		background: linear-gradient(45deg, #1a0a0a, #2a1010);
 		border: 1px solid rgba(220, 38, 38, 0.3);
@@ -886,52 +726,6 @@
 			inset 0 0 10px rgba(220, 38, 38, 0.1);
 		text-shadow: 0 0 8px rgba(248, 113, 113, 0.5);
 		color: rgb(248, 113, 113);
-	}
-
-	/* Terminal logs styling */
-	.terminal-logs-container {
-		scrollbar-width: thin;
-		scrollbar-color: var(--terminal-green) transparent;
-	}
-
-	.terminal-logs-container::-webkit-scrollbar {
-		width: 4px;
-	}
-
-	.terminal-logs-container::-webkit-scrollbar-track {
-		background: transparent;
-	}
-
-	.terminal-logs-container::-webkit-scrollbar-thumb {
-		background: var(--terminal-green);
-		border-radius: 2px;
-	}
-
-	.terminal-log-line {
-		animation: terminal-log-appear 0.3s ease-out;
-		padding: 1px 0;
-	}
-
-	@keyframes terminal-log-appear {
-		from {
-			opacity: 0;
-			transform: translateX(-10px);
-		}
-		to {
-			opacity: 1;
-			transform: translateX(0);
-		}
-	}
-
-	/* AI Response formatting */
-	.terminal-text pre {
-		margin: 0;
-		padding: 0;
-		background: transparent;
-		border: none;
-		font-family: 'JetBrains Mono', monospace;
-		line-height: 1.4;
-		overflow-x: auto;
 	}
 
 	/* Glitching text effect */
