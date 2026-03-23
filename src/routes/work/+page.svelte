@@ -299,9 +299,10 @@
 		</div>
 		<div class="border-t border-terminal-green/20 pt-4 mt-4">
 			<div class="text-terminal-green/70 text-xs mb-2">
-				> Music is my passion, but my day-to-day work is quite intriguing.
+				> Music is my passion, but my day-to-day work as an AI solutions architect consultant is quite intriguing.
 				<br>
-				If you'd like to know more, you can peep my LinkedIn or contact me directly.
+				If you need AI consulting, data science, or ML engineering help in Houston, Austin, or San Antonio —
+				peep my LinkedIn or <a href="/contact" class="text-rick-cyan hover:text-portal-orange underline hover:no-underline transition-colors">contact me directly</a>.
 			</div>
 			<a
 				href="https://www.linkedin.com/in/abramflansburg/"

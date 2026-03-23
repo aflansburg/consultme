@@ -16,12 +16,49 @@
 </script>
 
 <SEO
-	title="About Abe Flansburg | Solutions Architect, AI Architect & Musician"
-	description="Learn about Abe Flansburg — a Solutions Architect, AI Architect, Software Developer, and Musician based in Houston, TX. Background, skills, and passions."
+	title="About Abe Flansburg | AI Solutions Architect Consultant — Healthcare, Energy & Oil & Gas"
+	description="About Abe Flansburg — AI Solutions Architect Consultant, Principal Engineer, Data Scientist & ML Engineer in Houston, TX. Specializing in healthcare AI, energy, and oil & gas solutions across Houston, Austin, and San Antonio, Texas."
+	keywords="about Abe Flansburg, AI solutions architect consultant, AI architect Houston, principal engineer healthcare AI, data scientist Houston Texas, ML engineer Austin San Antonio, healthcare AI consultant, energy AI solutions, oil and gas AI consultant, software engineer Texas"
 	canonical="https://engabe.com/about"
 />
 
-<h1 class="sr-only">About Abe Flansburg — Solutions Architect, AI Architect, Software Developer & Musician</h1>
+<svelte:head>
+	{@html `<script type="application/ld+json">${JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "AboutPage",
+		"mainEntity": {
+			"@type": "Person",
+			"name": "Abe Flansburg",
+			"alternateName": "Abram Flansburg",
+			"jobTitle": "AI Solutions Architect Consultant",
+			"description": "AI Solutions Architect Consultant and Principal Engineer specializing in healthcare AI, energy, and oil & gas. Expert in software engineering, data science, and machine learning.",
+			"url": "https://engabe.com/about",
+			"image": "https://engabe.com/af-profile-sm.png",
+			"alumniOf": {
+				"@type": "EducationalOrganization",
+				"name": "B.S. in CIS, Post-Graduate Certificate in Data Science & Business Analytics"
+			},
+			"knowsAbout": [
+				"AI Solutions Architecture",
+				"Healthcare AI Applications",
+				"Energy Sector Technology",
+				"Oil and Gas AI",
+				"Machine Learning Engineering",
+				"Data Science",
+				"Software Engineering",
+				"Cloud Infrastructure"
+			],
+			"address": {
+				"@type": "PostalAddress",
+				"addressLocality": "Houston",
+				"addressRegion": "TX",
+				"addressCountry": "US"
+			}
+		}
+	})}</script>`}
+</svelte:head>
+
+<h1 class="sr-only">About Abe Flansburg — AI Solutions Architect Consultant, Software Engineer, Data Scientist & ML Engineer in Houston, Texas</h1>
 
 <div class="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
 	<!-- ASCII Art Header -->

@@ -2,6 +2,7 @@
 	interface Props {
 		title?: string;
 		description?: string;
+		keywords?: string;
 		canonical?: string;
 		ogType?: string;
 		ogImage?: string;
@@ -10,11 +11,12 @@
 
 	const siteUrl = 'https://engabe.com';
 	const defaultImage = `${siteUrl}/af-profile-sm.png`;
-	const siteName = 'Abe Flansburg | Solutions Architect & Musician';
+	const siteName = 'Abe Flansburg | AI Solutions Architect Consultant — Houston, TX';
 
 	let {
 		title = siteName,
-		description = 'Abe Flansburg — Solutions Architect, AI Architect, Software Developer, and Musician based in Houston, TX.',
+		description = 'Abe Flansburg — AI Solutions Architect Consultant, Software Engineer, Data Scientist & ML Engineer in Houston, TX. Serving healthcare, energy, and oil & gas industries across Texas.',
+		keywords = 'AI solutions architect, AI solutions architect consultant, AI consultant Houston, AI consultant Austin, AI consultant San Antonio, AI software engineer Texas, data science consultant, ML engineer Houston, healthcare AI, energy AI, oil and gas AI',
 		canonical = siteUrl,
 		ogType = 'website',
 		ogImage = defaultImage,
@@ -25,6 +27,7 @@
 <svelte:head>
 	<title>{title}</title>
 	<meta name="description" content={description} />
+	<meta name="keywords" content={keywords} />
 	<link rel="canonical" href={canonical} />
 
 	{#if noindex}
@@ -49,4 +52,6 @@
 	<!-- Geo Meta -->
 	<meta name="geo.region" content="US-TX" />
 	<meta name="geo.placename" content="Houston" />
+	<meta name="geo.position" content="29.7604;-95.3698" />
+	<meta name="ICBM" content="29.7604, -95.3698" />
 </svelte:head>

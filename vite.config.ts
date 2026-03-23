@@ -5,6 +5,9 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
+	optimizeDeps: {
+		exclude: ['@aflansburg/terminal-ui']
+	},
 	server: {
 		fs: {
 			allow: ['packages', 'src', 'node_modules']

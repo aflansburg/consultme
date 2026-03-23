@@ -259,8 +259,9 @@
 </script>
 
 <SEO
-	title="Abe Flansburg | Solutions Architect, AI Architect & Musician — Houston, TX"
-	description="Abe Flansburg — Solutions Architect, AI Architect, Software Developer, and Musician based in Houston, TX. Building innovative solutions with modern web technologies."
+	title="Abe Flansburg | AI Solutions Architect Consultant — Houston, Austin & San Antonio, TX"
+	description="Abe Flansburg — AI Solutions Architect Consultant, Software Engineer, Data Scientist & ML Engineer serving Houston, Austin, and San Antonio, Texas. Specializing in healthcare AI, energy, and oil & gas solutions."
+	keywords="AI solutions architect, AI solutions architect consultant, AI solutions architect consultant Houston, AI solutions architect consultant Austin, AI solutions architect consultant San Antonio, AI solutions architect consultant healthcare, AI software engineer Houston, data science consultant Texas, ML engineer Houston Austin, healthcare AI consultant, energy AI consultant, oil and gas AI, AI consultant Texas"
 	canonical="https://engabe.com"
 />
 
@@ -269,9 +270,29 @@
 		"@context": "https://schema.org",
 		"@type": "Person",
 		"name": "Abe Flansburg",
+		"alternateName": "Abram Flansburg",
 		"url": "https://engabe.com",
 		"image": "https://engabe.com/af-profile-sm.png",
-		"jobTitle": "Solutions Architect",
+		"jobTitle": "AI Solutions Architect Consultant",
+		"description": "AI Solutions Architect Consultant specializing in healthcare, energy, and oil & gas. Expert in software engineering, data science, and machine learning across Houston, Austin, and San Antonio, Texas.",
+		"knowsAbout": [
+			"Artificial Intelligence",
+			"Solutions Architecture",
+			"Machine Learning",
+			"Data Science",
+			"Software Engineering",
+			"Healthcare AI",
+			"Energy Sector AI",
+			"Oil and Gas Technology",
+			"Cloud Architecture",
+			"AI Strategy Consulting"
+		],
+		"hasOccupation": {
+			"@type": "Occupation",
+			"name": "AI Solutions Architect Consultant",
+			"occupationalCategory": "15-1299.08",
+			"skills": "AI Architecture, Machine Learning, Data Science, Software Engineering, Cloud Infrastructure, Healthcare IT, Energy Technology"
+		},
 		"worksFor": { "@type": "Organization", "name": "Self-Employed" },
 		"sameAs": [
 			"https://github.com/aflansburg",
@@ -283,13 +304,66 @@
 			"addressLocality": "Houston",
 			"addressRegion": "TX",
 			"addressCountry": "US"
+		},
+		"areaServed": [
+			{ "@type": "City", "name": "Houston", "containedInPlace": { "@type": "State", "name": "Texas" } },
+			{ "@type": "City", "name": "Austin", "containedInPlace": { "@type": "State", "name": "Texas" } },
+			{ "@type": "City", "name": "San Antonio", "containedInPlace": { "@type": "State", "name": "Texas" } }
+		]
+	})}</script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "ProfessionalService",
+		"name": "Abe Flansburg — AI Solutions Architect Consulting",
+		"description": "AI solutions architecture consulting for healthcare, energy, and oil & gas industries. Expert software engineering, data science, and machine learning services in Houston, Austin, and San Antonio, Texas.",
+		"url": "https://engabe.com",
+		"image": "https://engabe.com/af-profile-sm.png",
+		"telephone": "",
+		"priceRange": "$$$$",
+		"areaServed": [
+			{ "@type": "City", "name": "Houston" },
+			{ "@type": "City", "name": "Austin" },
+			{ "@type": "City", "name": "San Antonio" },
+			{ "@type": "State", "name": "Texas" }
+		],
+		"serviceType": [
+			"AI Solutions Architecture",
+			"AI Strategy Consulting",
+			"Machine Learning Engineering",
+			"Data Science Consulting",
+			"Healthcare AI Solutions",
+			"Energy Sector AI Solutions",
+			"Oil and Gas AI Consulting",
+			"Software Engineering"
+		],
+		"knowsAbout": [
+			"Artificial Intelligence",
+			"Machine Learning",
+			"Data Science",
+			"Healthcare Technology",
+			"Energy Technology",
+			"Oil and Gas Technology",
+			"Cloud Architecture",
+			"Software Development"
+		],
+		"address": {
+			"@type": "PostalAddress",
+			"addressLocality": "Houston",
+			"addressRegion": "TX",
+			"addressCountry": "US"
+		},
+		"geo": {
+			"@type": "GeoCoordinates",
+			"latitude": 29.7604,
+			"longitude": -95.3698
 		}
 	})}</script>`}
 </svelte:head>
 
-<section class="sr-only" aria-label="About Abe Flansburg">
-	<h1>Abe Flansburg — Solutions Architect, AI Architect, Software Developer & Musician in Houston, TX</h1>
-	<p>Abe Flansburg is a Solutions Architect, AI Architect, and Software Developer based in Houston, Texas. He is also a musician who composes and produces original music independently.</p>
+<section class="sr-only" aria-label="About Abe Flansburg — AI Solutions Architect Consultant">
+	<h1>Abe Flansburg — AI Solutions Architect Consultant in Houston, Austin & San Antonio, Texas</h1>
+	<p>Abe Flansburg is an AI Solutions Architect Consultant based in Houston, Texas, serving clients across Austin, San Antonio, and the greater Texas region. As a seasoned software engineer, data scientist, and machine learning engineer, Abe specializes in designing and implementing AI solutions for the healthcare, energy, and oil & gas industries.</p>
+	<p>With deep expertise in AI architecture, cloud infrastructure, and full-stack software development, Abe delivers end-to-end AI consulting services — from strategy and solution design to hands-on engineering and deployment. Whether you need an AI solutions architect consultant in Houston, an ML engineer in Austin, or a data science consultant in San Antonio, Abe brings cross-industry experience and technical depth to every engagement.</p>
 </section>
 
 <TerminalBootSequence

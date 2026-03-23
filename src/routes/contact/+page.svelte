@@ -5,14 +5,29 @@
 </script>
 
 <SEO
-	title="Contact Abe Flansburg | Solutions Architect & Musician — Houston, TX"
-	description="Get in touch with Abe Flansburg — Solutions Architect, AI Architect, and Musician based in Houston, TX. Email and LinkedIn contact information."
+	title="Contact Abe Flansburg | AI Solutions Architect Consultant — Houston, Austin & San Antonio, TX"
+	description="Contact Abe Flansburg — AI Solutions Architect Consultant available for AI consulting, data science, and ML engineering projects in Houston, Austin, San Antonio, and across Texas. Specializing in healthcare, energy, and oil & gas AI solutions."
+	keywords="contact AI solutions architect consultant, hire AI consultant Houston, AI consulting Austin Texas, AI consultant San Antonio, healthcare AI consultant contact, energy AI consultant Texas, ML engineer for hire Houston, data science consultant Texas"
 	canonical="https://engabe.com/contact"
 />
 
+<svelte:head>
+	{@html `<script type="application/ld+json">${JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "ContactPage",
+		"mainEntity": {
+			"@type": "Person",
+			"name": "Abe Flansburg",
+			"jobTitle": "AI Solutions Architect Consultant",
+			"url": "https://engabe.com",
+			"areaServed": ["Houston", "Austin", "San Antonio", "Texas"]
+		}
+	})}</script>`}
+</svelte:head>
+
 <div class="flex flex-col items-center gap-3 py-4 terminal-font">
 	<h1 class="text-2xl font-bold text-terminal-green terminal-font mb-2">CONTACT</h1>
-	<p class="text-sm text-terminal-green/70 mb-4">Based in Houston, TX — available for collaboration and consulting.</p>
+	<p class="text-sm text-terminal-green/70 mb-4">AI Solutions Architect Consultant based in Houston, TX — available for consulting across Austin, San Antonio, and all of Texas.</p>
 	<p>Wow this page is really something else.</p>
 	<p>Click to copy my email address to your clipboard.</p>
 	<button
