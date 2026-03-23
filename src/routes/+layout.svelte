@@ -16,6 +16,7 @@
 	import YouTubeModal from '$lib/components/YouTubeModal.svelte';
 	import ChangelogModal from '$lib/components/ChangelogModal.svelte';
 	import MatrixRain from '$lib/components/MatrixRain.svelte';
+	import MrFrundles from '$lib/components/MrFrundles.svelte';
 	import { colorMode } from '$lib/stores/sitePreferences.svelte';
 	import { avatarImage } from '$lib/stores/avatarImage.svelte';
 	import { name, firstName, identityRevealed } from '$lib/stores/identity.svelte';
@@ -42,6 +43,7 @@
 	let rickAndMortyVideoId = $state('https://www.youtube.com/watch?v=i7RMgPHGSMU'); // Rick and Morty video
 	let showChangelogModal = $state(false);
 	let showMatrixRain = $state(false);
+	let showFrundles = $state(false);
 	let avatarProperties = $derived({
 		src: $avatarImage,
 		alt: $name,
@@ -306,6 +308,17 @@
 				</button>
 			</li>
 			<li>
+				<button
+					class="flex items-center justify-center w-7 h-7 rounded border-2 border-yellow-500 bg-yellow-500/20 transition-all group hover:bg-yellow-500/40 hover:border-yellow-400 active:scale-95 cursor-pointer"
+					title="Jerry: Don't click this"
+					style="box-shadow: 0 0 15px rgba(234, 179, 8, 0.5), inset 0 2px 4px rgba(0, 0, 0, 0.3);"
+					onclick={() => showFrundles = true}
+					aria-label="Jerry: Don't click this"
+				>
+					<span class="text-yellow-400 text-sm group-hover:scale-110 transition-transform font-bold terminal-font" style="text-shadow: 0 0 10px #eab308, 0 0 20px #eab308; filter: brightness(1.5); animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;">!</span>
+				</button>
+			</li>
+			<li>
 				<a
 					href="https://github.com/aflansburg"
 					target="_blank"
@@ -534,6 +547,23 @@
 								>Enter the Matrix</span
 							>
 						</button>
+						<button
+							onclick={() => {
+								showFrundles = true;
+								toggleMenu();
+							}}
+							class="{$colorMode === 'dark' ? 'text-zinc-500/60' : 'text-zinc-400/80'}
+								flex w-full transform items-center gap-3 rounded-md border px-4 py-3
+								shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow active:scale-[0.99]"
+							aria-label="Jerry: Don't click this"
+						>
+							<div class="text-yellow-400">
+								<span class="text-lg font-bold terminal-font" style="text-shadow: 0 0 10px #eab308;">!</span>
+							</div>
+							<span class="font-medium {$colorMode === 'dark' ? 'text-zinc-200' : 'text-zinc-800'}"
+								>Jerry: Don't click this</span
+							>
+						</button>
 					</div>
 					<h3
 						class="mb-2 text-sm font-medium {$colorMode === 'dark'
@@ -662,6 +692,9 @@
 
 	<!-- Matrix Rain Overlay -->
 	<MatrixRain active={showMatrixRain} onClose={() => showMatrixRain = false} showImages />
+
+	<!-- Mr. Frundles Easter Egg -->
+	<MrFrundles active={showFrundles} onClose={() => showFrundles = false} />
 </div>
 
 <style>
