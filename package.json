@@ -47,6 +47,7 @@
 	},
 	"dependencies": {
 		"@aflansburg/terminal-ui": ">=0.2.0",
+		"@chenglou/pretext": "^0.0.3",
 		"@sparticuz/chromium": "^133.0.0",
 		"js-yaml": "^4.1.0",
 		"openai": "^4.98.0",

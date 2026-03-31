@@ -286,6 +286,9 @@
 				<a href="/contact" class="font-medium transition-all hover:text-cyan-500">Contact</a>
 			</li>
 			<li>
+				<a href="/transmissions" class="font-medium transition-all hover:text-cyan-500">Transmissions</a>
+			</li>
+			<li>
 				<a
 					href="/this-route-def-does-not-exist"
 					class="flex items-center justify-center w-7 h-7 rounded border-2 border-red-600 bg-red-600/20 transition-all group hover:bg-red-600/40 hover:border-red-500 active:scale-95"
@@ -446,6 +449,16 @@
 						onclick={toggleMenu}
 					>
 						Contact
+					</a>
+					<a
+						href="/transmissions"
+						class="block px-4 py-3 text-lg font-medium transition-all hover:text-cyan-500 {$colorMode ===
+						'dark'
+							? 'hover:bg-zinc-700/70'
+							: 'hover:bg-zinc-100/70'} rounded-md"
+						onclick={toggleMenu}
+					>
+						Transmissions
 					</a>
 					<a
 						href="/this-route-def-does-not-exist"
