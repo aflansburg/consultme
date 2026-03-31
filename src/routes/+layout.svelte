@@ -250,7 +250,7 @@
 
 <div class="crt-screen {$colorMode}" class:screen-glitch={screenGlitching}>
 	<nav
-		class="relative flex items-center justify-between px-4 py-3 terminal-border {$colorMode === 'light'
+		class="relative z-50 flex items-center justify-between px-4 py-3 terminal-border {$colorMode === 'light'
 			? 'bg-black/90 text-green-400'
 			: 'bg-zinc-950/95 text-green-300'} shadow-lg backdrop-blur-sm"
 	>
