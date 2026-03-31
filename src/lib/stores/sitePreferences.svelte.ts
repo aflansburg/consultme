@@ -1,30 +1,18 @@
 import { writable } from 'svelte/store';
 
 function createColorModeStore() {
-    // Get initial value from localStorage or default to 'dark'
-    const storedMode = typeof localStorage !== 'undefined'
-        ? localStorage.getItem('colorMode')
-        : null;
-
-    const { subscribe, set, update } = writable(storedMode || 'dark');
+    // Dark mode is always on for now
+    const { subscribe, set, update } = writable('dark');
 
     return {
         subscribe,
-        set: (value: string) => {
-            if (typeof localStorage !== 'undefined') {
-                localStorage.setItem('colorMode', value);
-            }
-            set(value);
+        set: (_value: string) => {
+            // Forced dark mode — ignore set calls
+            set('dark');
         },
         update,
         toggle: () => {
-            update(mode => {
-                const newMode = mode === 'dark' ? 'light' : 'dark';
-                if (typeof localStorage !== 'undefined') {
-                    localStorage.setItem('colorMode', newMode);
-                }
-                return newMode;
-            });
+            // Forced dark mode — toggle is a no-op
         }
     };
 }

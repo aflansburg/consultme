@@ -44,6 +44,8 @@
 	let showChangelogModal = $state(false);
 	let showMatrixRain = $state(false);
 	let showFrundles = $state(false);
+	let showGadgets = $state(false);
+	let showMobileGadgets = $state(false);
 	let avatarProperties = $derived({
 		src: $avatarImage,
 		alt: $name,
@@ -61,6 +63,7 @@
 
 	function toggleMenu() {
 		isMenuOpen = !isMenuOpen;
+		if (!isMenuOpen) showMobileGadgets = false;
 	}
 
 	function openYouTubeModal(videoId: string) {
@@ -233,6 +236,8 @@
 	}
 </script>
 
+<svelte:window onkeydown={(e) => { if (e.key === 'Escape') showGadgets = false; }} />
+
 <svelte:head>
 	{@html `<script type="application/ld+json">${JSON.stringify({
 		"@context": "https://schema.org",
@@ -288,95 +293,93 @@
 			<li>
 				<a href="/transmissions" class="font-medium transition-all hover:text-cyan-500">Transmissions</a>
 			</li>
-			<li>
-				<a
-					href="/this-route-def-does-not-exist"
-					class="flex items-center justify-center w-7 h-7 rounded border-2 border-red-600 bg-red-600/20 transition-all group hover:bg-red-600/40 hover:border-red-500 active:scale-95"
-				title="Don't click this!"
-			style="box-shadow: 0 0 15px rgba(239, 68, 68, 0.5), inset 0 2px 4px rgba(0, 0, 0, 0.3);"
-			>
-				<span class="text-red-500 text-xl group-hover:scale-110 transition-transform font-bold" style="text-shadow: 0 0 10px #ef4444, 0 0 20px #ef4444, 0 0 30px #ef4444; filter: brightness(1.5); animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;">✗</span>
-			</a
-				>
-			</li>
-			<li>
+			<li class="relative">
 				<button
-					class="flex items-center justify-center w-7 h-7 rounded border-2 border-green-500 bg-green-500/20 transition-all group hover:bg-green-500/40 hover:border-green-400 active:scale-95 cursor-pointer"
-					title="Enter the Matrix"
-					style="box-shadow: 0 0 15px rgba(34, 197, 94, 0.5), inset 0 2px 4px rgba(0, 0, 0, 0.3);"
-					onclick={() => showMatrixRain = true}
-					aria-label="Enter the Matrix"
+					class="flex items-center gap-1.5 font-medium terminal-font text-sm cursor-pointer transition-all hover:text-cyan-500 border border-green-500/50 rounded px-2.5 py-1 bg-green-500/10 hover:bg-green-500/20 hover:border-green-400"
+					style="text-shadow: 0 0 8px rgba(0, 255, 65, 0.3);"
+					aria-label="Open gadgets menu"
+					onclick={() => showGadgets = !showGadgets}
 				>
-					<span class="text-green-400 text-sm group-hover:scale-110 transition-transform font-bold terminal-font" style="text-shadow: 0 0 10px #22c55e, 0 0 20px #22c55e; filter: brightness(1.5); animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;">M</span>
+					<span class="text-green-400">&#9881;</span> Gadgets
 				</button>
-			</li>
-			<li>
-				<button
-					class="flex items-center justify-center w-7 h-7 rounded border-2 border-yellow-500 bg-yellow-500/20 transition-all group hover:bg-yellow-500/40 hover:border-yellow-400 active:scale-95 cursor-pointer"
-					title="Jerry: Don't click this"
-					style="box-shadow: 0 0 15px rgba(234, 179, 8, 0.5), inset 0 2px 4px rgba(0, 0, 0, 0.3);"
-					onclick={() => showFrundles = true}
-					aria-label="Jerry: Don't click this"
-				>
-					<span class="text-yellow-400 text-sm group-hover:scale-110 transition-transform font-bold terminal-font" style="text-shadow: 0 0 10px #eab308, 0 0 20px #eab308; filter: brightness(1.5); animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;">!</span>
-				</button>
-			</li>
-			<li>
-				<a
-					href="https://github.com/aflansburg"
-					target="_blank"
-					rel="noopener noreferrer"
-					class="flex cursor-pointer transition-all hover:text-cyan-500"
-					aria-label="GitHub Profile"
-				>
-					<GitHubIcon />
-				</a>
-			</li>
-			<li>
-				<button
-					class="flex cursor-pointer transition-all hover:text-gray-300"
-					aria-label="Sad"
-					onclick={() => openYouTubeModal(youtubeVideoId)}
-					title="Sad"
-				>
-					<SkullIcon />
-				</button>
-			</li>
-			<li>
-				<button
-					class="flex cursor-pointer transition-all hover:text-green-400"
-					aria-label="In the City"
-					onclick={() => openYouTubeModal(rickAndMortyVideoId)}
-					title="In the City"
-				>
-					<RickAndMortyIcon />
-				</button>
-			</li>
-			<li>
-				<button
-					class="cursor-pointer transition-all hover:text-cyan-500"
-					aria-label="Toggle theme"
-					onclick={toggleColorMode}
-				>
-					{#if $colorMode === 'light'}
-						<span class="text-amber-300">
-							<SunIcon />
-						</span>
-					{:else}
-						<span class="text-indigo-600">
-							<MoonIcon />
-						</span>
-					{/if}
-				</button>
-			</li>
-			<li>
-				<button
-					class="font-medium transition-all cursor-pointer transition-all hover:text-cyan-500 hover:text-cyan-500"
-					aria-label="View changelog"
-					onclick={openChangelogModal}
-				>
-					Changelog
-				</button>
+
+				{#if showGadgets}
+					<!-- Click-outside overlay -->
+					<!-- svelte-ignore a11y_no_static_element_interactions -->
+					<div
+						class="fixed inset-0 z-40"
+						onclick={() => showGadgets = false}
+					></div>
+
+					<div
+						class="absolute right-0 top-full mt-2 z-50 w-56 rounded-lg border-2 border-green-500 bg-zinc-950/95 backdrop-blur-sm py-2"
+						style="box-shadow: 0 0 20px rgba(0, 255, 65, 0.25), 0 0 40px rgba(0, 255, 65, 0.1);"
+						role="menu"
+					>
+						<a
+							href="/this-route-def-does-not-exist"
+							class="flex items-center gap-3 px-4 py-2.5 text-sm transition-all hover:bg-red-500/10"
+							onclick={() => showGadgets = false}
+							role="menuitem"
+						>
+							<span class="text-red-500 text-lg font-bold" style="text-shadow: 0 0 10px #ef4444;">✗</span>
+							<span class="text-red-400 terminal-font text-xs">Don't click this</span>
+						</a>
+						<button
+							class="flex w-full items-center gap-3 px-4 py-2.5 text-sm transition-all hover:bg-green-500/10 cursor-pointer"
+							onclick={() => { showMatrixRain = true; showGadgets = false; }}
+							role="menuitem"
+						>
+							<span class="text-green-400 text-lg font-bold terminal-font" style="text-shadow: 0 0 10px #22c55e;">M</span>
+							<span class="text-green-300 terminal-font text-xs">Enter the Matrix</span>
+						</button>
+						<button
+							class="flex w-full items-center gap-3 px-4 py-2.5 text-sm transition-all hover:bg-yellow-500/10 cursor-pointer"
+							onclick={() => { showFrundles = true; showGadgets = false; }}
+							role="menuitem"
+						>
+							<span class="text-yellow-400 text-lg font-bold terminal-font" style="text-shadow: 0 0 10px #eab308;">!</span>
+							<span class="text-yellow-300 terminal-font text-xs">Frundles</span>
+						</button>
+						<div class="my-1 border-t border-green-500/20"></div>
+						<a
+							href="https://github.com/aflansburg"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="flex items-center gap-3 px-4 py-2.5 text-sm transition-all hover:bg-zinc-700/50 text-zinc-300 hover:text-cyan-400 cursor-pointer"
+							onclick={() => showGadgets = false}
+							role="menuitem"
+						>
+							<GitHubIcon />
+							<span class="terminal-font text-xs">GitHub</span>
+						</a>
+						<button
+							class="flex w-full items-center gap-3 px-4 py-2.5 text-sm transition-all hover:bg-zinc-700/50 text-zinc-300 hover:text-gray-200 cursor-pointer"
+							onclick={() => { openYouTubeModal(youtubeVideoId); showGadgets = false; }}
+							role="menuitem"
+						>
+							<SkullIcon />
+							<span class="terminal-font text-xs">Sad</span>
+						</button>
+						<button
+							class="flex w-full items-center gap-3 px-4 py-2.5 text-sm transition-all hover:bg-zinc-700/50 text-zinc-300 hover:text-green-400 cursor-pointer"
+							onclick={() => { openYouTubeModal(rickAndMortyVideoId); showGadgets = false; }}
+							role="menuitem"
+						>
+							<RickAndMortyIcon />
+							<span class="terminal-font text-xs">In the City</span>
+						</button>
+						<div class="my-1 border-t border-green-500/20"></div>
+						<button
+							class="flex w-full items-center gap-3 px-4 py-2.5 text-sm transition-all hover:bg-zinc-700/50 text-zinc-300 hover:text-cyan-400 cursor-pointer"
+							onclick={() => { openChangelogModal(); showGadgets = false; }}
+							role="menuitem"
+						>
+							<QuestionMarkIcon />
+							<span class="terminal-font text-xs">Changelog</span>
+						</button>
+					</div>
+				{/if}
 			</li>
 		</ul>
 	</nav>
@@ -460,28 +463,67 @@
 					>
 						Transmissions
 					</a>
-					<a
-						href="/this-route-def-does-not-exist"
-					class="flex items-center justify-center w-full py-2 rounded-lg border-4 border-red-600 bg-red-600/20 transition-all group hover:bg-red-600/40 hover:border-red-500 active:scale-95"
-					title="Don't click this!"
-					style="box-shadow: 0 0 20px rgba(239, 68, 68, 0.6), inset 0 2px 4px rgba(0, 0, 0, 0.3);"
-						onclick={toggleMenu}
+					<!-- Gadgets collapsible section -->
+					<button
+						class="flex w-full items-center justify-between rounded-md border border-green-500/50 bg-green-500/10 px-4 py-3 text-lg font-medium terminal-font text-green-400 transition-all hover:bg-green-500/20 hover:border-green-400 cursor-pointer"
+						style="text-shadow: 0 0 8px rgba(0, 255, 65, 0.3);"
+						onclick={() => showMobileGadgets = !showMobileGadgets}
+						aria-expanded={showMobileGadgets}
 					>
-						<span class="text-red-500 text-2xl group-hover:scale-110 transition-transform font-bold" style="text-shadow: 0 0 10px #ef4444, 0 0 20px #ef4444, 0 0 30px #ef4444; filter: brightness(2.5) contrast(2.5) saturate(2.5)); animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;">Don't press this button</span>
-					</a>
-					<h3
-						class="mb-2 text-sm font-medium {$colorMode === 'dark'
-							? 'text-zinc-300'
-							: 'text-zinc-600'}"
-					>
-						Links
-					</h3>
-					<div class="mb-6 space-y-2">
+						<span><span class="mr-2">&#9881;</span>Gadgets</span>
+						<span class="text-sm transition-transform duration-200 {showMobileGadgets ? 'rotate-180' : ''}">&#9660;</span>
+					</button>
+
+					{#if showMobileGadgets}
+					<div class="space-y-2 pl-2 animate-slide-down">
+						<a
+							href="/this-route-def-does-not-exist"
+							class="flex items-center justify-center w-full py-2 rounded-lg border-4 border-red-600 bg-red-600/20 transition-all group hover:bg-red-600/40 hover:border-red-500 active:scale-95"
+							title="Don't click this!"
+							style="box-shadow: 0 0 20px rgba(239, 68, 68, 0.6), inset 0 2px 4px rgba(0, 0, 0, 0.3);"
+							onclick={toggleMenu}
+						>
+							<span class="text-red-500 text-2xl group-hover:scale-110 transition-transform font-bold" style="text-shadow: 0 0 10px #ef4444, 0 0 20px #ef4444, 0 0 30px #ef4444; filter: brightness(2.5) contrast(2.5) saturate(2.5)); animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;">Don't press this button</span>
+						</a>
+						<button
+							onclick={() => {
+								showMatrixRain = true;
+								toggleMenu();
+							}}
+							class="{$colorMode === 'dark' ? 'text-zinc-500/60' : 'text-zinc-400/80'}
+								flex w-full transform items-center gap-3 rounded-md border px-4 py-3
+								shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow active:scale-[0.99] cursor-pointer"
+							aria-label="Enter the Matrix"
+						>
+							<div class="text-green-400">
+								<span class="text-lg font-bold terminal-font" style="text-shadow: 0 0 10px #22c55e;">M</span>
+							</div>
+							<span class="font-medium {$colorMode === 'dark' ? 'text-zinc-200' : 'text-zinc-800'}"
+								>Enter the Matrix</span
+							>
+						</button>
+						<button
+							onclick={() => {
+								showFrundles = true;
+								toggleMenu();
+							}}
+							class="{$colorMode === 'dark' ? 'text-zinc-500/60' : 'text-zinc-400/80'}
+								flex w-full transform items-center gap-3 rounded-md border px-4 py-3
+								shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow active:scale-[0.99] cursor-pointer"
+							aria-label="Jerry: Don't click this"
+						>
+							<div class="text-yellow-400">
+								<span class="text-lg font-bold terminal-font" style="text-shadow: 0 0 10px #eab308;">!</span>
+							</div>
+							<span class="font-medium {$colorMode === 'dark' ? 'text-zinc-200' : 'text-zinc-800'}"
+								>Jerry: Don't click this</span
+							>
+						</button>
 						<a
 							href="https://github.com/aflansburg"
 							target="_blank"
 							rel="noopener noreferrer"
-							class="{$colorMode === 'dark' ? 'text-zinc-500/60' : 'text-zinc-400/80'} 
+							class="{$colorMode === 'dark' ? 'text-zinc-500/60' : 'text-zinc-400/80'}
 								flex w-full transform items-center gap-3 rounded-md border px-4 py-3
 								shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow active:scale-[0.99]"
 							aria-label="GitHub Profile"
@@ -516,7 +558,7 @@
 							}}
 							class="{$colorMode === 'dark' ? 'text-zinc-500/60' : 'text-zinc-400/80'}
 								flex w-full transform items-center gap-3 rounded-md border px-4 py-3
-								shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow active:scale-[0.99]"
+								shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow active:scale-[0.99] cursor-pointer"
 							aria-label="Sad"
 						>
 							<div class="text-white">
@@ -533,7 +575,7 @@
 							}}
 							class="{$colorMode === 'dark' ? 'text-zinc-500/60' : 'text-zinc-400/80'}
 								flex w-full transform items-center gap-3 rounded-md border px-4 py-3
-								shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow active:scale-[0.99]"
+								shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow active:scale-[0.99] cursor-pointer"
 							aria-label="In the City"
 						>
 							<div class="text-green-400">
@@ -545,94 +587,23 @@
 						</button>
 						<button
 							onclick={() => {
-								showMatrixRain = true;
+								openChangelogModal();
 								toggleMenu();
 							}}
 							class="{$colorMode === 'dark' ? 'text-zinc-500/60' : 'text-zinc-400/80'}
 								flex w-full transform items-center gap-3 rounded-md border px-4 py-3
-								shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow active:scale-[0.99]"
-							aria-label="Enter the Matrix"
+								shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow active:scale-[0.99] cursor-pointer"
+							aria-label="View changelog"
 						>
-							<div class="text-green-400">
-								<span class="text-lg font-bold terminal-font" style="text-shadow: 0 0 10px #22c55e;">M</span>
+							<div class="text-terminal-green">
+								<QuestionMarkIcon />
 							</div>
 							<span class="font-medium {$colorMode === 'dark' ? 'text-zinc-200' : 'text-zinc-800'}"
-								>Enter the Matrix</span
-							>
-						</button>
-						<button
-							onclick={() => {
-								showFrundles = true;
-								toggleMenu();
-							}}
-							class="{$colorMode === 'dark' ? 'text-zinc-500/60' : 'text-zinc-400/80'}
-								flex w-full transform items-center gap-3 rounded-md border px-4 py-3
-								shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow active:scale-[0.99]"
-							aria-label="Jerry: Don't click this"
-						>
-							<div class="text-yellow-400">
-								<span class="text-lg font-bold terminal-font" style="text-shadow: 0 0 10px #eab308;">!</span>
-							</div>
-							<span class="font-medium {$colorMode === 'dark' ? 'text-zinc-200' : 'text-zinc-800'}"
-								>Jerry: Don't click this</span
+								>Changelog</span
 							>
 						</button>
 					</div>
-					<h3
-						class="mb-2 text-sm font-medium {$colorMode === 'dark'
-							? 'text-zinc-300'
-							: 'text-zinc-600'}"
-					>
-						Color Mode
-					</h3>
-					<button
-						class="{$colorMode === 'dark'
-							? 'border-zinc-500/20 bg-zinc-700/70 hover:bg-zinc-600'
-							: 'border-zinc-300/50 bg-zinc-200/70 hover:bg-zinc-300'}
-							flex w-full transform items-center gap-3 rounded-md border px-4 py-3
-							shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow active:scale-[0.99]"
-						aria-label="Toggle theme"
-						onclick={toggleColorMode}
-					>
-						<div class={$colorMode === 'dark' ? 'text-amber-300' : 'text-indigo-600'}>
-							{#if $colorMode === 'dark'}
-								<SunIcon />
-							{:else}
-								<MoonIcon />
-							{/if}
-						</div>
-						<span class="font-medium {$colorMode === 'dark' ? 'text-zinc-200' : 'text-zinc-800'}">
-							{#if $colorMode === 'dark'}
-								Switch to Light Mode
-							{:else}
-								Switch to Dark Mode
-							{/if}
-						</span>
-					</button>
-					<h3
-						class="mb-2 text-sm font-medium {$colorMode === 'dark'
-							? 'text-zinc-300'
-							: 'text-zinc-600'}"
-					>
-						Info
-					</h3>
-					<button
-						onclick={() => {
-							openChangelogModal();
-							toggleMenu();
-						}}
-						class="{$colorMode === 'dark' ? 'text-zinc-500/60' : 'text-zinc-400/80'}
-							flex w-full transform items-center gap-3 rounded-md border px-4 py-3
-							shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow active:scale-[0.99]"
-						aria-label="View changelog"
-					>
-						<div class="text-terminal-green">
-							<QuestionMarkIcon />
-						</div>
-						<span class="font-medium {$colorMode === 'dark' ? 'text-zinc-200' : 'text-zinc-800'}"
-							>Changelog</span
-						>
-					</button>
+					{/if}
 				</div>
 			</div>
 		</div>
