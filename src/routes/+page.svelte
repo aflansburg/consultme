@@ -297,7 +297,7 @@
 		"sameAs": [
 			"https://github.com/aflansburg",
 			"https://www.linkedin.com/in/abramflansburg/",
-			"https://soundcloud.com/user-271844266"
+			"https://soundcloud.com/pubsub"
 		],
 		"address": {
 			"@type": "PostalAddress",

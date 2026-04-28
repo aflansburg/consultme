@@ -25,133 +25,133 @@
 		{
 			title: 'Hope clouds observation',
 			date: '2024-03-19',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/hope-clouds-observation&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/hope-clouds-observation&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_P-127'
 		},
 		{
 			title: "Rift (Demo)",
 			date: '2026-03-15',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/rift-demo&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/rift-demo&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_R-6767'
 		},
 		{
 			title: 'Dialectic Dessert',
 			date: '2023-11-18',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/dialectic-dessert&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/dialectic-dessert&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_Q-404'
 		},
 		{
 			title: 'Curse of Dimensionality',
 			date: '2023',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/curse-of-dimensionality&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/curse-of-dimensionality&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_X-999'
 		},
 		{
 			title: 'TimeLux',
 			date: '2023',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/timelux&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/timelux&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_T-777'
 		},
 		{
 			title: 'Good Morning Starshine',
 			date: '2023',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/good-morning-starshine-by&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/good-morning-starshine-by&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_G-555'
 		},
 		{
 			title: 'New concept w/ Suhr SE100',
 			date: '2025-09-05',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/new-concept-w-suhr-se100&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/new-concept-w-suhr-se100&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_C-742'
 		},
 		{
 			title: 'A 3-Hour Thanksgiving',
 			date: '2024-11-30',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/a-3-hour-thanksgiving&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/a-3-hour-thanksgiving&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_K-83'
 		},
 		{
 			title: 'Masterpiece Arcade',
 			date: '2023',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/masterpiece-arcade&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/masterpiece-arcade&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_M-888'
 		},
 		{
 			title: 'Cirrus',
 			date: '2023-11-11',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/cirrus&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/cirrus&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_R-212'
 		},
 		{
 			title: 'Heartbeats',
 			date: '2023-09-24',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/heartbeats&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/heartbeats&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_M-66'
 		},
 		{
 			title: 'Windy Road (Draft 2)',
 			date: '2022-07-22',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/windy-road-draft-2&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/windy-road-draft-2&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_W-314'
 		},
 		{
 			title: 'Aborted cover of Tomorrow',
 			date: '2023',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/aborted-cover-of-tomorrow-by&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/aborted-cover-of-tomorrow-by&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_A-101'
 		},
 		{
 			title: 'A Little Digital Something',
 			date: '2023',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/a-little-digital-something&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/a-little-digital-something&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_D-202'
 		},
 		{
 			title: 'Glory to God (GTG)',
 			date: '2023',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/glory-to-god-gtg&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/glory-to-god-gtg&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_G-777'
 		},
 		{
 			title: 'Classical Steinway Harpsichord',
 			date: '2023',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/classical-steinway-harpsichord&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/classical-steinway-harpsichord&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_S-303'
 		},
 		{
 			title: 'Way Too Happy',
 			date: '2023',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/way-too-happy&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/way-too-happy&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_H-404'
 		},
 		{
 			title: 'A Musical Offering',
 			date: '2023',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/a-musical-offering&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/a-musical-offering&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_B-505'
 		},
 		{
 			title: 'Deep Chip Rush',
 			date: '2023',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/deep-chip-rush&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/deep-chip-rush&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_C-808'
 		},
 		{
 			title: 'Sunset Driven',
 			date: '2023',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/sunset-driven&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/sunset-driven&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_S-606'
 		},
 		{
 			title: 'Writers Block',
 			date: '2023',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/writers-block&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/writers-block&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_W-909'
 		},
 		{
 			title: 'Trancey McTrancePants',
 			date: '2023',
-			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-271844266/tranceymctrancepants-mp3&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
+			embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/pubsub/tranceymctrancepants-mp3&color=%2300ff41&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true',
 			classification: 'DIMENSION_T-303'
 		}
 	];
@@ -231,7 +231,7 @@
 			> <strong class="text-neon-purple">PERFORMANCE STATUS:</strong> Solo instrumentation and production across all dimensional frequencies.
 		</p>
 		<p class="text-neon-purple">
-			> <strong class="text-portal-orange">FULL ARCHIVE ACCESS:</strong> <a href="https://soundcloud.com/user-271844266" target="_blank" rel="noopener noreferrer" class="text-rick-cyan hover:text-portal-orange underline hover:no-underline transition-colors">SOUNDCLOUD.COM/USER-271844266</a>
+			> <strong class="text-portal-orange">FULL ARCHIVE ACCESS:</strong> <a href="https://soundcloud.com/pubsub" target="_blank" rel="noopener noreferrer" class="text-rick-cyan hover:text-portal-orange underline hover:no-underline transition-colors">SOUNDCLOUD.COM/PUBSUB</a>
 		</p>
 	</div>
 
